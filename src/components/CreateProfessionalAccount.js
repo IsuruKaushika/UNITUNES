@@ -43,6 +43,7 @@ function CreateProfessionalAccount() {
   };
 
   return (
+    <div className="Login-page-2 ">
     <div className="form-container">
       <h1>Create Professional Account</h1>
       <form onSubmit={handleSubmit}>
@@ -120,6 +121,8 @@ function CreateProfessionalAccount() {
         </Link>
       </div>
     </div>
+    </div>
+    
   );
 }
 

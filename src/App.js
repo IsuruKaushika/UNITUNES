@@ -7,6 +7,8 @@ import CreateStudentAccount from "./components/CreateStudentAccount";
 import CreateProfessionalAccount from "./components/CreateProfessionalAccount";
 import ProfessionalDashboard from "./components/ProfDashboard";
 import StudentDashboard from "./components/StudentDashboard";
+import BoardingList from "./components/BoardingList";
+import BoardingDetails from "./components/BoardingDetails";
 
 
 function App() {
@@ -20,6 +22,8 @@ function App() {
         <Route path="/create-professional-account" element={<CreateProfessionalAccount />} />
         <Route path="/go-professional-dashboard" element={<ProfessionalDashboard />} />
         <Route path="/go-student-dashboard" element={<StudentDashboard />} />
+        <Route path="/boarding-list" element={<BoardingList />}/>
+        <Route path="/boarding-details/:id" element={<BoardingDetails />}  />
 
       </Routes>
     </div>

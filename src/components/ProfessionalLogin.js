@@ -33,6 +33,7 @@ function ProfessionalLogin() {
   };
 
   return (
+    <div className="Login-page-2">
     <div className="form-container">
       
 
@@ -67,6 +68,7 @@ function ProfessionalLogin() {
           <button className="btn">Go Back</button>
         </Link>
       </div>
+    </div>
     </div>
   );
 }

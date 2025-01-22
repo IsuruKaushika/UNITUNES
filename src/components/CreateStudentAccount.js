@@ -43,6 +43,7 @@ function CreateStudentAccount() {
   };
 
   return (
+    <div className="Login-page ">
     <div className="form-container">
       <h1>Create Student Account</h1>
       <form onSubmit={handleSubmit}>
@@ -104,7 +105,7 @@ function CreateStudentAccount() {
           <input
             type="text"
             name="identificationNumber"
-            placeholder="EG20214606"
+            placeholder="EGXXXXXXXX"
             value={formData.identificationNumber}
             onChange={handleChange}
             required
@@ -119,6 +120,7 @@ function CreateStudentAccount() {
           <button type="submit" className="btn">Back to Log In</button>
         </Link>
       </div>
+    </div>
     </div>
   );
 }

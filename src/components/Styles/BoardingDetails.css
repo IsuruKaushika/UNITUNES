@@ -1,0 +1,18 @@
+.boarding-details {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Optional: add space between images */
+  }
+  
+  .boarding-image {
+    width: 200px; /* Set a specific width */
+    height: 150px; /* Set a specific height */
+    object-fit: cover; /* Ensure the aspect ratio is maintained */
+    border-radius: 5px; /* Optional: add some rounding */
+  }
+  

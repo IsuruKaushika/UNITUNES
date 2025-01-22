@@ -1,7 +1,15 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "../components/Styles/Homepage.css";
 
 function HomePage() {
+  const navigate = useNavigate();
+
+  // Function to handle navigation to the Boarding List page
+  const handleBoardingClick = () => {
+    navigate("/boarding-list");
+  };
+
   return (
     <div className="home-page">
       {/* Header Section */}
@@ -75,7 +83,8 @@ function HomePage() {
       <section className="features-section">
         <h3>Features</h3>
         <div className="features-grid">
-          <div className="feature-item">
+          {/* Boarding Feature */}
+          <div className="feature-item" onClick={handleBoardingClick}>
             <img
               width={100}
               height={100}
@@ -84,6 +93,8 @@ function HomePage() {
             />
             <p>Boarding</p>
           </div>
+
+          {/* Other Features */}
           <div className="feature-item">
             <img src="/images/Taxi.jpg" alt="Taxis" />
             <p>Taxis</p>

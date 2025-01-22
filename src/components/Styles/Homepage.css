@@ -1,4 +1,6 @@
-.home-page {
+/* HomePage.css */
+
+body {
   font-family: "Arial", sans-serif;
   margin: 0;
   padding: 0;
@@ -6,7 +8,13 @@
   color: #333;
 }
 
-.home-page .header {
+/* General Page Wrapper */
+.home-page {
+  padding: 20px;
+}
+
+/* Header Section */
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -16,14 +24,13 @@
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-.home-page .menu-icon,
-.home-page .profile-icon {
+.menu-icon, .profile-icon {
   font-size: 24px;
   color: #fff;
   cursor: pointer;
 }
 
-.home-page .search-bar {
+.search-bar {
   flex-grow: 1;
   padding: 10px;
   border: none;
@@ -33,40 +40,42 @@
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.home-page .main-banner {
+/* Main Banner Section */
+.main-banner {
   text-align: center;
   margin: 30px 0;
 }
 
-.home-page .logo {
+.logo {
   max-width: 90%;
   height: auto;
   border-radius: 15px;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
 }
 
-.home-page .ad-section {
+/* Ad Section */
+.ad-section {
   margin: 30px 0;
 }
 
-.home-page .ad-section h3 {
+.ad-section h3 {
   font-size: 22px;
   color: #6a0dad; /* Purple color */
   margin-bottom: 20px;
 }
 
-.home-page .ad-carousel {
+.ad-carousel {
   display: flex;
   gap: 20px;
   overflow-x: scroll;
   padding: 10px 0;
 }
 
-.home-page .ad-carousel::-webkit-scrollbar {
+.ad-carousel::-webkit-scrollbar {
   display: none;
 }
 
-.home-page .ad-item {
+.ad-item {
   width: 300px;
   height: 200px;
   object-fit: cover;
@@ -74,23 +83,24 @@
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.home-page .features-section {
+/* Features Section */
+.features-section {
   margin: 40px 0;
 }
 
-.home-page .features-section h3 {
+.features-section h3 {
   font-size: 22px;
   color: #6a0dad; /* Purple color */
   margin-bottom: 20px;
 }
 
-.home-page .features-grid {
+.features-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
 }
 
-.home-page .feature-item {
+.feature-item {
   text-align: center;
   padding: 20px;
   background: #fff;
@@ -99,19 +109,36 @@
   transition: transform 0.3s ease;
 }
 
-.home-page .feature-item:hover {
+.feature-item:hover {
   transform: scale(1.05);
 }
 
-.home-page .feature-item img {
+.feature-item img {
   width: 100px;
   height: 100px;
   margin-bottom: 20px;
 }
 
-.home-page .feature-item p {
+.feature-item p {
   font-size: 18px;
   color: #333;
   margin: 0;
   font-weight: bold;
+}
+
+/* Media Query for Small Devices */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .search-bar {
+    margin: 10px 0;
+  }
+  .features-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .ad-item {
+    width: 100%;
+  }
 }

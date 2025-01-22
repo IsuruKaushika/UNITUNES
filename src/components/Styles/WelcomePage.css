@@ -45,3 +45,10 @@ h1 {
 .btn:hover {
   background: linear-gradient(135deg, #1e293b, #3b82f6);
 }
+.welcome-page .form-container .logo {
+  display: block;
+  margin: 0 auto;
+  width: 150px; /* Adjust size as needed */
+  height: auto;
+  margin-bottom: 20px; /* Space between the logo and the heading */
+}

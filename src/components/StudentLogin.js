@@ -5,6 +5,8 @@ import "../components/Styles/LoginAccount.css"; // Import the correct CSS file
 
 function StudentLogin() {
   // State variables to store user input and any error messages
+
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -31,6 +33,7 @@ function StudentLogin() {
   };
 
   return (
+    <div className="Login-page">
     <div className="form-container">
       {/* Go Back Icon */}
       <Link to="/welcome">
@@ -68,6 +71,7 @@ function StudentLogin() {
           <button className="btn">Go Back</button>
         </Link>
       </div>
+    </div>
     </div>
   );
 }
