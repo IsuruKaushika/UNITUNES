@@ -1,0 +1,117 @@
+.home-page {
+  font-family: "Arial", sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #f8f9fa, #e0e7ff);
+  color: #333;
+}
+
+.home-page .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ee720e; /* orange background */
+  padding: 15px 30px;
+  border-radius: 15px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.home-page .menu-icon,
+.home-page .profile-icon {
+  font-size: 24px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.home-page .search-bar {
+  flex-grow: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  margin: 0 15px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.home-page .main-banner {
+  text-align: center;
+  margin: 30px 0;
+}
+
+.home-page .logo {
+  max-width: 90%;
+  height: auto;
+  border-radius: 15px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.home-page .ad-section {
+  margin: 30px 0;
+}
+
+.home-page .ad-section h3 {
+  font-size: 22px;
+  color: #6a0dad; /* Purple color */
+  margin-bottom: 20px;
+}
+
+.home-page .ad-carousel {
+  display: flex;
+  gap: 20px;
+  overflow-x: scroll;
+  padding: 10px 0;
+}
+
+.home-page .ad-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.home-page .ad-item {
+  width: 300px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 15px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.home-page .features-section {
+  margin: 40px 0;
+}
+
+.home-page .features-section h3 {
+  font-size: 22px;
+  color: #6a0dad; /* Purple color */
+  margin-bottom: 20px;
+}
+
+.home-page .features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.home-page .feature-item {
+  text-align: center;
+  padding: 20px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.home-page .feature-item:hover {
+  transform: scale(1.05);
+}
+
+.home-page .feature-item img {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 20px;
+}
+
+.home-page .feature-item p {
+  font-size: 18px;
+  color: #333;
+  margin: 0;
+  font-weight: bold;
+}

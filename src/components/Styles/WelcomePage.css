@@ -1,0 +1,47 @@
+/* Target the specific welcome page */
+.welcome-page {
+  font-family: "Arial", sans-serif;
+  background: linear-gradient(135deg, #1e293b, #3b82f6); /* New background color */
+  color: #fff;
+  margin: 0;
+  padding: 0;
+  background-image: url("../Styles/Content/Welcome.jpg"); /* Optional background image */
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.form-container {
+  max-width: 400px;
+  width: 100%;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+}
+
+.btn {
+  width: 100%;
+  padding: 10px;
+  background: linear-gradient(135deg, #3b82f6, #1e293b); /* New button color */
+  border: none;
+  color: #fff;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn:hover {
+  background: linear-gradient(135deg, #1e293b, #3b82f6);
+}
