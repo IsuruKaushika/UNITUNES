@@ -17,8 +17,8 @@ function WelcomeScreen() {
         </div>
         <div>
           <p></p>
-          <Link to="/professional-login">
-            <button className="btn">Professional</button>
+          <Link to="/provider-login">
+            <button className="btn">Service Provider</button>
           </Link>
         </div>
       </div>

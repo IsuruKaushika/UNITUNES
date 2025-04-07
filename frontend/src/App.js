@@ -2,10 +2,10 @@ import React from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import WelcomeScreen from "./components/WelcomeScreen";
 import StudentLogin from "./components/StudentLogin";
-import ProfessionalLogin from "./components/ProfessionalLogin";
+import ProviderLogin from "./components/ProviderLogin";
 import CreateStudentAccount from "./components/CreateStudentAccount";
-import CreateProfessionalAccount from "./components/CreateProfessionalAccount";
-import ProfessionalDashboard from "./components/ProfDashboard";
+import CreateProviderAccount from "./components/CreateProviderAccount";
+import ProviderDashboard from "./components/ProviderDashboard";
 import StudentDashboard from "./components/StudentDashboard";
 import BoardingList from "./components/BoardingList";
 import BoardingDetails from "./components/BoardingDetails";
@@ -17,10 +17,10 @@ function App() {
       <Routes>
         <Route path="/" element={<WelcomeScreen />} />
         <Route path="/student-login" element={<StudentLogin />} />
-        <Route path="/professional-login" element={<ProfessionalLogin />} />
+        <Route path="/provider-login" element={<ProviderLogin />} />
         <Route path="/create-student-account" element={<CreateStudentAccount />} />
-        <Route path="/create-professional-account" element={<CreateProfessionalAccount />} />
-        <Route path="/go-professional-dashboard" element={<ProfessionalDashboard />} />
+        <Route path="/create-provider-account" element={<CreateProviderAccount />} />
+        <Route path="/go-provider-dashboard" element={<ProviderDashboard />} />
         <Route path="/go-student-dashboard" element={<StudentDashboard />} />
         <Route path="/boarding-list" element={<BoardingList />}/>
         <Route path="/boarding-details/:id" element={<BoardingDetails />}  />
