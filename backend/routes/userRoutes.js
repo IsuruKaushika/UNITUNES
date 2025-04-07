@@ -1,17 +1,12 @@
-const express = require('express');
-const { registerController, loginController } = require('../controllers/userController');
+import express  from 'express';
+import { loginStudent, registerStudent, adminLogin,loginServiceProvider, registerServiceProvder } from '../controllers/userController.js';
 
-const router = express.Router();
+const userRouter =express.Router();
 
-//REGISTER ||POST
+userRouter.post('/sturegister', registerStudent)
+userRouter.post('/stulogin', loginStudent)
+userRouter.post('/serregister', registerServiceProvder)
+userRouter.post('/serlogin', loginServiceProvider)
+userRouter.post('/admin', adminLogin)
 
-router.post('/register',registerController);
-
-//LOGIN || POST
-router.post('/login',loginController);
-
-
-module.exports = router;
-
-//export
-module.exports = router;
+export default userRouter;

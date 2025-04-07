@@ -1,25 +1,32 @@
-const express = require('express');
-const cors = require('cors');
-const dotenv = require('dotenv');
-const colors  = require('colors');
-const morgan = require('morgan');
-const connectDB = require('./config/db');
-userRoutes = require('./routes/userRoutes');
+import express from 'express';
+import cors from 'cors';
+import 'dotenv/config';
+import connectDB from './config/mongodb.js';
+import connectCloudinary from './config/cloudinary.js';
+import userRouter from './routes/userRoutes.js';
+import boardingRouter from './routes/boardingRoute.js';
 
-dotenv.config();
 
-connectDB();
+//import routes
 
-const app= express();
+const app = express();
+const port = process.env.PORT || 4000;
+connectDB()
+connectCloudinary()
 
-app.use(cors());
-app.use(express.json());
-app.use(morgan('dev'));
+app.use(express.json())
+app.use(cors())
 
-app.use('/api/v1/auth', require('./routes/userRoutes'));
+//api endpoints
+app.use('/api/user', userRouter)
+app.use('/api/boarding', boardingRouter)
 
-const PORT = process.env.PORT || 8080;
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`.bgCyan.white);
-});
+app.get('/', (req, res) => {
+    res.send('API Working')
+
+})
+
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`)
+})
