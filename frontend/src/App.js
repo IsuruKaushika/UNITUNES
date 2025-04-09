@@ -9,6 +9,8 @@ import ProviderDashboard from "./components/ProviderDashboard";
 import StudentDashboard from "./components/StudentDashboard";
 import BoardingList from "./components/BoardingList";
 import BoardingDetails from "./components/BoardingDetails";
+import RentItemsPage from "./components/RentItemsPage";
+import RentItemDetails from "./components/RentItemDetails"; 
 
 
 function App() {
@@ -24,6 +26,9 @@ function App() {
         <Route path="/go-student-dashboard" element={<StudentDashboard />} />
         <Route path="/boarding-list" element={<BoardingList />}/>
         <Route path="/boarding-details/:id" element={<BoardingDetails />}  />
+        <Route path="/rent-items" element={<RentItemsPage />} />
+        <Route path="/rent-details/:id" element={<RentItemDetails />} />
+
 
       </Routes>
     </div>
