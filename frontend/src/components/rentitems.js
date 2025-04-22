@@ -1,16 +1,19 @@
 import React from "react";
-import "./Styles/rentitems.css"; // Make sure this path is correct
+import { Link } from "react-router-dom";
+import "./Styles/RentItemsPage.css";
 
-const RentItems = ({ item }) => {
+function RentItems({ product }) {
   return (
     <div className="rent-card">
-      <img src={item.image} alt={item.title} className="rent-image" />
-      <h3 className="rent-title">{item.title}</h3>
-      <p className="rent-price">Rs.{item.price.toLocaleString()}</p>
-      {item.discount && <p className="rent-discount">-{item.discount}%</p>}
-      <p className="rent-rating">⭐ {item.rating} ({item.reviews})</p>
+      <img src={product.image} alt={product.title} className="rent-image" />
+      <h3>{product.title}</h3>
+      <p>Rs. {product.pricePerDay} / day</p>
+      <p>⭐ {product.rating} ({product.reviews} reviews)</p>
+      <Link to={`/rent-details/${product.id}`}>
+        <button className="rent-button">View Details</button>
+      </Link>
     </div>
   );
-};
+}
 
 export default RentItems;
