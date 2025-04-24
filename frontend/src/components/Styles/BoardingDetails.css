@@ -1,18 +1,29 @@
-.boarding-details {
-    padding: 20px;
-    font-family: Arial, sans-serif;
-  }
-  
-  .images {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px; /* Optional: add space between images */
-  }
-  
-  .boarding-image {
-    width: 200px; /* Set a specific width */
-    height: 150px; /* Set a specific height */
-    object-fit: cover; /* Ensure the aspect ratio is maintained */
-    border-radius: 5px; /* Optional: add some rounding */
-  }
-  
+.boarding-details-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px;
+}
+
+.boarding-details-container img {
+  width: 80%;
+  max-width: 600px;
+  border-radius: 10px;
+}
+
+.details-content {
+  max-width: 600px;
+  background: #f9f9f9;
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: left;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.back-button {
+  display: inline-block;
+  margin-top: 20px;
+  color: #007bff;
+  text-decoration: none;
+}

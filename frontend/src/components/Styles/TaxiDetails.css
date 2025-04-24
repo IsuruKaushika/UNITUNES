@@ -1,0 +1,19 @@
+.taxi-details {
+    max-width: 600px;
+    margin: 40px auto;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    text-align: center;
+  }
+  .taxi-details img {
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 15px;
+  }
+  .taxi-details p {
+    margin: 8px 0;
+    font-size: 1rem;
+  }
+  

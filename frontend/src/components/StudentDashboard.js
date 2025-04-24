@@ -5,9 +5,17 @@ import "../components/Styles/Homepage.css";
 function HomePage() {
   const navigate = useNavigate();
 
-  // Function to handle navigation to the Boarding List page
+  // Navigation functions
   const handleBoardingClick = () => {
     navigate("/boarding-list");
+  };
+
+  const handleTaxiClick = () => {
+    navigate("/taxi-list");
+  };
+
+  const handleRentingClick = () => {
+    navigate("/rent-items");
   };
 
   return (
@@ -34,48 +42,12 @@ function HomePage() {
       <section className="ad-section">
         <h3>Ad</h3>
         <div className="ad-carousel">
-          <img
-            width={300}
-            height={500}
-            src="/images/A1.jpeg"
-            alt="Advertisement 1"
-            className="ad-item"
-          />
-          <img
-            width={300}
-            height={500}
-            src="/images/A2.jpeg"
-            alt="Advertisement 2"
-            className="ad-item"
-          />
-          <img
-            width={300}
-            height={500}
-            src="/images/A3.jpeg"
-            alt="Advertisement 3"
-            className="ad-item"
-          />
-          <img
-            width={300}
-            height={500}
-            src="/images/A4.jpeg"
-            alt="Advertisement 4"
-            className="ad-item"
-          />
-          <img
-            width={300}
-            height={500}
-            src="/images/A5.jpeg"
-            alt="Advertisement 5"
-            className="ad-item"
-          />
-          <img
-            width={300}
-            height={500}
-            src="/images/A6.jpeg"
-            alt="Advertisement 6"
-            className="ad-item"
-          />
+          <img width={300} height={500} src="/images/A1.jpeg" alt="Ad 1" className="ad-item" />
+          <img width={300} height={500} src="/images/A2.jpeg" alt="Ad 2" className="ad-item" />
+          <img width={300} height={500} src="/images/A3.jpeg" alt="Ad 3" className="ad-item" />
+          <img width={300} height={500} src="/images/A4.jpeg" alt="Ad 4" className="ad-item" />
+          <img width={300} height={500} src="/images/A5.jpeg" alt="Ad 5" className="ad-item" />
+          <img width={300} height={500} src="/images/A6.jpeg" alt="Ad 6" className="ad-item" />
         </div>
       </section>
 
@@ -85,32 +57,35 @@ function HomePage() {
         <div className="features-grid">
           {/* Boarding Feature */}
           <div className="feature-item" onClick={handleBoardingClick}>
-            <img
-              width={100}
-              height={100}
-              src="/images/Bording.jpg"
-              alt="Boarding"
-            />
+            <img width={100} height={100} src="/images/Bording.jpg" alt="Boarding" />
             <p>Boarding</p>
           </div>
 
-          {/* Other Features */}
-          <div className="feature-item">
+          {/* Taxi Feature */}
+          <div className="feature-item" onClick={handleTaxiClick}>
             <img src="/images/Taxi.jpg" alt="Taxis" />
             <p>Taxis</p>
           </div>
+
+          {/* Medicare Feature */}
           <div className="feature-item">
             <img src="/images/Medicine.jpg" alt="Medicare" />
             <p>Medicare</p>
           </div>
+
+          {/* Food Feature */}
           <div className="feature-item">
             <img src="/images/Food.jpg" alt="Foods" />
             <p>Foods</p>
           </div>
-          <div className="feature-item">
+
+          {/* Renting Feature */}
+          <div className="feature-item" onClick={handleRentingClick}>
             <img src="/images/Rental.jpg" alt="Renting" />
             <p>Renting</p>
           </div>
+
+          {/* Skill Sharing Feature */}
           <div className="feature-item">
             <img src="/images/Skill Sharing.jpg" alt="Skill Sharing" />
             <p>Skill Sharing</p>

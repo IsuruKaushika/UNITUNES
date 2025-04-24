@@ -1,73 +1,53 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import "../components/Styles/BoardingList.css";
+import React from "react";
+import { Link } from "react-router-dom";
+import "./Styles/BoardingList.css";
 
-const backendUrl = "http://localhost:4000"; // Use only for API, not image if image is from Cloudinary
+const boardingData = [
+  {
+    id: 1,
+    title: "Boarding near Campus",
+    image: "/images/b1.jpg",
+    description: "Spacious room close to university with free WiFi.",
+    location: "Matara",
+  },
+  {
+    id: 2,
+    title: "AC Room with Kitchen",
+    image: "/images/b2.jpg",
+    description: "Comfortable AC boarding with separate kitchen area.",
+    location: "Matara",
+  },
+  {
+    id: 3,
+    title: "Shared Room with Balcony",
+    image: "/images/b3.jpeg",
+    description: "Affordable shared room ideal for students.",
+    location: "Galle",
+  },
+  {
+    id: 4,
+    title: "Boarding with Parking",
+    image: "/images/b4.jpeg",
+    description: "Secure boarding with parking space.",
+    location: "Matara",
+  },
+];
 
-const BoardingList = () => {
-  const navigate = useNavigate();
-  const [boardingListData, setBoardingListData] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchBoardings = async () => {
-      try {
-        const response = await axios.get(`${backendUrl}/api/boarding/list`);
-        console.log(response.data);
-        if (response.data?.success && Array.isArray(response.data.products)) {
-          setBoardingListData(response.data.products);
-        } else {
-          console.error("Invalid response:", response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching boarding data:", error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBoardings();
-  }, []);
-
-  const handleBoardingClick = (id) => {
-    navigate(`/boarding-details/${id}`);
-  };
-
+function BoardingList() {
   return (
-    <div className="boarding-list">
-      <h1 className="boarding-list-title">Available Boarding Options</h1>
-
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <div className="boarding-cards">
-          {Array.isArray(boardingListData) && boardingListData.length > 0 ? (
-            boardingListData.map((boarding) => (
-              <div
-                key={boarding._id}
-                className="boarding-card"
-                onClick={() => handleBoardingClick(boarding._id)}
-              >
-                <img
-                  src={boarding.image[0]} // Use the Cloudinary URL directly
-                  alt={boarding.Title}
-                  className="boarding-thumbnail"
-                />
-                <div className="boarding-info">
-                  <h3>{boarding.Title}</h3>
-                  <p>{boarding.address}</p>
-                  <p className="boarding-price">Rs {boarding.price} / month</p>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p>No boarding data found.</p>
-          )}
-        </div>
-      )}
+    <div className="boarding-list-container">
+      <h2>Available Boarding Places</h2>
+      <div className="boarding-grid">
+        {boardingData.map((boarding) => (
+          <Link to={`/boarding-details/${boarding.id}`} key={boarding.id} className="boarding-card">
+            <img src={boarding.image} alt={boarding.title} />
+            <h3>{boarding.title}</h3>
+            <p>{boarding.location}</p>
+          </Link>
+        ))}
+      </div>
     </div>
   );
-};
+}
 
 export default BoardingList;

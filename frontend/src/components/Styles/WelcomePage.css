@@ -45,10 +45,33 @@ h1 {
 .btn:hover {
   background: linear-gradient(135deg, #1e293b, #3b82f6);
 }
+
 .welcome-page .form-container .logo {
   display: block;
   margin: 0 auto;
   width: 150px; /* Adjust size as needed */
   height: auto;
   margin-bottom: 20px; /* Space between the logo and the heading */
+}
+
+/* ✨ Added for Renting Icon */
+.icon-section {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+.icon-box {
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.icon-box:hover {
+  transform: scale(1.05);
+}
+
+.icon-image {
+  width: 80px;
+  height: 80px;
 }

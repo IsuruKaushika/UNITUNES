@@ -13,6 +13,8 @@ import BoardingList from "./components/BoardingList";
 import BoardingDetails from "./components/BoardingDetails";
 import RentItemsPage from "./components/RentItemsPage";
 import RentItemDetails from "./components/RentItemDetails";
+import TaxiList from "./components/TaxiList";
+import TaxiDetails from "./components/TaxiDetails";
 
 // ✅ New Imports for Rent Feature (Add this section only if missing)
 import ProductList from "./components/ProductList";
@@ -35,6 +37,8 @@ function App() {
         <Route path="/boarding-details/:id" element={<BoardingDetails />} />
         <Route path="/rent-items" element={<RentItemsPage />} />
         <Route path="/rent-details/:id" element={<RentItemDetails />} />
+        <Route path="/taxi-list" element={<TaxiList />} />
+        <Route path="/taxi-details/:id" element={<TaxiDetails />} />
         {/* ✅ No changes to your route structure – just supporting files needed */}
       </Routes>
     </div>
