@@ -18,6 +18,11 @@ function HomePage() {
     navigate("/rent-items");
   };
 
+  const handleMedicareClick = () => {
+    navigate("/medi-list");
+  };
+
+
   return (
     <div className="home-page">
       {/* Header Section */}
@@ -68,7 +73,7 @@ function HomePage() {
           </div>
 
           {/* Medicare Feature */}
-          <div className="feature-item">
+          <div className="feature-item" onClick={handleMedicareClick}>
             <img src="/images/Medicine.jpg" alt="Medicare" />
             <p>Medicare</p>
           </div>

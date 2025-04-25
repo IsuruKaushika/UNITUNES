@@ -1,0 +1,13 @@
+.medi-details {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .medi-details img {
+    width: 60%;
+    max-width: 500px;
+    height: auto;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+  
