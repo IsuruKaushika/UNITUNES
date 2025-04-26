@@ -1,0 +1,58 @@
+.ad-section {
+  margin: 20px auto;
+  text-align: center;
+}
+
+.ad-banner {
+  background-color: #f1f5f9;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 90%;
+  margin: 0 auto 15px auto;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.ad-carousel {
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+  background: #fff;
+}
+
+.ad-track {
+  display: flex;
+  width: calc(200px * 8); /* for 4 ads x 2 for smooth loop */
+  animation: scroll-left 20s linear infinite;
+}
+
+.ad-item {
+  min-width: 200px;
+  height: 100px;
+  margin: 10px;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.3s;
+}
+
+.ad-item img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.ad-item:hover {
+  transform: scale(1.05);
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
