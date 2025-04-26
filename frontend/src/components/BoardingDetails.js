@@ -1,60 +1,85 @@
-import React from "react";
-import { useParams, Link } from "react-router-dom";
-import "./Styles/BoardingDetails.css";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import "../components/Styles/BoardingDetails.css";
 
-const boardingData = [
-  {
-    id: 1,
-    title: "Boarding near Campus",
-    image: "/images/b1.jpg",
-    description: "Spacious room close to university with free WiFi, water and electricity included.",
-    location: "Matara",
-    contact: "071-1234567",
-  },
-  {
-    id: 2,
-    title: "AC Room with Kitchen",
-    image: "/images/b2.jpg",
-    description: "Comfortable AC boarding with a kitchen and private bathroom.",
-    location: "Matara",
-    contact: "072-2345678",
-  },
-  {
-    id: 3,
-    title: "Shared Room with Balcony",
-    image: "/images/b3.jpeg",
-    description: "Shared room with two beds, attached bathroom and balcony.",
-    location: "Galle",
-    contact: "075-3456789",
-  },
-  {
-    id: 4,
-    title: "Boarding with Parking",
-    image: "/images/b4.jpeg",
-    description: "Safe boarding place with ample parking and quiet environment.",
-    location: "Matara",
-    contact: "077-4567890",
-  },
-];
+const backendUrl = "http://localhost:4000"; // Change if hosted elsewhere
 
-function BoardingDetails() {
-  const { id } = useParams();
-  const boarding = boardingData.find((item) => item.id === parseInt(id));
+const BoardingDetails = () => {
+  const { id } = useParams(); // id is boardingId
+  const [details, setDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  if (!boarding) return <h2>Boarding not found</h2>;
+  useEffect(() => {
+    const fetchBoardingDetails = async () => {
+      try {
+        const response = await axios.post(`${backendUrl}/api/boarding/single`, {
+          boardingId: id,
+        });
+
+        console.log(response.data);
+        if (response.data?.success && response.data.boarding) {
+          setDetails(response.data.boarding);
+        } else {
+          console.error("Invalid response:", response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching boarding details:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBoardingDetails();
+  }, [id]);
+
+  if (loading) return <p>Loading...</p>;
+  if (!details) return <p>Details not found!</p>;
 
   return (
-    <div className="boarding-details-container">
-      <img src={boarding.image} alt={boarding.title} />
-      <div className="details-content">
-        <h2>{boarding.title}</h2>
-        <p><strong>Location:</strong> {boarding.location}</p>
-        <p><strong>Description:</strong> {boarding.description}</p>
-        <p><strong>Contact:</strong> {boarding.contact}</p>
-        <Link to="/boarding-list" className="back-button">← Back to Listings</Link>
+    <div className="boarding-details">
+      <h2>{details.Title}</h2>
+      
+
+      <div className="images">
+        {details.image?.map((img, index) => (
+          <img
+            key={index}
+            src={img}
+            alt={`Boarding ${index + 1}`}
+            className="boarding-image"
+          />
+        ))}
       </div>
+
+      <p><strong>Owner:</strong> {details.owner}</p>
+      <p><strong>Address:</strong> {details.address}</p>
+      <p><strong>Number of Rooms:</strong> {details.Rooms}</p>
+      <p><strong>Number of Bathrooms:</strong> {details.bathRooms}</p>
+      <p><strong>Description:</strong> {details.description}</p>
+      <h3>Rs {details.price} / month</h3>
+      <p><strong>Contact:</strong> {details.contact}</p>
+
+      {details.features?.length > 0 && (
+        <div>
+          <strong>Features:</strong>
+          <ul>
+            {details.features.map((feature, index) => (
+              <li key={index}>{feature}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <a
+        href={`https://wa.me/${details.contact?.replace(/\D/g, "")}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <button>Contact via WhatsApp</button>
+      </a>
     </div>
   );
-}
+};
 
 export default BoardingDetails;
