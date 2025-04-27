@@ -1,13 +1,16 @@
+/* BoardingList.css */
 .boarding-list {
   padding: 20px;
-  font-family: Arial, sans-serif;
-  background-color: #f9f9f9; /* Change this to your desired color */
+  background-color: #f5f5f5;
+  min-height: 100vh;
 }
 
 .boarding-list-title {
   text-align: center;
-  color: #4a4a4a;
   margin-bottom: 20px;
+  font-size: 28px;
+  color: #333;
+  font-weight: bold;
 }
 
 .boarding-cards {
@@ -17,44 +20,46 @@
 }
 
 .boarding-card {
-  border: 1px solid #ddd;
-  border-radius: 10px;
+  background: #ffffff;
+  border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.2s ease;
-  box-shadow: 0 4px 6px rgba(243, 241, 241, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .boarding-card:hover {
-  transform: scale(1.05);
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .boarding-thumbnail {
   width: 100%;
-  height: 150px;
+  height: 160px;
   object-fit: cover;
-  border-bottom: 1px solid #ddd;
 }
 
 .boarding-info {
-  padding: 15px;
-  text-align: center;
+  padding: 12px;
 }
 
 .boarding-info h3 {
-  margin: 10px 0;
-  color: #9fd916;
+  margin: 0;
   font-size: 18px;
+  color: #333;
 }
 
 .boarding-info p {
-  margin: 5px 0;
-  color: #94bd2b;
+  margin: 6px 0;
   font-size: 14px;
+  color: #666;
 }
 
 .boarding-price {
-  color: #6fabf0;
+  margin-top: 8px;
   font-weight: bold;
+  color: #ff6600;
   font-size: 16px;
 }

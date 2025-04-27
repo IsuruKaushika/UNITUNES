@@ -17,15 +17,19 @@ function StudentLogin() {
     e.preventDefault();
 
     try {
-      // Send a POST request to the backend for login
-      const response = await axios.post('http://localhost:8080/api/v1/auth/login', {
-        email,
-        password,
-      });
+      // Send a POST request to the backend for 
+      const response =await axios.post('http://localhost:4000/api/user/stulogin',{email,password})
+     
 
       // If successful, handle the success response
-      console.log(response.data.message); // You can redirect or display a success message here
-      navigate("/go-student-dashboard");
+      if (response.status === 200 && response.data.success) {
+        console.log(response.data.message);
+        navigate("/go-student-dashboard");
+      } else {
+        // Display a message if the response is not as expected
+        setErrorMessage(response.data.message || "Login failed. Please try again.");
+      }
+
     } catch (error) {
       // If there is an error (e.g., invalid credentials), display the error message
       setErrorMessage(error.response ? error.response.data.message : "Something went wrong!");

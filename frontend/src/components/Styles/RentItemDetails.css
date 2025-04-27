@@ -1,0 +1,29 @@
+.rent-detail-container {
+  padding: 30px;
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.rent-detail-image {
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+}
+
+.rent-detail-info {
+  max-width: 500px;
+  text-align: left;
+  font-size: 18px;
+}
+
+.rent-detail-info h2 {
+  margin-bottom: 15px;
+}
+
+.rent-detail-info p {
+  margin: 10px 0;
+}

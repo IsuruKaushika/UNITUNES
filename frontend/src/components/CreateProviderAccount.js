@@ -5,15 +5,11 @@ import "./Styles/CreateAccount.css";
 import { Link } from "react-router-dom";
 
 
-function CreateProfessionalAccount() {
+function CreateProviderAccount() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    password: "",
-    phone: "",
-    address: "",
-    userType: "BoardingOwner", // Updated to match valid enum value
-    identificationNumber: "",
+    password: ""
   });
 
   const [message, setMessage] = useState("");
@@ -30,8 +26,8 @@ function CreateProfessionalAccount() {
   
 
     try {
-      const response = await axios.post("http://localhost:8080/api/v1/auth/register", formData);
-      if (response.status === 201) {
+      const response = await axios.post("http://localhost:4000/api/user/serregister", formData);
+      if (response.status === 200) {
         setMessage("Account created successfully!");
       } else {
         setMessage("Failed to create account. Please try again.");
@@ -80,43 +76,13 @@ function CreateProfessionalAccount() {
             required
           />
         </div>
-        <div className="form-group">
-          <label>Phone</label>
-          <input
-            type="text"
-            name="phone"
-            placeholder="Phone Number"
-            value={formData.phone}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="form-group">
-          <label>Address</label>
-          <input
-            type="text"
-            name="address"
-            placeholder="Address"
-            value={formData.address}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="form-group">
-          <label>Identification Number</label>
-          <input
-            type="text"
-            name="identificationNumber"
-            placeholder="xxxxxxxxxV or xxxxxxxxxxxx"
-            value={formData.identificationNumber}
-            onChange={handleChange}
-            required
-          />
-        </div>
+        
         <button type="submit" className="btn">Sign Up</button>
       </form>
       {message && <p>{message}</p>}
       <div style={{ marginTop: "20px" }}>
         <p>Do You  have an account?</p>
-        <Link to="/Professional-login">
+        <Link to="/Provider-login">
           <button type="submit" className="btn">Back to Log In</button>
         </Link>
       </div>
@@ -126,4 +92,4 @@ function CreateProfessionalAccount() {
   );
 }
 
-export default CreateProfessionalAccount;
+export default CreateProviderAccount;

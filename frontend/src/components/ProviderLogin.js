@@ -17,15 +17,19 @@ function ProfessionalLogin() {
 
     try {
       // Send a POST request to the backend for login
-      const response = await axios.post('http://localhost:8080/api/v1/auth/login', {
+      const response = await axios.post('http://localhost:4000/api/user/serlogin', {
         email,
         password,
         
       });
 
-      // If successful, handle the success response
-      console.log(response.data.message); // You can redirect or display a success message here
-      navigate("/ProfDashboard");
+      if (response.status === 200 && response.data.success) {
+        console.log(response.data.message);
+        navigate("/go-professional-dashboard");
+      } else {
+        // Display a message if the response is not as expected
+        setErrorMessage(response.data.message || "Login failed. Please try again.");
+      }
     } catch (error) {
       // If there is an error (e.g., invalid credentials), display the error message
       setErrorMessage(error.response ? error.response.data.message : "Something went wrong!");
@@ -37,7 +41,7 @@ function ProfessionalLogin() {
     <div className="form-container">
       
 
-      <h1>Professional Login</h1>
+      <h1>Service Provider Login</h1>
       <form onSubmit={handleLogin}>
         <div className="form-group">
           <input
@@ -60,8 +64,8 @@ function ProfessionalLogin() {
       {errorMessage && <div style={{ color: 'red', marginTop: '10px' }}>{errorMessage}</div>}
       <div style={{ marginTop: "20px" }}>
         <p>Don’t have an account?</p>
-        <Link to="/create-Professional-account">
-          <button className="btn">Create Professional Account</button>
+        <Link to="/create-Provider-account">
+          <button className="btn">Create Service Provider Account</button>
         </Link>
         <p></p>
         <Link to="/">
