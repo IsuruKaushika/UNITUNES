@@ -40,7 +40,7 @@ const BoardingDetails = () => {
     <div className="boarding-details">
       <h2>{details.Title}</h2>
       
-// Displaying the images in a grid layout
+
       <div className="images">
         {details.image?.map((img, index) => (
           <img

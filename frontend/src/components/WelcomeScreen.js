@@ -1,26 +1,26 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "../components/Styles/WelcomePage.css"; // Ensure path is correct
-import logo from "../components/Styles/Content/Logo.jpg"; // Adjust path to your logo
+import "../components/Styles/WelcomePage.css";
+import logo from "../components/Styles/Content/Logo.jpg";
 
 function WelcomeScreen() {
   return (
     <div className="welcome-page">
       <div className="form-container">
-        {/* Add the logo */}
         <img src={logo} alt="Unitunes Logo" className="logo" />
         <h1>Welcome to Unitunes</h1>
+
         <div>
           <Link to="/student-login">
             <button className="btn">Student</button>
           </Link>
         </div>
         <div>
-          <p></p>
           <Link to="/provider-login">
             <button className="btn">Service Provider</button>
           </Link>
         </div>
+
       </div>
     </div>
   );

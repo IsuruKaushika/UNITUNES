@@ -1,18 +1,69 @@
+/* BoardingDetails.css */
 .boarding-details {
-    padding: 20px;
-    font-family: Arial, sans-serif;
-  }
-  
-  .images {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px; /* Optional: add space between images */
-  }
-  
-  .boarding-image {
-    width: 200px; /* Set a specific width */
-    height: 150px; /* Set a specific height */
-    object-fit: cover; /* Ensure the aspect ratio is maintained */
-    border-radius: 5px; /* Optional: add some rounding */
-  }
-  
+  max-width: 800px;
+  margin: 30px auto;
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.boarding-details h2 {
+  font-size: 26px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #333;
+}
+
+.images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.boarding-image {
+  width: 100%;
+  max-width: 350px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+p {
+  font-size: 16px;
+  margin: 10px 0;
+  color: #555;
+}
+
+h3 {
+  font-size: 22px;
+  color: #ff6600;
+  margin-top: 20px;
+}
+
+ul {
+  padding-left: 20px;
+}
+
+li {
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+button {
+  margin-top: 20px;
+  background-color: #25D366;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #1ebe5d;
+}
