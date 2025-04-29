@@ -14,6 +14,10 @@ function HomePage() {
     navigate("/taxi-list");
   };
 
+  const handleMedicareClick = () => {
+    navigate("/medi-select");
+  };
+
   const handleRentingClick = () => {
     navigate("/rent-items");
   };
@@ -68,15 +72,15 @@ function HomePage() {
           </div>
 
           {/* Medicare Feature */}
-          <div className="feature-item">
+          <div className="feature-item" onClick={handleMedicareClick} >
             <img src="/images/Medicine.jpg" alt="Medicare" />
             <p>Medicare</p>
           </div>
 
           {/* Food Feature */}
           <div className="feature-item">
-            <img src="/images/Food.jpg" alt="Foods" />
-            <p>Foods</p>
+            <img src="/images/Food.jpg" alt="Shops" />
+            <p>Shops</p>
           </div>
 
           {/* Renting Feature */}
