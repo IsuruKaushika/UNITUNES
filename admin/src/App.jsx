@@ -14,6 +14,13 @@ import AddVehicle from './pages/AddVehicle';
 import Medicare from './pages/Medicare';
 import AddPharmacy from './pages/AddPharmacy'; // ✅ Add this line
 import AddMedicalCenter from './pages/AddMedicalCenter';
+import Shops from './pages/Shops';
+import AddShop from './pages/AddShop';
+import Renting from './pages/Renting';
+import AddRentItem from './pages/AddRentItem';
+import SkillSharing from './pages/SkillSharing';
+import SkillSharingForm from './pages/SkillSharingForm';
+import AddSkillItem from './pages/AddSkillItem';
 
 export const backendUrl = import.meta.env.VITE_BACKEND_URL;
 export const currency = 'Rs';
@@ -45,7 +52,13 @@ const App = () => {
                 <Route path="/medicare" element={<Medicare />} />
                 <Route path="/add-pharmacy" element={<AddPharmacy token={token} />} /> 
                 <Route path="/add-medical-center" element={<AddMedicalCenter token={token} />} />
-              </Routes>
+                <Route path="/shops" element={<Shops />} />
+                <Route path="/add-shop/:shopType" element={<AddShop token={token} />} />
+                <Route path="/renting" element={<Renting />} />
+                <Route path="/add-rent/:rentType" element={<AddRentItem token={token} />} />
+                
+                <Route path="/skill-sharing" element={<SkillSharing />} />
+                <Route path="/add-skill/:skillType" element={<AddSkillItem token={token} />} /></Routes>
             </div>
           </div>
         </>
