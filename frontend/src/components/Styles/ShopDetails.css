@@ -1,0 +1,22 @@
+.shop-details-container {
+    padding: 20px;
+    max-width: 600px;
+    margin: auto;
+  }
+  
+  .shop-image {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .shop-info {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  
+  .shop-info p {
+    margin: 10px 0;
+  }
+  

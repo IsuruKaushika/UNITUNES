@@ -1,0 +1,39 @@
+.medi-details {
+  padding: 20px;
+}
+
+.back-button {
+  background-color: transparent;
+  border: none;
+  color: #0077cc;
+  font-size: 18px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.medi-details-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.medi-details-card img {
+  width: 250px; /* ✅ Set proper image width */
+  height: auto; /* ✅ Maintain aspect ratio */
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.medi-details-info {
+  max-width: 600px;
+  text-align: center;
+}
+
+.medi-details-info h1 {
+  margin-bottom: 10px;
+}
+
+.medi-details-info p {
+  font-size: 16px;
+  color: #444;
+}
