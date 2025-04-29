@@ -18,6 +18,10 @@ function HomePage() {
     navigate("/medi-select");
   };
 
+  const handleShopClick = () => {
+    navigate("/shop-select");
+  };
+
   const handleRentingClick = () => {
     navigate("/rent-items");
   };
@@ -78,7 +82,7 @@ function HomePage() {
           </div>
 
           {/* Food Feature */}
-          <div className="feature-item">
+          <div className="feature-item" onClick={handleShopClick}>
             <img src="/images/Food.jpg" alt="Shops" />
             <p>Shops</p>
           </div>
