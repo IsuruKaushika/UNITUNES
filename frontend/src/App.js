@@ -21,6 +21,8 @@ import MediSelect from "./components/MediSelect";
 import ShopSelect from "./components/ShopSelect";
 import ShopList from "./components/ShopList";
 import ShopDetails from "./components/ShopDetails";
+import SkillList from "./components/SkillList";
+import SkillDetails from "./components/SkillDetails";
 
 
 
@@ -54,6 +56,8 @@ function App() {
         <Route path="/shop-select" element={<ShopSelect />} />
         <Route path="/shop-list" element={<ShopList />} />
         <Route path="/shop-details/:id" element={<ShopDetails />} />
+        <Route path="/skill-list" element={<SkillList />} />
+        <Route path="/skill-details/:id" element={<SkillDetails />} />
 
         {/* ✅ No changes to your route structure – just supporting files needed */}
       </Routes>

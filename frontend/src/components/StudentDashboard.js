@@ -26,6 +26,11 @@ function HomePage() {
     navigate("/rent-items");
   };
 
+  // ✅ Skill Sharing navigation function
+  const handleSkillSharingClick = () => {
+    navigate("/skill-list");
+  };
+
   return (
     <div className="home-page">
       {/* Header Section */}
@@ -94,7 +99,7 @@ function HomePage() {
           </div>
 
           {/* Skill Sharing Feature */}
-          <div className="feature-item">
+          <div className="feature-item" onClick={handleSkillSharingClick}>
             <img src="/images/Skill Sharing.jpg" alt="Skill Sharing" />
             <p>Skill Sharing</p>
           </div>
