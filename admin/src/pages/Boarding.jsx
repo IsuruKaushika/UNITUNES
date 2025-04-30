@@ -73,6 +73,7 @@ const Boarding = ({ token }) => {
   }
 
   return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-orange-50">
     <form onSubmit={onSubmitHandler} className='flex flex-col w-full items-start gap-3'>
       <div className='w-full'>
         <p>Title</p>
@@ -174,6 +175,7 @@ const Boarding = ({ token }) => {
         </button>
       </div>
     </form>
+    </div>
   )
 }
 

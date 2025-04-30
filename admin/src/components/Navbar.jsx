@@ -10,8 +10,13 @@ const Navbar = ({ setToken }) => {
       {/* Tabs */}
       <div className='flex gap-4 text-sm sm:text-base'>
         <Link to="/boardings" className='hover:text-blue-600'>Boardings</Link>
-        <Link to="/medicare" className='hover:text-blue-600'>Medicare</Link>
         <Link to="/taxis" className='hover:text-blue-600'>Taxis</Link>
+        <Link to="/medicare" className='hover:text-blue-600'>Medicare</Link>
+        <Link to="/shops" className='hover:text-blue-600'>Shops</Link>
+        <Link to="/Renting" className='hover:text-blue-600'>Renting</Link>
+        <Link to="/skill-sharing" className='hover:text-blue-600'>Skill Sharing</Link>
+
+
       </div>
 
       {/* Logout Button */}
