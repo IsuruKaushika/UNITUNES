@@ -16,4 +16,5 @@ function RentItems({ product }) {
   );
 }
 
+
 export default RentItems;
