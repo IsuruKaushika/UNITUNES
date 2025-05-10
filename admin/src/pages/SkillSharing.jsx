@@ -1,28 +1,114 @@
-import React from 'react';
+// src/pages/SkillSharing.jsx
+
+import React, { useState } from 'react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
-const skillCategories = ['Programming', 'Music', 'Art', 'Languages'];
+const backendUrl = 'http://localhost:4000';
 
-const SkillSharing = () => {
+const SkillSharing = ({ token }) => {
   const navigate = useNavigate();
+  const [skill, setSkill] = useState('');
+  const [studentName, setStudentName] = useState('');
+  const [contact, setContact] = useState('');
+  const [description, setDescription] = useState('');
+  const [image, setImage] = useState(null);
+
+  const onSubmitHandler = async (e) => {
+    e.preventDefault();
+
+    try {
+      const formData = new FormData();
+      formData.append('skill', skill);
+      formData.append('studentName', studentName);
+      formData.append('contact', contact);
+      formData.append('description', description);
+      image && formData.append('image', image);
+
+      const response = await axios.post(`${backendUrl}/api/skillshare/add`, formData, {
+        headers: { token },
+      });
+
+      if (response.data.success) {
+        toast.success(response.data.message);
+        setSkill('');
+        setStudentName('');
+        setContact('');
+        setDescription('');
+        setImage(null);
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-blue-50">
-      <div className="backdrop-blur-md bg-white/30 p-10 rounded-2xl shadow-2xl w-[90%] max-w-md flex flex-col items-center gap-6">
-        <h1 className="text-3xl font-bold mb-6 text-gray-800">Select Skill Category</h1>
-        <div className="grid grid-cols-2 gap-4">
-          {skillCategories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => navigate(`/add-skill/${cat.toLowerCase()}`)}
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg shadow hover:bg-blue-700 transition"
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
+    <form onSubmit={onSubmitHandler} className="flex flex-col w-full items-start gap-3">
+      <div className="w-full">
+        <p>Skill</p>
+        <input
+          onChange={(e) => setSkill(e.target.value)}
+          value={skill}
+          className="w-full max-w-[500px] px-3 py-2"
+          type="text"
+          placeholder="Enter skill (e.g. Web Design, Physics Tutoring)"
+          required
+        />
       </div>
-    </div>
+
+      <div className="w-full">
+        <p>Student Name</p>
+        <input
+          onChange={(e) => setStudentName(e.target.value)}
+          value={studentName}
+          className="w-full max-w-[500px] px-3 py-2"
+          type="text"
+          placeholder="Enter your name"
+          required
+        />
+      </div>
+
+      <div className="w-full">
+        <p>Contact Number</p>
+        <input
+          onChange={(e) => setContact(e.target.value)}
+          value={contact}
+          className="w-full max-w-[500px] px-3 py-2"
+          type="text"
+          placeholder="Enter contact number"
+          required
+        />
+      </div>
+
+      <div className="w-full">
+        <p>More Details</p>
+        <textarea
+          onChange={(e) => setDescription(e.target.value)}
+          value={description}
+          className="w-full max-w-[500px] px-3 py-2"
+          placeholder="Describe your service or skill"
+          required
+        />
+      </div>
+
+      <div>
+        <p className="mb-2">Upload Image</p>
+        <label htmlFor="image">
+          <img className="w-20" src={!image ? 'upload_area_placeholder_image_url' : URL.createObjectURL(image)} alt="Upload" />
+          <input type="file" id="image" hidden onChange={(e) => setImage(e.target.files[0])} />
+        </label>
+      </div>
+
+      <div className="flex gap-4 mt-4">
+        <button type="submit" className="w-28 py-3 bg-green-600 text-white">ADD</button>
+        <button type="button" className="w-28 py-3 bg-gray-800 text-white" onClick={() => navigate('/skillsharinglist')}>
+          Skill List
+        </button>
+      </div>
+    </form>
   );
 };
 

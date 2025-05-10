@@ -1,32 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from './components/Navbar';
-import Sidebar from './components/Sidebar';
 import { Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import Navbar from './components/Navbar';
+import Login from './components/Login';
+
 import Boarding from './pages/Boarding';
 import BoardingList from './pages/BoardingList';
 import Orders from './pages/Orders';
-import Login from './components/Login';
-import Taxis from './pages/Taxis';
+
 import AddVehicle from './pages/AddVehicle';
+import VehicleList from './pages/VehicleList';
+
 import Medicare from './pages/Medicare';
-import AddPharmacy from './pages/AddPharmacy'; // ✅ Add this line
+import AddPharmacy from './pages/AddPharmacy';
 import AddMedicalCenter from './pages/AddMedicalCenter';
-import Shops from './pages/Shops';
-import AddShop from './pages/AddShop';
+
+import Shop from './pages/Shop';
+import ShopList from './pages/ShopList';
+
 import Renting from './pages/Renting';
-import AddRentItem from './pages/AddRentItem';
-import SkillSharing from './pages/SkillSharing';
-import SkillSharingForm from './pages/SkillSharingForm';
-import AddSkillItem from './pages/AddSkillItem';
+import RentingList from './pages/RentingList';
+
+
+import SkillSharingList from './pages/SkillSharingList';
+import SkillSharing from './pages/skillSharing';
 
 export const backendUrl = import.meta.env.VITE_BACKEND_URL;
 export const currency = 'Rs';
 
 const App = () => {
-  const [token, setToken] = useState(localStorage.getItem('token') ? localStorage.getItem('token') : '');
+  const [token, setToken] = useState(localStorage.getItem('token') || '');
 
   useEffect(() => {
     localStorage.setItem('token', token);
@@ -35,7 +40,7 @@ const App = () => {
   return (
     <div className="bg-gray-50 min-h-screen">
       <ToastContainer />
-      {token === "" ? (
+      {token === '' ? (
         <Login setToken={setToken} />
       ) : (
         <>
@@ -44,21 +49,32 @@ const App = () => {
           <div className="flex w-full">
             <div className="w-[70%] mx-auto ml-[max(5vw,25px)] my-8 text-gray-600 text-base">
               <Routes>
+                {/* Boarding */}
                 <Route path="/boardings" element={<Boarding token={token} />} />
                 <Route path="/boardinglist" element={<BoardingList token={token} />} />
                 <Route path="/orders" element={<Orders token={token} />} />
-                <Route path="/taxis" element={<Taxis />} />
-                <Route path="/add-vehicle/:vehicleType" element={<AddVehicle token={token} />} />
+
+                {/* Vehicle */}
+                <Route path="/vehicles" element={<AddVehicle token={token} />} />
+                <Route path="/vehiclelist" element={<VehicleList token={token} />} />
+
+                {/* Medicare */}
                 <Route path="/medicare" element={<Medicare />} />
-                <Route path="/add-pharmacy" element={<AddPharmacy token={token} />} /> 
+                <Route path="/add-pharmacy" element={<AddPharmacy token={token} />} />
                 <Route path="/add-medical-center" element={<AddMedicalCenter token={token} />} />
-                <Route path="/shops" element={<Shops />} />
-                <Route path="/add-shop/:shopType" element={<AddShop token={token} />} />
-                <Route path="/renting" element={<Renting />} />
-                <Route path="/add-rent/:rentType" element={<AddRentItem token={token} />} />
-                
-                <Route path="/skill-sharing" element={<SkillSharing />} />
-                <Route path="/add-skill/:skillType" element={<AddSkillItem token={token} />} /></Routes>
+
+                {/* Shops */}
+                <Route path="/shops" element={<Shop token={token} />} />
+                <Route path="/shoplist" element={<ShopList token={token} />} />
+
+                {/* Renting */}
+                <Route path="/renting" element={<Renting token={token} />} />
+                <Route path="/rentinglist" element={<RentingList token={token} />} />
+
+                {/* Skill Sharing */}
+                <Route path="/skill-sharing" element={<SkillSharing token={token} />} />
+                <Route path="/skillsharinglist" element={<SkillSharingList token={token} />} />
+              </Routes>
             </div>
           </div>
         </>
