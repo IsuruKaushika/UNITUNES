@@ -15,6 +15,7 @@ import RentItemsPage from "./components/RentItemsPage";
 import RentItemDetails from "./components/RentItemDetails";
 import TaxiList from "./components/TaxiList";
 import TaxiDetails from "./components/TaxiDetails";
+<<<<<<< HEAD
 import MediList from "./components/MediList";    
 import MediDetails from "./components/MediDetails"; 
 import MediSelect from "./components/MediSelect";
@@ -26,6 +27,10 @@ import SkillDetails from "./components/SkillDetails";
 
 
 
+=======
+import MediList from "./components/MediList";
+import MediDetails from "./components/MediDetails";
+>>>>>>> 8fda8334845fa94ccbe364c8ecd1ae0c382fee1a
 
 // ✅ New Imports for Rent Feature (Add this section only if missing)
 import ProductList from "./components/ProductList";
@@ -50,6 +55,7 @@ function App() {
         <Route path="/rent-details/:id" element={<RentItemDetails />} />
         <Route path="/taxi-list" element={<TaxiList />} />
         <Route path="/taxi-details/:id" element={<TaxiDetails />} />
+<<<<<<< HEAD
         <Route path="/medi-select" element={<MediSelect />} />
         <Route path="/medi-list" element={<MediList />} />
         <Route path="/medi-details/:id" element={<MediDetails />} />
@@ -59,6 +65,10 @@ function App() {
         <Route path="/skill-list" element={<SkillList />} />
         <Route path="/skill-details/:id" element={<SkillDetails />} />
 
+=======
+        <Route path="/medi-list" element={<MediList />} />
+        <Route path="/medi-details/:id" element={<MediDetails />} />
+>>>>>>> 8fda8334845fa94ccbe364c8ecd1ae0c382fee1a
         {/* ✅ No changes to your route structure – just supporting files needed */}
       </Routes>
     </div>

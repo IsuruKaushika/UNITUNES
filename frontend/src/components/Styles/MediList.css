@@ -4,6 +4,7 @@
   }
   
   .medi-grid {
+<<<<<<< HEAD
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 20px;
@@ -51,5 +52,32 @@
   
   .medi-card button:hover {
     background-color: #0077cc;
+=======
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .medi-card {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    width: 200px;
+    padding: 10px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .medi-card:hover {
+    transform: scale(1.05);
+  }
+  
+  
+  .medi-card img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 8px;
+>>>>>>> 8fda8334845fa94ccbe364c8ecd1ae0c382fee1a
   }
   
