@@ -1,45 +1,89 @@
-// src/pages/ShopList.jsx
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React from 'react'
+import { useEffect, useState } from 'react'
+import {backendUrl, currency} from '../App'
+import axios from 'axios'
+import { toast } from 'react-toastify'
 
-const backendUrl = 'http://localhost:4000';
 
-const ShopList = () => {
-  const [shops, setShops] = useState([]);
 
-  useEffect(() => {
-    const fetchShops = async () => {
-      try {
-        const response = await axios.get(`${backendUrl}/api/shop/list`);
-        if (response.data.success) {
-          setShops(response.data.shops);
-        }
-      } catch (err) {
-        console.error("Failed to fetch shop list:", err.message);
+
+
+const ShopList = ({token}) => {
+
+  const[list,setList] = useState([])
+
+  const fetchList =async()=>{
+    try{
+      const response = await axios.get(backendUrl+'/api/shop/list')
+
+      if(response.data.success){
+        setList(response.data.products)
+      }else{
+        toast.error(response.data.message)
       }
-    };
+      
+     
 
-    fetchShops();
-  }, []);
+    }catch(error){
+      console.log(error)
+      toast.error(error.message)
+    }
+  }
+
+  const removeShop =async (id) =>{
+    try{
+      const response =await axios.post(backendUrl+'/api/shop/remove',{id},{headers:{token}})
+      if(response.data.success){
+       
+        toast.success(response.data.message)
+        fetchList() //refresh after deleted
+    }else{
+      toast.error(response.data.message)
+    }
+
+  }catch(e){
+    console.log(e)
+    toast.error(e.message)
+
+
+  }
+}
+  useEffect(()=>{
+    fetchList()
+  },[])
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">Registered Shops</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {shops.map((shop, index) => (
-          <div key={index} className="bg-white shadow-md rounded-lg p-5">
-            <h3 className="text-xl font-semibold mb-1">{shop.shopName}</h3>
-            <p className="text-sm text-gray-600 mb-2">Category: {shop.shopType}</p>
-            <p><strong>Owner:</strong> {shop.ownerName}</p>
-            <p><strong>Location:</strong> {shop.location}</p>
-            <p><strong>Contact:</strong> {shop.contact}</p>
-            <p><strong>Open:</strong> {shop.openTime} – {shop.closeTime}</p>
-            <p className="text-sm mt-2"><strong>Address:</strong> {shop.address}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
+    <>
+    <p className = 'mb-2'>Shop List</p>
+    <div className = 'flex flex-col gap-2'>
+      {/*---ListTable---*/}
 
-export default ShopList;
+      <div className='hidden md:grid grid-cols-[1fr_2fr_2fr_2fr_2fr] items-center py-1 px-2 border bg-gray100 text-sm'>
+        <b>Image</b>
+        <b>Shop Name</b>
+        <b>Address</b>
+        
+      
+        <b className='text-center'>Action</b>
+
+      </div>
+      {/*-------Product List-------- */}
+
+      {
+        list.map((item, index) =>(
+          <div className='grid grid-cols-[1fr_3fr_1fr] md:grid-cols-[1fr_2fr_2fr_2fr_2fr] items-center gap-2 py-1 px-2 border text-sm' key={index}>
+            <img className='w-12' src={item.image[0]} alt=""/>
+            <p>{item.name}</p>
+            <p>{item.address}</p>
+            <p onClick ={()=>removeShop(item._id)}className='text-right md:text-center cursor-pointer text-lg'>X</p>
+            </div>
+        ))
+      }
+      
+
+    </div>
+    </>
+  )
+}
+
+export default ShopList

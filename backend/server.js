@@ -6,6 +6,7 @@ import connectCloudinary from './config/cloudinary.js';
 import userRouter from './routes/userRoutes.js';
 import boardingRouter from './routes/boardingRoute.js';
 import taxiRouter from './routes/taxiRoute.js';
+import shopRouter from './routes/shopRoute.js';
 
 
 //import routes
@@ -22,6 +23,7 @@ app.use(cors())
 app.use('/api/user', userRouter)
 app.use('/api/boarding', boardingRouter)
 app.use('/api/taxi', taxiRouter)
+app.use('/api/shop', shopRouter)
 
 
 app.get('/', (req, res) => {
