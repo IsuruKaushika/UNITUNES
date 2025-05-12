@@ -5,6 +5,7 @@ import connectDB from './config/mongodb.js';
 import connectCloudinary from './config/cloudinary.js';
 import userRouter from './routes/userRoutes.js';
 import boardingRouter from './routes/boardingRoute.js';
+import taxiRouter from './routes/taxiRoute.js';
 
 
 //import routes
@@ -20,6 +21,7 @@ app.use(cors())
 //api endpoints
 app.use('/api/user', userRouter)
 app.use('/api/boarding', boardingRouter)
+app.use('/api/taxi', taxiRouter)
 
 
 app.get('/', (req, res) => {

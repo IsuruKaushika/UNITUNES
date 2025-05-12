@@ -9,7 +9,7 @@ const ShopList = ({ token }) => {
 
   const fetchList = async () => {
     try {
-      const response = await axios.get(`${backendUrl}/api/shop/list`);
+      const response = await axios.get(`${backendUrl}/api/taxi/list`);
       if (response.data.success) {
         setList(response.data.shops);
       } else {
@@ -22,7 +22,7 @@ const ShopList = ({ token }) => {
 
   const removeShop = async (id) => {
     try {
-      const response = await axios.post(`${backendUrl}/api/shop/remove`, { id }, { headers: { token } });
+      const response = await axios.post(`${backendUrl}/api/taxi/remove`, { id }, { headers: { token } });
       if (response.data.success) {
         toast.success(response.data.message);
         fetchList(); // Refresh list
@@ -40,7 +40,7 @@ const ShopList = ({ token }) => {
 
   return (
     <>
-      <p className="mb-2">Shop List</p>
+      <p className="mb-2">taxi List</p>
       <div className="flex flex-col gap-2">
         <div className="hidden md:grid grid-cols-[1fr_2fr_2fr_2fr_2fr] items-center py-1 px-2 border bg-gray-100 text-sm">
           <b>Shop Name</b>

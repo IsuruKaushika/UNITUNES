@@ -11,6 +11,7 @@ const boardingSchema=new mongoose.Schema({
     date:{type:Number,required:true},
     address:{type:String,required:true},
     description:{type:String,required:true},
+    contact:{type:String,required:true},
    
 })
 

@@ -10,35 +10,42 @@ const backendUrl = 'http://localhost:4000';
 const AddVehicle = ({ token }) => {
   const navigate = useNavigate();
   const [image, setImage] = useState(false);
-  const [type, setType] = useState('');
+  const [Category, setCategory] = useState('');
   const [contact, setContact] = useState('');
-  const [location, setLocation] = useState('');
+  const [address, setAddress] = useState('');
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
+  const [owner, setOwner] = useState('');
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
     try {
       const formData = new FormData();
-      formData.append('vehicleType', type);
+      formData.append('Category', Category);
       formData.append('contact', contact);
-      formData.append('location', location);
+      formData.append('address', address);
       formData.append('price', price);
       formData.append('description', description);
-      image && formData.append('image', image);
+      formData.append('owner', owner);
+      
+      // Handle image upload - backend expects an array
+      if (image) {
+        formData.append('image', image);
+      }
 
-      const response = await axios.post(`${backendUrl}/api/vehicle/add`, formData, {
+      const response = await axios.post(`${backendUrl}/api/taxi/add`, formData, {
         headers: { token },
       });
 
       if (response.data.success) {
         toast.success(response.data.message);
-        setType('');
+        setCategory('');
         setContact('');
-        setLocation('');
+        setAddress('');
         setPrice('');
         setDescription('');
+        setOwner('');
         setImage(false);
       } else {
         toast.error(response.data.message);
@@ -54,8 +61,8 @@ const AddVehicle = ({ token }) => {
       <div className="w-full">
         <p>Vehicle Type</p>
         <select
-          onChange={(e) => setType(e.target.value)}
-          value={type}
+          onChange={(e) => setCategory(e.target.value)}
+          value={Category}
           className="w-full max-w-[500px] px-3 py-2 border border-gray-300 rounded"
           required
         >
@@ -78,11 +85,23 @@ const AddVehicle = ({ token }) => {
       </div>
 
       <div className="w-full">
+        <p>Owner</p>
+        <input
+          onChange={(e) => setOwner(e.target.value)}
+          value={owner}
+          className="w-full max-w-[500px] px-3 py-2 border border-gray-300 rounded"
+          type="text"
+          placeholder="Enter owner name"
+          required
+        />
+      </div>
+
+      <div className="w-full">
         <p>Contact Number</p>
         <input
           onChange={(e) => setContact(e.target.value)}
           value={contact}
-          className="w-full max-w-[500px] px-3 py-2"
+          className="w-full max-w-[500px] px-3 py-2 border border-gray-300 rounded"
           type="text"
           placeholder="Enter contact number"
           required
@@ -92,9 +111,9 @@ const AddVehicle = ({ token }) => {
       <div className="w-full">
         <p>Location</p>
         <input
-          onChange={(e) => setLocation(e.target.value)}
-          value={location}
-          className="w-full max-w-[500px] px-3 py-2"
+          onChange={(e) => setAddress(e.target.value)}
+          value={address}
+          className="w-full max-w-[500px] px-3 py-2 border border-gray-300 rounded"
           type="text"
           placeholder="City or address"
           required
@@ -106,7 +125,7 @@ const AddVehicle = ({ token }) => {
         <input
           onChange={(e) => setPrice(e.target.value)}
           value={price}
-          className="w-full max-w-[500px] px-3 py-2"
+          className="w-full max-w-[500px] px-3 py-2 border border-gray-300 rounded"
           type="number"
           placeholder="Enter price"
           required
@@ -118,15 +137,15 @@ const AddVehicle = ({ token }) => {
         <textarea
           onChange={(e) => setDescription(e.target.value)}
           value={description}
-          className="w-full max-w-[500px] px-3 py-2"
+          className="w-full max-w-[500px] px-3 py-2 border border-gray-300 rounded"
           placeholder="Write Content Here"
           required
         />
       </div>
 
       <div className="flex gap-4 mt-4">
-        <button type="submit" className="w-28 py-3 bg-black text-white">ADD</button>
-        <button type="button" className="w-28 py-3 bg-gray-800 text-white" onClick={() => navigate('/vehiclelist')}>
+        <button type="submit" className="w-28 py-3 bg-black text-white rounded">ADD</button>
+        <button type="button" className="w-28 py-3 bg-gray-800 text-white rounded" onClick={() => navigate('/vehiclelist')}>
           Vehicle List
         </button>
       </div>
