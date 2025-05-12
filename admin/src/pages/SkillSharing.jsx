@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-
+import { assets } from '../assets/assets';
 const backendUrl = 'http://localhost:4000';
 
 const SkillSharing = ({ token }) => {
@@ -97,7 +97,7 @@ const SkillSharing = ({ token }) => {
       <div>
         <p className="mb-2">Upload Image</p>
         <label htmlFor="image">
-          <img className="w-20" src={!image ? 'upload_area_placeholder_image_url' : URL.createObjectURL(image)} alt="Upload" />
+          <img className="w-20" src={!image ? assets.upload_area : URL.createObjectURL(image)} alt="Upload" />
           <input type="file" id="image" hidden onChange={(e) => setImage(e.target.files[0])} />
         </label>
       </div>

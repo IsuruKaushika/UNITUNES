@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { assets } from '../assets/assets';
 
 const backendUrl = 'http://localhost:4000';
 
@@ -74,7 +75,7 @@ const Renting = ({ token }) => {
         <label htmlFor="itemImage">
           <img
             className="w-20"
-            src={!itemImage ? 'upload_area_placeholder_image_url' : URL.createObjectURL(itemImage)}
+            src={!itemImage ? assets.upload_area : URL.createObjectURL(itemImage)}
             alt="Upload"
           />
           <input type="file" id="itemImage" hidden onChange={(e) => setItemImage(e.target.files[0])} />

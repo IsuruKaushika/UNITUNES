@@ -17,7 +17,7 @@ import Medicare from './pages/Medicare';
 import AddPharmacy from './pages/AddPharmacy';
 import AddMedicalCenter from './pages/AddMedicalCenter';
 
-import Shop from './pages/Shop';
+import Shop from './pages/Shops'
 import ShopList from './pages/ShopList';
 
 import Renting from './pages/Renting';
