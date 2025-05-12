@@ -1,0 +1,29 @@
+.shop-select-container {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .shop-options {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 30px;
+  }
+  
+  .option {
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  
+  .option img {
+    width: 200px;
+    height: 200px;
+    border-radius: 10px;
+  }
+  
+  .option p {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
