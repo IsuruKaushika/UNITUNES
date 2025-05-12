@@ -16,6 +16,7 @@ const AddVehicle = ({ token }) => {
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
   const [owner, setOwner] = useState('');
+  const [vehicleNo, setVehicleNo] = useState('');
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
@@ -28,6 +29,7 @@ const AddVehicle = ({ token }) => {
       formData.append('price', price);
       formData.append('description', description);
       formData.append('owner', owner);
+      formData.append('vehicleNo', vehicleNo);
       
       // Handle image upload - backend expects an array
       if (image) {
@@ -47,6 +49,7 @@ const AddVehicle = ({ token }) => {
         setDescription('');
         setOwner('');
         setImage(false);
+        setVehicleNo('');
       } else {
         toast.error(response.data.message);
       }
@@ -74,6 +77,17 @@ const AddVehicle = ({ token }) => {
           <option value="Bus">Bus</option>
           <option value="Lorry">Lorry</option>
         </select>
+      </div>
+      <div className="w-full">
+        <p>Vehicle Number</p>
+        <input
+          onChange={(e) => setVehicleNo(e.target.value)}
+          value={vehicleNo}
+          className="w-full max-w-[500px] px-3 py-2 border border-gray-300 rounded"
+          type="text"
+          placeholder="Enter vehicle number"
+          required
+        />    
       </div>
 
       <div>

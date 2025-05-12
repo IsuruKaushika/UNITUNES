@@ -4,9 +4,9 @@ import taxiModel from "../models/taxiModel.js"
 //add product
 const addTaxi =async(req,res)=>{
     try{
-       const{owner,price,Category,address,description,contact} =req.body;
+       const{owner,price,Category,address,description,contact,vehicleNo} =req.body;
 
-        const image = req.files.image1 && req.files.image1[0]
+        const image = req.files.image && req.files.image[0]
     
 
         const images = [image].filter((item)=> item !==undefined)
@@ -28,7 +28,8 @@ const addTaxi =async(req,res)=>{
             price :Number(price),
             Category,
             image:imagesUrl,
-            date:Date.now()
+            date:Date.now(),
+            vehicleNo,
         }
         console.log(taxiData)
 
