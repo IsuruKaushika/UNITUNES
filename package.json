@@ -9,6 +9,9 @@
   },
   "devDependencies": {
     "@types/react": "~19.0.10",
-    "typescript": "~5.8.3"
+    "typescript": "~5.8.3",
+    "name": "backend",
+    "version": "1.0.0",
+    "type": "module"
   }
 }
