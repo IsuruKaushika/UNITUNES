@@ -1,8 +1,14 @@
-// HomePage Component
-function HomePage() {
-  const navigate = useNavigate();
-  const [showLogin, setShowLogin] = useState(false);
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // ✅ Import useNavigate
+import Navbar from "../components/navbar/navbar"; // ✅ Make sure this path is correct
+import Ad from "../components/ad/Ad"; // ✅ Make sure this path is correct
+import "../pages/home/home"; // ✅ Ensure this CSS file exists and styles the layout
 
+function HomePage() {
+  const navigate = useNavigate(); // ✅ Hook to navigate programmatically
+  const [showLogin, setShowLogin] = useState(false); // ✅ Optional login toggle
+
+  // Navigation handlers
   const handleBoardingClick = () => {
     navigate("/boarding-list");
   };
@@ -12,7 +18,7 @@ function HomePage() {
   };
 
   const handleMedicareClick = () => {
-    navigate("/medi-select");
+    navigate("/medi-select"); // or /medi-list, based on your route
   };
 
   const handleShopClick = () => {
@@ -23,19 +29,14 @@ function HomePage() {
     navigate("/rent-items");
   };
 
-<<<<<<< HEAD
-  // ✅ Skill Sharing navigation function
   const handleSkillSharingClick = () => {
     navigate("/skill-list");
-=======
-  const handleMedicareClick = () => {
-    navigate("/medi-list");
->>>>>>> 8fda8334845fa94ccbe364c8ecd1ae0c382fee1a
   };
 
   return (
     <>
       <Navbar setShowLogin={setShowLogin} />
+
       <div className="home-page">
         {/* Header Section */}
         <header className="header">
@@ -45,7 +46,14 @@ function HomePage() {
           </div>
         </header>
 
-<<<<<<< HEAD
+        {/* Feature Section */}
+        <div className="features">
+          {/* Boarding Feature */}
+          <div className="feature-item" onClick={handleBoardingClick}>
+            <img src="/images/Boarding.jpg" alt="Boardings" />
+            <p>Boardings</p>
+          </div>
+
           {/* Taxi Feature */}
           <div className="feature-item" onClick={handleTaxiClick}>
             <img src="/images/Taxi.jpg" alt="Taxis" />
@@ -53,12 +61,12 @@ function HomePage() {
           </div>
 
           {/* Medicare Feature */}
-          <div className="feature-item" onClick={handleMedicareClick} >
+          <div className="feature-item" onClick={handleMedicareClick}>
             <img src="/images/Medicine.jpg" alt="Medicare" />
             <p>Medicare</p>
           </div>
 
-          {/* Food Feature */}
+          {/* Food/Shops Feature */}
           <div className="feature-item" onClick={handleShopClick}>
             <img src="/images/Food.jpg" alt="Shops" />
             <p>Shops</p>
@@ -76,14 +84,11 @@ function HomePage() {
             <p>Skill Sharing</p>
           </div>
         </div>
-      </section>
-    </div>
-=======
+
         {/* Ad Section */}
         <Ad />
-      </div> {/* <-- You missed closing this div */}
+      </div>
     </>
->>>>>>> 8fda8334845fa94ccbe364c8ecd1ae0c382fee1a
   );
 }
 

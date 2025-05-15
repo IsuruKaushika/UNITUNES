@@ -1,5 +1,5 @@
 .medi-details {
-<<<<<<< HEAD
+
   padding: 20px;
 }
 
@@ -38,17 +38,4 @@
   font-size: 16px;
   color: #444;
 }
-=======
-    padding: 20px;
-    text-align: center;
-  }
-  
-  .medi-details img {
-    width: 60%;
-    max-width: 500px;
-    height: auto;
-    border-radius: 12px;
-    margin-bottom: 20px;
-  }
-  
->>>>>>> 8fda8334845fa94ccbe364c8ecd1ae0c382fee1a
+
