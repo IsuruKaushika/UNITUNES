@@ -1,43 +1,74 @@
-import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import "./Styles/ShopList.css";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import "../components/Styles/ShopList.css";
 
-function ShopList() {
-  const location = useLocation();
+const backendUrl = "http://localhost:4000"; // Use only for API, not image if image is from Cloudinary
+
+const ShopList = () => {
   const navigate = useNavigate();
-  const category = location.state?.category || "shop";
+  const [shopListData, setShopListData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const shopData = {
-    shop: [
-      { id: 1, name: "Smart Mart", image: "/images/Shop-3.jpg" },
-      { id: 2, name: "Tech World", image: "/images/Shop-4.jpeg" },
-      { id: 3, name: "Eco Store", image: "/images/Shop-5.jpeg" },
-    ],
-    communication: [
-      { id: 4, name: "Dialog Store", image: "/images/Shop-1.jpeg" },
-      { id: 5, name: "Mobitel Store", image: "/images/Shop-2.jpeg" },
-    ],
-  };
+  useEffect(() => {
+    const fetchShops = async () => {
+      try {
+        const response = await axios.get(`${backendUrl}/api/shop/list`);
+        console.log(response.data);
+        if (response.data?.success && Array.isArray(response.data.products)) {
+          setShopListData(response.data.products);
+        } else {
+          console.error("Invalid response:", response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching boarding data:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const selectedShops = shopData[category];
+    fetchShops();
+  }, []);
 
-  const handleClick = (item) => {
-    navigate(`/shop-details/${item.id}`, { state: { item, category } });
+  const handleBoardingClick = (id) => {
+    navigate(`/shop-details/${id}`);
   };
 
   return (
-    <div className="shop-list-container">
-      <h2>{category === "shop" ? "Shops" : "Communication Services"}</h2>
-      <div className="shop-grid">
-        {selectedShops.map((item) => (
-          <div key={item.id} className="shop-card" onClick={() => handleClick(item)}>
-            <img src={item.image} alt={item.name} />
-            <p>{item.name}</p>
-          </div>
-        ))}
-      </div>
+    <div className="shop-list">
+      <h1 className="shop-list-title">Available Shop Options</h1>
+
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <div className="shop-cards">
+          {Array.isArray(shopListData) && shopListData.length > 0 ? (
+            shopListData.map((shop) => (
+              <div
+                key={shop._id}
+                className="shop-card"
+                onClick={() => handleShopClick(shop._id)}
+              >
+                <img
+                  src={shop.image[0]} // Use the Cloudinary URL directly
+                  alt={shop.Title}
+                  className="shop-thumbnail"
+                />
+                <div className="shop-info">
+                  <h3>{shop.Title}</h3>
+                  <p>{shop.address}</p>
+                  <p className="shop-price">Rs {shop.price} / month</p>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p>No shop data found.</p>
+          )}
+        </div>
+      )}
     </div>
   );
-}
+};
 
 export default ShopList;
+//only for commit
