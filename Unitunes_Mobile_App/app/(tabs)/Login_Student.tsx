@@ -44,7 +44,7 @@ const StudentLogin = () => {
       if (response.ok && data.success) {
         Alert.alert('Success', 'Logged in!');
         // ← Navigate to the BoardingList screen
-        navigation.navigate('BoardingList');
+        navigation.navigate('index');
       } else {
         Alert.alert('Login Failed', data.message || 'Invalid credentials');
       }
