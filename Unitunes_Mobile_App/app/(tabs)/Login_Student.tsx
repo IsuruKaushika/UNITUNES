@@ -5,7 +5,38 @@ import { useNavigation } from "@react-navigation/native";
 
 const StudentLogin = () => {
 
+<<<<<<< HEAD
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Please enter both email and password');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://192.168.79.81:4000/api/user/stulogin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+      console.log('Login response:', data);
+
+      if (response.ok && data.success) {
+        Alert.alert('Success', 'Logged in!');
+        // ← Navigate to the BoardingList screen
+        navigation.navigate('index');
+      } else {
+        Alert.alert('Login Failed', data.message || 'Invalid credentials');
+      }
+    } catch (err) {
+      console.error('Fetch error:', err);
+      Alert.alert('Error', 'Unable to connect to server');
+    }
+  };
+=======
   const navigation = useNavigation();
+>>>>>>> parent of 1361cb5 (Update01-17/05)
 
   return (
     <ImageBackground
