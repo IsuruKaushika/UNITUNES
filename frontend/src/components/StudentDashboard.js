@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../components/navbar/navbar";
 import Ad from "../components/ad/Ad";
 import "./Styles/home.css"; // Updated import for the CSS file
+import "../assets/Boarding.png"
 
 function HomePage() {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ function HomePage() {
           {/* Boarding Feature */}
           <div className="service-card" onClick={handleBoardingClick}>
             <div className="service-image-container">
-              <img src="/images/Boarding.jpg" alt="Boardings" className="service-image" />
+              <img src="/images/Bording.jpg" alt="Boardings" className="service-image" />
             </div>
             <h3 className="service-title">Boardings</h3>
             <p className="service-description">Find the perfect accommodation near campus</p>

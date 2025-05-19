@@ -94,11 +94,13 @@ body {
 }
 
 /* Services Section */
-.services-section {
-  padding: 80px 20px;
-  max-width: var(--container-width);
-  margin: 0 auto;
+.services-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  justify-content: center;
 }
+
 
 .section-title {
   text-align: center;
