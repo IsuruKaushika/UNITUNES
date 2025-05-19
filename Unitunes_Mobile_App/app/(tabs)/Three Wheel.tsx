@@ -63,7 +63,7 @@ export default function TaxiList() {
   };
 
   const handlePress = (id: string) => {
-    router.push(`/TaxiPage/${id}`);
+    router.push(`/TaxiPage/${id}`); //page is under developing
   };
 
   return (
