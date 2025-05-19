@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
-const pharmacySchema = new mongoose.Schema({
-  pharmacyName: { type: String, required: true },
+const medicalCenterSchema = new mongoose.Schema({
+  centerName: { type: String, required: true },
   address: { type: String, required: true },
   contactNumber: { type: String, required: true },
   description: { type: String },
@@ -10,5 +10,5 @@ const pharmacySchema = new mongoose.Schema({
   image: { type: String },
 }, { timestamps: true });
 
-const Pharmacy = mongoose.model("Pharmacy", pharmacySchema);
-export default Pharmacy;
+const MedicalCenter = mongoose.models.MedicalCenter || mongoose.model("MedicalCenter", medicalCenterSchema);
+export default MedicalCenter;

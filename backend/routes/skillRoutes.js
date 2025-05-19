@@ -11,3 +11,8 @@ skillRouter.post('/remove', adminAuth, removeSkill);
 skillRouter.post('/single', singleSkill);
 
 export default skillRouter;
+
+
+
+
+

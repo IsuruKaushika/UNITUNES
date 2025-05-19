@@ -9,7 +9,7 @@ import taxiRouter from './routes/taxiRoute.js';
 import shopRouter from './routes/shopRoute.js';
 import rentingRouter from './routes/rentingRouter.js'; 
 import skillRouter from './routes/skillRoutes.js';
-import medicareRouter from './routes/medicareRoute.js';
+import medicareRouter from './routes/medicareRoutes.js';
 
 
 //import routes

@@ -1,70 +1,45 @@
-import { v2 as cloudinary } from "cloudinary";
-import rentingModel from "../models/rentingModel.js";
+import Renting from "../models/rentingModel.js";
 
-// Add renting item
-const addRenting = async (req, res) => {
+// Add Rent Item
+export const addRentItem = async (req, res) => {
   try {
-    const { owner, price, Category, address, description, contact } = req.body;
-    const image = req.files.image && req.files.image[0];
-    const images = [image].filter(item => item !== undefined);
+    const { rentType, itemName, ownerName, contactNumber, price, description } = req.body;
+    const image = req.file?.path || "";
 
-    let imagesUrl = await Promise.all(
-      images.map(async (item) => {
-        let result = await cloudinary.uploader.upload(item.path, { resource_type: 'image' });
-        return result.secure_url;
-      })
-    );
-
-    const rentingData = {
-      owner,
-      address,
-      contact,
+    const newItem = new Renting({
+      rentType,
+      itemName,
+      ownerName,
+      contactNumber,
+      price,
       description,
-      price: Number(price),
-      Category,
-      image: imagesUrl,
-      date: Date.now(),
-    };
+      image,
+    });
 
-    const renting = new rentingModel(rentingData);
-    await renting.save();
-
-    res.json({ success: true, message: "Renting Item Added Successfully" });
-
+    await newItem.save();
+    res.status(201).json(newItem);
   } catch (error) {
-    res.json({ success: false, message: error.message });
+    res.status(500).json({ error: error.message });
   }
 };
 
-// List all renting items
-const listRenting = async (req, res) => {
+// Get All Rent Items
+export const getAllRentItems = async (req, res) => {
   try {
-    const items = await rentingModel.find({});
-    res.json({ success: true, products: items });
+    const items = await Renting.find().sort({ createdAt: -1 });
+    res.status(200).json(items);
   } catch (error) {
-    res.json({ success: false, message: error.message });
+    res.status(500).json({ error: error.message });
   }
 };
 
-// Remove a renting item
-const removeRenting = async (req, res) => {
+// Get by Rent Type
+export const getRentItemsByType = async (req, res) => {
   try {
-    await rentingModel.findByIdAndDelete(req.body.id);
-    res.json({ success: true, message: "Renting Item Deleted Successfully" });
+    const { type } = req.params;
+    const items = await Renting.find({ rentType: type });
+    res.status(200).json(items);
   } catch (error) {
-    res.json({ success: false, message: error.message });
+    res.status(500).json({ error: error.message });
   }
 };
-
-// Single renting item details
-const singleRenting = async (req, res) => {
-  try {
-    const { rentingId } = req.body;
-    const item = await rentingModel.findById(rentingId);
-    res.json({ success: true, renting: item });
-  } catch (error) {
-    res.json({ success: false, message: error.message });
-  }
-};
-
-export { addRenting, listRenting, removeRenting, singleRenting };

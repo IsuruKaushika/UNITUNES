@@ -10,5 +10,5 @@ const pharmacySchema = new mongoose.Schema({
   image: { type: String },
 }, { timestamps: true });
 
-const Pharmacy = mongoose.model("Pharmacy", pharmacySchema);
+const Pharmacy = mongoose.models.Pharmacy || mongoose.model("Pharmacy", pharmacySchema);
 export default Pharmacy;
