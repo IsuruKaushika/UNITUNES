@@ -1,133 +1,164 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  TextInput,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
-const BakeryScreen = () => {
-  // Placeholder data for bakery items
-  const bakeryItems = [
-    { id: '1', name: 'P1', image: require('../../assets/images/Person.png'), contact: '074-0234567' },
-    { id: '2', name: 'P2', image: require('../../assets/images/Person.png'), contact: '074-0234567' },
-    { id: '3', name: 'P3', image: require('../../assets/images/Person.png'), contact: '074-0234567' },
-    { id: '3', name: 'P3', image: require('../../assets/images/Person.png'), contact: '074-0234567' },
-    { id: '3', name: 'P3', image: require('../../assets/images/Person.png'), contact: '074-0234567' },
-    { id: '3', name: 'P3', image: require('../../assets/images/Person.png'), contact: '074-0234567' },
-    { id: '3', name: 'P3', image: require('../../assets/images/Person.png'), contact: '074-0234567' },
-  ];
+const backendUrl = 'http://192.168.79.81:4000'; // update this if needed
+
+export default function TaxiList() {
+  const router = useRouter();
+
+  const [taxiListData, setTaxiListData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [location, setLocation] = useState('');
+  const [vehicleType, setVehicleType] = useState('');
+  const [priceRange, setPriceRange] = useState('');
+
+  useEffect(() => {
+    async function fetchTaxis() {
+      try {
+        const res = await fetch(`${backendUrl}/api/taxi/list`);
+        if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
+
+        const data = await res.json();
+        if (data.success && Array.isArray(data.products)) {
+          setTaxiListData(data.products);
+        } else {
+          console.error('Unexpected taxi API response:', data);
+        }
+      } catch (err) {
+        console.error('Error fetching taxi data:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchTaxis();
+  }, []);
+
+  const applyFilters = () => {
+    const filtered = taxiListData.filter(item => {
+      return (
+        (location === '' || item.location.toLowerCase().includes(location.toLowerCase())) &&
+        (vehicleType === '' || item.vehicleType.toLowerCase().includes(vehicleType.toLowerCase())) &&
+        (priceRange === '' || parseFloat(item.price) <= parseFloat(priceRange))
+      );
+    });
+    setTaxiListData(filtered);
+  };
+
+  const handlePress = (id: string) => {
+    router.push(`/TaxiPage/${id}`); // create this dynamic route later
+  };
 
   return (
-    
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <TouchableOpacity style={styles.iconButton}>
-          {/* Replace with an actual icon from your library */}
-          <Text style={styles.headerIcon}>≡</Text>
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>UNITUNES</Text>
-        <TouchableOpacity style={styles.iconButton}>
-          {/* Replace with an actual icon (e.g. a notification or menu icon) */}
-          <Text style={styles.headerIcon}>⋮</Text>
+      {/* Header */}
+      <View style={styles.header}>
+        <Ionicons name="car-outline" size={28} color="black" />
+        <Text style={styles.headerTitle}>Available Taxis</Text>
+        <Ionicons name="notifications-outline" size={28} color="black" />
+      </View>
+
+      {/* Filters */}
+      <View style={styles.filterContainer}>
+        <TextInput
+          placeholder="Location"
+          value={location}
+          onChangeText={setLocation}
+          style={styles.input}
+        />
+        <TextInput
+          placeholder="Vehicle Type (e.g. Van, Car)"
+          value={vehicleType}
+          onChangeText={setVehicleType}
+          style={styles.input}
+        />
+        <TextInput
+          placeholder="Max Price (Rs.)"
+          value={priceRange}
+          onChangeText={setPriceRange}
+          keyboardType="numeric"
+          style={styles.input}
+        />
+        <TouchableOpacity style={styles.filterButton} onPress={applyFilters}>
+          <Text style={styles.filterButtonText}>Apply Filters</Text>
         </TouchableOpacity>
       </View>
 
-
-
-      <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Three Wheel Taxi</Text>
-        <Text style={styles.subtitle}>Service</Text>
-        {bakeryItems.map((item) => (
-          <View key={item.id} style={styles.item}>
-            <Image source={item.image} style={styles.itemImage} />
-            <View style={styles.itemDetails}>
-              <Text style={styles.itemName}>S.U Senanayake</Text>
-              <Text style={styles.itemContact}>{item.contact}</Text>
-            </View>
-            <TouchableOpacity style={styles.contactButton}>
-              <Text style={styles.buttonText}>Contact via WhatsApp</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
-      </ScrollView>
+      {/* Taxi Cards */}
+      {loading ? (
+        <ActivityIndicator size="large" color="#FFA726" style={styles.loader} />
+      ) : (
+        <ScrollView contentContainerStyle={styles.list}>
+          {taxiListData.length > 0 ? (
+            taxiListData.map(item => (
+              <TouchableOpacity
+                key={item._id}
+                style={styles.card}
+                onPress={() => handlePress(item._id)}
+              >
+                <Image
+                 
+                  style={styles.cardImage}
+                  resizeMode="cover"
+                />
+                <View style={styles.cardContent}>
+                  <Text style={styles.cardTitle}>{item.driverName || 'Taxi Driver'}</Text>
+                  <Text style={styles.cardText}>{item.vehicleType}</Text>
+                  <Text style={styles.cardText}>{item.location}</Text>
+                  <Text style={styles.cardText}>Rs {item.price} / km</Text>
+                </View>
+              </TouchableOpacity>
+            ))
+          ) : (
+            <Text style={styles.emptyText}>No taxi listings available.</Text>
+          )}
+        </ScrollView>
+      )}
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFF',
-    paddingBottom: 10,
-    
-  },
-  headerContainer: {
-    height: 150,
+  container: { flex: 1, backgroundColor: '#fff' },
+  header: {
     backgroundColor: '#FFA733',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
+    paddingTop: 50, paddingHorizontal: 20, paddingBottom: 20,
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'
   },
-  iconButton: {
-    padding: 8,
+  headerTitle: { fontSize: 22, fontWeight: 'bold' },
+  filterContainer: {
+    backgroundColor: '#FFF3E0',
+    borderRadius: 16, padding: 16, margin: 16
   },
-  headerIcon: {
-    fontSize: 30,
-    color: '#000',
+  input: {
+    borderWidth: 1, borderColor: '#ccc', borderRadius: 10,
+    padding: 10, marginBottom: 10
   },
-  headerTitle: {
-    fontSize: 40,
-    fontWeight: 'bold',
-    color: '#000',
-    paddingTop: 80,
+  filterButton: {
+    backgroundColor: '#FFA726', borderRadius: 10,
+    paddingVertical: 10, alignItems: 'center'
   },
-  
-  content: {
-    padding: 20,
+  filterButtonText: { color: '#fff', fontWeight: 'bold' },
+  loader: { marginTop: 20 },
+  list: { padding: 16 },
+  card: {
+    backgroundColor: '#FFF3E0',
+    borderRadius: 12, marginBottom: 16, overflow: 'hidden'
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    alignItems: 'center',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#FFA500',
-    marginBottom: 20,
-  },
-  item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 5,
-    padding: 10,
-  },
-  itemImage: {
-    width: 80,
-    height: 80,
-    marginRight: 15,
-  },
-  itemDetails: {
-    flex: 1,
-  },
-  itemName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  itemContact: {
-    fontSize: 16,
-    color: '#555',
-  },
-  contactButton: {
-    backgroundColor: '#FFA500',
-    padding: 10,
-    borderRadius: 5,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-  },
+  cardImage: { width: '100%', height: 180 },
+  cardContent: { padding: 12 },
+  cardTitle: { fontSize: 16, fontWeight: 'bold' },
+  cardText: { color: '#555', marginTop: 4 },
+  emptyText: { textAlign: 'center', color: 'gray', marginTop: 20 },
 });
-
-export default BakeryScreen;

@@ -1,33 +1,74 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import './Styles/TaxiList.css';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import "../components/Styles/TaxiList.css";
 
+const backendUrl = "http://localhost:4000"; // Use only for API, not image if image is from Cloudinary
 
-const taxiData = [
-  { id: 1, name: "Taxi 1", image: "/images/taxi-1.jpg", location: "Galle", price: "Rs. 300/km" },
-  { id: 2, name: "Taxi 2", image: "/images/taxi-2.jpg", location: "Matara", price: "Rs. 250/km" },
-  { id: 3, name: "Taxi 3", image: "/images/taxi-3.jpg", location: "Wakwella", price: "Rs. 280/km" },
-  { id: 4, name: "Taxi 4", image: "/images/taxi-4.png", location: "Hapugala", price: "Rs. 320/km" },
-  { id: 5, name: "Taxi 5", image: "/images/taxi-5.jpg", location: "Karapitiya", price: "Rs. 270/km" },
-  { id: 6, name: "Taxi 6", image: "/images/taxi-6.jpg", location: "Sarasavi asapuwa", price: "Rs. 290/km" },
-];
+const TaxiList = () => {
+  const navigate = useNavigate();
+  const [TaxiListData, setTaxiListData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-function TaxiList() {
+  useEffect(() => {
+    const fetchTaxis = async () => {
+      try {
+        const response = await axios.get(`${backendUrl}/api/taxi/list`);
+        console.log(response.data);
+        if (response.data?.success && Array.isArray(response.data.products)) {
+          setTaxiListData(response.data.products);
+        } else {
+          console.error("Invalid response:", response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching taxi data:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTaxis();
+  }, []);
+
+  const handleTaxiClick = (id) => {
+    navigate(`/taxi-details/${id}`);
+  };
+
   return (
     <div className="taxi-list">
-      <h2>Available Taxis</h2>
-      <div className="taxi-grid">
-        {taxiData.map((taxi) => (
-          <Link to={`/taxi-details/${taxi.id}`} key={taxi.id} className="taxi-card">
-            <img src={taxi.image} alt={taxi.name} />
-            <h3>{taxi.name}</h3>
-            <p>{taxi.location}</p>
-            <p>{taxi.price}</p>
-          </Link>
-        ))}
-      </div>
+      <h1 className="taxi-list-title">Available Taxi Options</h1>
+
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <div className="taxi-cards">
+          {Array.isArray(TaxiListData) && TaxiListData.length > 0 ? (
+            TaxiListData.map((taxi) => (
+              <div
+                key={taxi._id}
+                className="taxi-card"
+                onClick={() => handletaxiClick(taxi._id)}
+              >
+                <img
+                  src={taxi.image[0]} // Use the Cloudinary URL directly
+                  alt={taxi.Title}
+                  className="taxi-thumbnail"
+                />
+                <div className="taxi-info">
+                  <h3>{taxi.Title}</h3>
+                  <p>{taxi.address}</p>
+                  <p className="taxi-price">Rs {taxi.price} / month</p>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p>No taxi data found.</p>
+          )}
+        </div>
+      )}
     </div>
   );
-}
+};
 
 export default TaxiList;
+//only for commit
