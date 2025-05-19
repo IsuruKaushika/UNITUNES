@@ -135,7 +135,7 @@ const AddVehicle = ({ token }) => {
       </div>
 
       <div className="w-full">
-        <p>Rental Fee</p>
+        <p>Rental Fee(Price For one KM)</p>
         <input
           onChange={(e) => setPrice(e.target.value)}
           value={price}
