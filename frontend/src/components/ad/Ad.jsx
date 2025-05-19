@@ -1,29 +1,35 @@
 import React from 'react';
 import './Ad.css';
 
-// Sample ad data
+// Import images from assets
+import hostelAd1 from './../../assets/naththal.jpeg';
+import foodDelivery from './../../assets/jam.jpeg';
+import taxiService from './../../assets/Wood.png';
+import rentalItems from './../../assets/12.jpeg';
+
+// Sample ad data using imported images
 const adData = [
   {
     id: 1,
-    image: 'https://via.placeholder.com/200x100?text=Hostel+Ad+1',
+    image: hostelAd1,
     link: 'https://example.com/ad1',
     title: 'Hostel near University - Starting Rs. 5000',
   },
   {
     id: 2,
-    image: 'https://via.placeholder.com/200x100?text=Food+Delivery',
+    image: foodDelivery,
     link: 'https://example.com/ad2',
     title: 'Order Homemade Meals for Students',
   },
   {
     id: 3,
-    image: 'https://via.placeholder.com/200x100?text=Taxi+Service',
+    image: taxiService,
     link: 'https://example.com/ad3',
     title: 'Discount Taxi Services for Campus Rides',
   },
   {
     id: 4,
-    image: 'https://via.placeholder.com/200x100?text=Rental+Items',
+    image: rentalItems,
     link: 'https://example.com/ad4',
     title: 'Rent Shoes, Bags, Blazers for Events',
   },
