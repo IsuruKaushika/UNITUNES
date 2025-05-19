@@ -1,94 +1,127 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // ✅ Import useNavigate
-import Navbar from "../components/navbar/navbar"; // ✅ Make sure this path is correct
-import Ad from "../components/ad/Ad"; // ✅ Make sure this path is correct
-import "../pages/home/home"; // ✅ Ensure this CSS file exists and styles the layout
+import { useNavigate } from "react-router-dom";
+import Navbar from "../components/navbar/navbar";
+import Ad from "../components/ad/Ad";
+import "./Styles/home.css"; // Updated import for the CSS file
 
 function HomePage() {
-  const navigate = useNavigate(); // ✅ Hook to navigate programmatically
-  const [showLogin, setShowLogin] = useState(false); // ✅ Optional login toggle
+  const navigate = useNavigate();
+  const [showLogin, setShowLogin] = useState(false);
 
   // Navigation handlers
-  const handleBoardingClick = () => {
-    navigate("/boarding-list");
-  };
-
-  const handleTaxiClick = () => {
-    navigate("/taxi-list");
-  };
-
-  const handleMedicareClick = () => {
-    navigate("/medi-select"); // or /medi-list, based on your route
-  };
-
-  const handleShopClick = () => {
-    navigate("/shop-select");
-  };
-
-  const handleRentingClick = () => {
-    navigate("/rent-items");
-  };
-
-  const handleSkillSharingClick = () => {
-    navigate("/skill-list");
-  };
+  const handleBoardingClick = () => navigate("/boarding-list");
+  const handleTaxiClick = () => navigate("/taxi-list");
+  const handleMedicareClick = () => navigate("/medi-select");
+  const handleShopClick = () => navigate("/shop-select");
+  const handleRentingClick = () => navigate("/rent-items");
+  const handleSkillSharingClick = () => navigate("/skill-list");
 
   return (
-    <>
+    <div className="homepage-container">
       <Navbar setShowLogin={setShowLogin} />
 
-      <div className="home-page">
-        {/* Header Section */}
-        <header className="header">
-          <div className="header-content">
-            <h2>UniTunes - Smart Solutions for Smarter Undergraduates!</h2>
-            <button>View Menu</button>
-          </div>
-        </header>
+      {/* Hero Section */}
+      <header className="hero-section">
+        <div className="hero-content">
+          <h1 className="hero-title">UniTunes</h1>
+          <h2 className="hero-subtitle">Smart Solutions for Smarter Undergraduates!</h2>
+          <button className="hero-button">View Menu</button>
+        </div>
+      </header>
 
-        {/* Feature Section */}
-        <div className="features">
+      {/* Services Section */}
+      <section className="services-section">
+        <h2 className="section-title">Our Services</h2>
+        <div className="services-grid">
           {/* Boarding Feature */}
-          <div className="feature-item" onClick={handleBoardingClick}>
-            <img src="/images/Boarding.jpg" alt="Boardings" />
-            <p>Boardings</p>
+          <div className="service-card" onClick={handleBoardingClick}>
+            <div className="service-image-container">
+              <img src="/images/Boarding.jpg" alt="Boardings" className="service-image" />
+            </div>
+            <h3 className="service-title">Boardings</h3>
+            <p className="service-description">Find the perfect accommodation near campus</p>
           </div>
 
           {/* Taxi Feature */}
-          <div className="feature-item" onClick={handleTaxiClick}>
-            <img src="/images/Taxi.jpg" alt="Taxis" />
-            <p>Taxis</p>
+          <div className="service-card" onClick={handleTaxiClick}>
+            <div className="service-image-container">
+              <img src="/images/Taxi.jpg" alt="Taxis" className="service-image" />
+            </div>
+            <h3 className="service-title">Taxis</h3>
+            <p className="service-description">Book reliable rides at student-friendly rates</p>
           </div>
 
           {/* Medicare Feature */}
-          <div className="feature-item" onClick={handleMedicareClick}>
-            <img src="/images/Medicine.jpg" alt="Medicare" />
-            <p>Medicare</p>
+          <div className="service-card" onClick={handleMedicareClick}>
+            <div className="service-image-container">
+              <img src="/images/Medicine.jpg" alt="Medicare" className="service-image" />
+            </div>
+            <h3 className="service-title">Medicare</h3>
+            <p className="service-description">Access healthcare services and medication</p>
           </div>
 
           {/* Food/Shops Feature */}
-          <div className="feature-item" onClick={handleShopClick}>
-            <img src="/images/Food.jpg" alt="Shops" />
-            <p>Shops</p>
+          <div className="service-card" onClick={handleShopClick}>
+            <div className="service-image-container">
+              <img src="/images/Food.jpg" alt="Shops" className="service-image" />
+            </div>
+            <h3 className="service-title">Shops</h3>
+            <p className="service-description">Explore local eateries and campus stores</p>
           </div>
 
           {/* Renting Feature */}
-          <div className="feature-item" onClick={handleRentingClick}>
-            <img src="/images/Rental.jpg" alt="Renting" />
-            <p>Renting</p>
+          <div className="service-card" onClick={handleRentingClick}>
+            <div className="service-image-container">
+              <img src="/images/Rental.jpg" alt="Renting" className="service-image" />
+            </div>
+            <h3 className="service-title">Renting</h3>
+            <p className="service-description">Borrow equipment and essentials for your studies</p>
           </div>
 
           {/* Skill Sharing Feature */}
-          <div className="feature-item" onClick={handleSkillSharingClick}>
-            <img src="/images/Skill Sharing.jpg" alt="Skill Sharing" />
-            <p>Skill Sharing</p>
+          <div className="service-card" onClick={handleSkillSharingClick}>
+            <div className="service-image-container">
+              <img src="/images/Skill Sharing.jpg" alt="Skill Sharing" className="service-image" />
+            </div>
+            <h3 className="service-title">Skill Sharing</h3>
+            <p className="service-description">Connect with peers for tutoring and skill exchange</p>
           </div>
         </div>
+      </section>
 
-        {/* Ad Section */}
+      {/* Promotional Banner */}
+      <section className="promo-section">
         <Ad />
-      </div>
-    </>
+      </section>
+
+      {/* About Section */}
+      <section className="about-section">
+        <div className="about-content">
+          <h2 className="section-title">About UniTunes</h2>
+          <p className="about-text">
+            UniTunes is the ultimate campus companion designed specifically for undergraduate students.
+            Our platform connects you with essential services to make your university life easier,
+            more convenient, and more affordable.
+          </p>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="homepage-footer">
+        <div className="footer-content">
+          <div className="footer-logo">UniTunes</div>
+          <div className="footer-links">
+            <a href="/about">About Us</a>
+            <a href="/contact">Contact</a>
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/terms">Terms of Service</a>
+          </div>
+          <div className="footer-copyright">
+            © {new Date().getFullYear()} UniTunes. All rights reserved.
+          </div>
+        </div>
+      </footer>
+    </div>
   );
 }
 
