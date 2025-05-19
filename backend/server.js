@@ -27,7 +27,7 @@ app.use('/api/user', userRouter)
 app.use('/api/boarding', boardingRouter)
 app.use('/api/taxi', taxiRouter)
 app.use('/api/shop', shopRouter)
-app.use('/api/renting', rentingRouter)
+//app.use('/api/renting', rentingRouter)
 app.use('/api/skill', skillRouter);
 app.use('/api/medicare', medicareRouter);
 

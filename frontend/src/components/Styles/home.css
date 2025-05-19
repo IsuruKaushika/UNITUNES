@@ -101,6 +101,10 @@ body {
   justify-content: center;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 
 .section-title {
   text-align: center;

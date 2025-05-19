@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/navbar/navbar";
 import Ad from "../components/ad/Ad";
-import "./Styles/home.css"; // Updated import for the CSS file
-import "../assets/Boarding.png"
+import "./Styles/home.css";
+import "../assets/Boarding.png";
 
 function HomePage() {
   const navigate = useNavigate();
@@ -17,6 +17,13 @@ function HomePage() {
   const handleRentingClick = () => navigate("/rent-items");
   const handleSkillSharingClick = () => navigate("/skill-list");
 
+  const handleScrollToServices = () => {
+    const element = document.getElementById("services");
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <div className="homepage-container">
       <Navbar setShowLogin={setShowLogin} />
@@ -26,15 +33,16 @@ function HomePage() {
         <div className="hero-content">
           <h1 className="hero-title">UniTunes</h1>
           <h2 className="hero-subtitle">Smart Solutions for Smarter Undergraduates!</h2>
-          <button className="hero-button">View Menu</button>
+          <button className="hero-button" onClick={handleScrollToServices}>
+            View Menu
+          </button>
         </div>
       </header>
 
       {/* Services Section */}
-      <section className="services-section">
+      <section className="services-section" id="services">
         <h2 className="section-title">Our Services</h2>
         <div className="services-grid">
-          {/* Boarding Feature */}
           <div className="service-card" onClick={handleBoardingClick}>
             <div className="service-image-container">
               <img src="/images/Bording.jpg" alt="Boardings" className="service-image" />
@@ -43,7 +51,6 @@ function HomePage() {
             <p className="service-description">Find the perfect accommodation near campus</p>
           </div>
 
-          {/* Taxi Feature */}
           <div className="service-card" onClick={handleTaxiClick}>
             <div className="service-image-container">
               <img src="/images/Taxi.jpg" alt="Taxis" className="service-image" />
@@ -52,7 +59,6 @@ function HomePage() {
             <p className="service-description">Book reliable rides at student-friendly rates</p>
           </div>
 
-          {/* Medicare Feature */}
           <div className="service-card" onClick={handleMedicareClick}>
             <div className="service-image-container">
               <img src="/images/Medicine.jpg" alt="Medicare" className="service-image" />
@@ -61,7 +67,6 @@ function HomePage() {
             <p className="service-description">Access healthcare services and medication</p>
           </div>
 
-          {/* Food/Shops Feature */}
           <div className="service-card" onClick={handleShopClick}>
             <div className="service-image-container">
               <img src="/images/Food.jpg" alt="Shops" className="service-image" />
@@ -70,7 +75,6 @@ function HomePage() {
             <p className="service-description">Explore local eateries and campus stores</p>
           </div>
 
-          {/* Renting Feature */}
           <div className="service-card" onClick={handleRentingClick}>
             <div className="service-image-container">
               <img src="/images/Rental.jpg" alt="Renting" className="service-image" />
@@ -79,7 +83,6 @@ function HomePage() {
             <p className="service-description">Borrow equipment and essentials for your studies</p>
           </div>
 
-          {/* Skill Sharing Feature */}
           <div className="service-card" onClick={handleSkillSharingClick}>
             <div className="service-image-container">
               <img src="/images/Skill Sharing.jpg" alt="Skill Sharing" className="service-image" />
