@@ -1,17 +1,13 @@
 import express from "express";
-import {
-  addRentItem,
-  getAllRentItems,
-  getRentItemsByType,
-} from "../controllers/rentingController.js";
+import { addRenting, listRenting, removeRenting, singleRenting } from "./controllers/rentingController.js";
+import upload from "../middleware/multer.js";
+import adminAuth from "../middleware/adminAuth.js";
 
-import upload from "../middleware/multer.js"; // for file uploads
-import adminAuth from "../middleware/adminAuth.js"; // optional
+const rentingRouter = express.Router();
 
-const router = express.Router();
+rentingRouter.post('/add', adminAuth, upload.fields([{ name: 'image' }]), addRenting);
+rentingRouter.get('/list', listRenting);
+rentingRouter.post('/remove', adminAuth, removeRenting);
+rentingRouter.post('/single', singleRenting);
 
-router.post("/add", adminAuth, upload.single("image"), addRentItem);
-router.get("/all", getAllRentItems);
-router.get("/category/:type", getRentItemsByType);
-
-export default router;
+export default rentingRouter;
