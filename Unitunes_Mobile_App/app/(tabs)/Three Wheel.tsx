@@ -18,6 +18,7 @@ export default function TaxiList() {
   const router = useRouter();
 
   const [taxiListData, setTaxiListData] = useState<any[]>([]);
+  const [filteredTaxiListData, setFilteredTaxiListData] = useState<any[]>([]); // Separate state for filtered data
   const [loading, setLoading] = useState(true);
   const [location, setLocation] = useState('');
   const [vehicleType, setVehicleType] = useState('');
@@ -32,6 +33,11 @@ export default function TaxiList() {
         const data = await res.json();
         if (data.success && Array.isArray(data.products)) {
           setTaxiListData(data.products);
+          setFilteredTaxiListData(data.products); // Initialize filtered data
+          // Log the first item to inspect the image field
+          if (data.products.length > 0) {
+            console.log('First taxi item:', data.products[0]);
+          }
         } else {
           console.error('Unexpected taxi API response:', data);
         }
@@ -48,16 +54,16 @@ export default function TaxiList() {
   const applyFilters = () => {
     const filtered = taxiListData.filter(item => {
       return (
-        (location === '' || item.location.toLowerCase().includes(location.toLowerCase())) &&
-        (vehicleType === '' || item.vehicleType.toLowerCase().includes(vehicleType.toLowerCase())) &&
-        (priceRange === '' || parseFloat(item.price) <= parseFloat(priceRange))
+        (location === '' || (item.location && item.location.toLowerCase().includes(location.toLowerCase()))) &&
+        (vehicleType === '' || (item.vehicleType && item.vehicleType.toLowerCase().includes(vehicleType.toLowerCase()))) &&
+        (priceRange === '' || (item.price && parseFloat(item.price) <= parseFloat(priceRange)))
       );
     });
-    setTaxiListData(filtered);
+    setFilteredTaxiListData(filtered); // Update filtered data instead of original data
   };
 
   const handlePress = (id: string) => {
-    router.push(`/TaxiPage/${id}`); // create this dynamic route later
+    router.push(`/TaxiPage/${id}`);
   };
 
   return (
@@ -100,23 +106,24 @@ export default function TaxiList() {
         <ActivityIndicator size="large" color="#FFA726" style={styles.loader} />
       ) : (
         <ScrollView contentContainerStyle={styles.list}>
-          {taxiListData.length > 0 ? (
-            taxiListData.map(item => (
+          {filteredTaxiListData.length > 0 ? (
+            filteredTaxiListData.map(item => (
               <TouchableOpacity
                 key={item._id}
                 style={styles.card}
                 onPress={() => handlePress(item._id)}
               >
                 <Image
-                 
+                  source={{ uri: item.image ? `${backendUrl}/${item.image}` : 'https://via.placeholder.com/180' }} // Fallback image if item.image is undefined
                   style={styles.cardImage}
                   resizeMode="cover"
+                  onError={(error) => console.log(`Image loading error for ${item._id}:`, error.nativeEvent.error)} // Log errors
                 />
                 <View style={styles.cardContent}>
                   <Text style={styles.cardTitle}>{item.driverName || 'Taxi Driver'}</Text>
-                  <Text style={styles.cardText}>{item.vehicleType}</Text>
-                  <Text style={styles.cardText}>{item.location}</Text>
-                  <Text style={styles.cardText}>Rs {item.price} / km</Text>
+                  <Text style={styles.cardText}>{item.vehicleType || 'N/A'}</Text>
+                  <Text style={styles.cardText}>{item.location || 'N/A'}</Text>
+                  <Text style={styles.cardText}>Rs {item.price || 'N/A'} / km</Text>
                 </View>
               </TouchableOpacity>
             ))
