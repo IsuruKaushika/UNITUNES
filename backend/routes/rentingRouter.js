@@ -1,5 +1,5 @@
 import express from "express";
-import { addRenting, listRenting, removeRenting, singleRenting } from "./controllers/rentingController.js";
+import { addRenting, listRenting, removeRenting, singleRenting } from "../controllers/RentingController.js";
 import upload from "../middleware/multer.js";
 import adminAuth from "../middleware/adminAuth.js";
 
