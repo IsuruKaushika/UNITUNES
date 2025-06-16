@@ -1,7 +1,9 @@
+// Updated HomePage component with TailwindCSS styling
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/navbar/navbar";
 import Ad from "../components/ad/Ad";
+
 
 function HomePage() {
   const navigate = useNavigate();
@@ -26,10 +28,13 @@ function HomePage() {
       <Navbar setShowLogin={setShowLogin} />
 
       {/* Hero Section */}
-      <header className="flex flex-col items-center justify-center h-screen bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-center px-4">
-        <h1 className="text-5xl font-bold mb-4">UniTunes</h1>
-        <h2 className="text-xl md:text-2xl mb-6">Smart Solutions for Smarter Undergraduates!</h2>
-        <button className="px-6 py-3 bg-white text-indigo-600 font-semibold rounded-lg shadow-md hover:bg-gray-100 transition" onClick={handleScrollToServices}>
+      <header className="flex flex-col items-center justify-center h-[90vh] bg-gradient-to-r from-blue-600 to-indigo-700 text-white text-center px-6">
+        <h1 className="text-5xl md:text-6xl font-bold mb-4 tracking-tight">UniTunes</h1>
+        <h2 className="text-xl md:text-2xl mb-6 font-medium">Smart Solutions for Smarter Undergraduates!</h2>
+        <button
+          className="px-6 py-3 bg-white text-indigo-700 font-semibold rounded-lg shadow-md hover:bg-gray-100 transition"
+          onClick={handleScrollToServices}
+        >
           View Menu
         </button>
       </header>
@@ -46,11 +51,15 @@ function HomePage() {
             { title: "Renting", desc: "Borrow equipment and essentials for your studies", img: "/images/Rental.jpg", click: handleRentingClick },
             { title: "Skill Sharing", desc: "Connect with peers for tutoring and skill exchange", img: "/images/Skill Sharing.jpg", click: handleSkillSharingClick }
           ].map(({ title, desc, img, click }, index) => (
-            <div key={index} className="bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer hover:shadow-2xl transition" onClick={click}>
+            <div
+              key={index}
+              className="bg-white rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition cursor-pointer overflow-hidden"
+              onClick={click}
+            >
               <img src={img} alt={title} className="w-full h-48 object-cover" />
-              <div className="p-6">
-                <h3 className="text-xl font-semibold mb-2">{title}</h3>
-                <p className="text-gray-600">{desc}</p>
+              <div className="p-5">
+                <h3 className="text-xl font-semibold text-indigo-700 mb-1">{title}</h3>
+                <p className="text-gray-600 text-sm">{desc}</p>
               </div>
             </div>
           ))}
@@ -65,15 +74,17 @@ function HomePage() {
       {/* About Section */}
       <section className="py-16 bg-indigo-50">
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold mb-4">About UniTunes</h2>
+          <h2 className="text-3xl font-bold mb-4 text-indigo-700">About UniTunes</h2>
           <p className="text-gray-700 text-lg">
-            UniTunes is the ultimate campus companion designed specifically for undergraduate students. Our platform connects you with essential services to make your university life easier, more convenient, and more affordable.
+            UniTunes is the ultimate campus companion designed specifically for undergraduate students.
+            Our platform connects you with essential services to make your university life easier, more
+            convenient, and more affordable.
           </p>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-gray-300 py-8">
+      <footer className="bg-gray-900 text-gray-300 py-10">
         <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
           <div className="text-lg font-bold text-white">UniTunes</div>
           <div className="flex flex-col gap-2">
@@ -90,7 +101,5 @@ function HomePage() {
     </div>
   );
 }
-
-
 
 export default HomePage;
