@@ -31,6 +31,7 @@ import SkillDetails from "./components/SkillDetails";
 // ✅ New Imports for Rent Feature (Add this section only if missing)
 import ProductList from "./components/ProductList";
 import RentItems from "./components/RentItems"; // make sure the file name is RentItems.js
+import Testing from "./components/testing";
 // No need to route these separately unless required individually
 
 function App() {
@@ -52,6 +53,7 @@ function App() {
         <Route path="/taxi-list" element={<TaxiList />} />
         <Route path="/taxi-details/:id" element={<TaxiDetails />} />
 
+        <Route path="/testing" element={<Testing />} />
         <Route path="/medi-select" element={<MediSelect />} />
         <Route path="/medi-list" element={<MediList />} />
         <Route path="/medi-details/:id" element={<MediDetails />} />
