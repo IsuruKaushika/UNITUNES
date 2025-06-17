@@ -3,17 +3,48 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../components/navbar/navbar";
 import Ad from "../components/ad/Ad";
 
-
 function HomePage() {
   const navigate = useNavigate();
   const [showLogin, setShowLogin] = useState(false);
 
-  const handleBoardingClick = () => navigate("/boarding-list");
-  const handleTaxiClick = () => navigate("/taxi-list");
-  const handleMedicareClick = () => navigate("/medi-select");
-  const handleShopClick = () => navigate("/shop-select");
-  const handleRentingClick = () => navigate("/rent-items");
-  const handleSkillSharingClick = () => navigate("/skill-list");
+  const services = [
+    {
+      title: "Boardings",
+      desc: "Find the perfect accommodation near campus",
+      img: "/images/Bording.jpg",
+      click: () => navigate("/boarding-list"),
+    },
+    {
+      title: "Taxis",
+      desc: "Book reliable rides at student-friendly rates",
+      img: "/images/Taxi.jpg",
+      click: () => navigate("/taxi-list"),
+    },
+    {
+      title: "Medicare",
+      desc: "Access healthcare services and medication",
+      img: "/images/Medicine.jpg",
+      click: () => navigate("/medi-select"),
+    },
+    {
+      title: "Shops",
+      desc: "Explore local eateries and campus stores",
+      img: "/images/Food.jpg",
+      click: () => navigate("/shop-select"),
+    },
+    {
+      title: "Renting",
+      desc: "Borrow equipment and essentials for your studies",
+      img: "/images/Rental.jpg",
+      click: () => navigate("/rent-items"),
+    },
+    {
+      title: "Skill Sharing",
+      desc: "Connect with peers for tutoring and skill exchange",
+      img: "/images/Skill Sharing.jpg",
+      click: () => navigate("/skill-list"),
+    },
+  ];
 
   const handleScrollToServices = () => {
     const element = document.getElementById("services");
@@ -27,88 +58,46 @@ function HomePage() {
       <Navbar setShowLogin={setShowLogin} />
 
       {/* Hero Section */}
-      <header className="relative flex flex-col items-center justify-center h-[90vh] bg-gradient-to-r from-indigo-700 to-purple-700 text-white text-center px-6">
-        <div className="absolute inset-0 bg-black/30 backdrop-blur-sm z-0"></div>
-        <div className="z-10">
-          <h1 className="text-5xl md:text-7xl font-extrabold mb-4 tracking-tight drop-shadow-md">
-            UniTunes
-          </h1>
-          <h2 className="color-red-900 text-xl md:text-2xl mb-6 font-medium max-w-xl mx-auto">
-            Smart Solutions for Smarter Undergraduates!
-          </h2>
-          <button
-            className="px-6 py-3 bg-white text-indigo-700 font-semibold rounded-full shadow-md hover:bg-indigo-200 transition"
-            onClick={handleScrollToServices}
-          >
-            View Menu
-          </button>
-        </div>
+      <header className="flex flex-col items-center justify-center h-[60vh] bg-gradient-to-r from-indigo-700 to-purple-700 text-white text-center px-6">
+        <h1 className="text-5xl md:text-7xl font-extrabold mb-4 tracking-tight drop-shadow-md">
+          UniTunes
+        </h1>
+        <h2 className="text-xl md:text-2xl mb-6 font-medium max-w-xl mx-auto">
+          Smart Solutions for Smarter Undergraduates!
+        </h2>
+        <button
+          className="px-6 py-3 bg-white text-indigo-700 font-semibold rounded-full shadow-md hover:bg-indigo-200 transition"
+          onClick={handleScrollToServices}
+        >
+          View Menu
+        </button>
       </header>
 
-      {/* Services Section */}
+      {/* Services Section - Horizontal Scroll */}
       <section id="services" className="py-20 bg-gray-100 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-14 text-indigo-800">
-            Our Services
-          </h2>
-          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              {
-                title: "Boardings",
-                desc: "Find the perfect accommodation near campus",
-                img: "/images/Bording.jpg",
-                click: handleBoardingClick,
-              },
-              {
-                title: "Taxis",
-                desc: "Book reliable rides at student-friendly rates",
-                img: "/images/Taxi.jpg",
-                click: handleTaxiClick,
-              },
-              {
-                title: "Medicare",
-                desc: "Access healthcare services and medication",
-                img: "/images/Medicine.jpg",
-                click: handleMedicareClick,
-              },
-              {
-                title: "Shops",
-                desc: "Explore local eateries and campus stores",
-                img: "/images/Food.jpg",
-                click: handleShopClick,
-              },
-              {
-                title: "Renting",
-                desc: "Borrow equipment and essentials for your studies",
-                img: "/images/Rental.jpg",
-                click: handleRentingClick,
-              },
-              {
-                title: "Skill Sharing",
-                desc: "Connect with peers for tutoring and skill exchange",
-                img: "/images/Skill Sharing.jpg",
-                click: handleSkillSharingClick,
-              },
-            ].map(({ title, desc, img, click }, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-xl shadow hover:shadow-2xl transition-transform transform hover:-translate-y-2 hover:scale-[1.01] overflow-hidden group cursor-pointer"
-                onClick={click}
-              >
-                <img
-                  src={img}
-                  alt={title}
-                  className="w-full h-52 object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-                <div className="p-5">
-                  <h3 className="text-2xl font-semibold text-indigo-700 group-hover:text-indigo-900 transition">
-                    {title}
-                  </h3>
-                  <p className="text-gray-600 text-sm">{desc}</p>
-                </div>
+        <h2 className="text-4xl font-bold text-center mb-12 text-indigo-800">
+          Our Services
+        </h2>
+        <div className="overflow-x-auto whitespace-nowrap space-x-6 flex scrollbar-thin scrollbar-thumb-indigo-400 pb-4">
+          {services.map(({ title, desc, img, click }, index) => (
+            <div
+              key={index}
+              className="inline-block bg-white rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 hover:scale-[1.02] transition duration-300 cursor-pointer w-80 min-w-[18rem] mx-2"
+              onClick={click}
+            >
+              <img
+                src={img}
+                alt={title}
+                className="w-full h-44 object-cover rounded-t-xl"
+              />
+              <div className="p-5">
+                <h3 className="text-2xl font-semibold text-indigo-700 mb-1">
+                  {title}
+                </h3>
+                <p className="text-gray-600 text-sm">{desc}</p>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </section>
 
