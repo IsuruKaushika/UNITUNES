@@ -1,5 +1,6 @@
 import React from "react";
 import { Routes, Route, Link } from "react-router-dom";
+import './index.css'; // This line is essential
 
 // Existing component imports
 import WelcomeScreen from "./components/WelcomeScreen";
