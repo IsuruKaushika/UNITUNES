@@ -3,12 +3,13 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../components/Styles/ShopList.css";
 
-const backendUrl = "http://localhost:4000"; // Use only for API, not image if image is from Cloudinary
+const backendUrl = "http://localhost:4000"; 
 
 const ShopList = () => {
   const navigate = useNavigate();
   const [shopListData, setShopListData] = useState([]);
   const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
     const fetchShops = async () => {
@@ -50,7 +51,7 @@ const ShopList = () => {
                 onClick={() => handleShopClick(shop._id)}
               >
                 <img
-                  src={shop.image[0]} // Use the Cloudinary URL directly
+                  src={shop.image[0]} 
                   alt={shop.Title}
                   className="shop-thumbnail"
                 />
@@ -71,4 +72,3 @@ const ShopList = () => {
 };
 
 export default ShopList;
-//only for commit
