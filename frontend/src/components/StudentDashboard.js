@@ -58,50 +58,68 @@ function HomePage() {
       <Navbar setShowLogin={setShowLogin} />
 
       {/* Hero Section */}
-      <div className="flex flex-col items-center  flex flex-col justify-center h-[40vh] bg-gradient-to-r from-indigo-700 to-orange-700 text-white text-center px-6">
-       <div className="flex flex-col items-center  flex flex-col justify-center">
-        <h1 className="text-5xl md:text-7xl font-extrabold mb-4 tracking-tight drop-shadow-md">
-          UniTunes
-        </h1>
-        <h2 className="text-xl md:text-2xl mb-6 font-medium max-w-xl mx-auto">
-          Smart Solutions for Smarter Undergraduates!
-        </h2>
-        <button
-          className="px-6 py-3 bg-white text-indigo-700 font-semibold rounded-full shadow-md hover:bg-indigo-200 transition"
-          onClick={handleScrollToServices}
-        >
-          View Menu
-        </button>
-     </div>
-      </div>
+<header
+  className="relative flex flex-col items-center justify-center h-[80vh] text-white text-center px-6 bg-cover bg-center"
+  style={{ backgroundImage: "url('/images/back.jpg')" }}
+>
+  {/* Overlay to simulate transparency */}
+  <div className="absolute inset-0 bg-white/60" />  {/* white overlay with transparency */}
 
-      {/* Services Section - Horizontal Scroll */}
-      <section id="services" className="py-20 bg-gray-100 px-4 sm:px-6 lg:px-8">
-        <h2 className="text-4xl font-bold text-center mb-12 text-indigo-800">
-          Our Services
-        </h2>
-        <div className="overflow-x-auto whitespace-nowrap space-x-6 flex scrollbar-thin scrollbar-thumb-indigo-400 pb-4">
-          {services.map(({ title, desc, img, click }, index) => (
-            <div
-              key={index}
-              className="inline-block bg-white rounded-xl shadow-md hover:shadow-xl transform hover:-translate-y-1 hover:scale-[1.02] transition duration-300 cursor-pointer w-80 min-w-[18rem] mx-2"
-              onClick={click}
-            >
-              <img
-                src={img}
-                alt={title}
-                className="w-full h-44 object-cover rounded-t-xl"
-              />
-              <div className="p-5">
-                <h3 className="text-2xl font-semibold text-indigo-700 mb-1">
-                  {title}
-                </h3>
-                <p className="text-gray-600 text-sm">{desc}</p>
-              </div>
-            </div>
-          ))}
+  <div className="relative z-10 flex flex-col items-center justify-center">
+    <h1 className="text-5xl md:text-7xl font-extrabold mb-4 tracking-tight text-orange-900">
+      UniTunes
+    </h1>
+    <h2 className="text-xl md:text-2xl mb-6 font-medium max-w-xl mx-auto text-gray-800">
+      Smart Solutions for Smarter Undergraduates!
+    </h2>
+    <button
+      className="px-6 py-3 bg-white text-orange-600 font-semibold rounded-full shadow-md hover:bg-orange-200 transition"
+      onClick={handleScrollToServices}
+    >
+      View Menu
+    </button>
+  </div>
+</header>
+
+
+
+
+  {/* Services Section - Improved */}
+<section id="services" className="py-20 bg-orange-50 px-4 sm:px-6 lg:px-8">
+  <div className="text-center mb-14">
+    <h2 className="text-4xl font-bold text-orange-500 relative inline-block">
+      Our Services
+      <span className="block h-1 w-24 bg-orange-400 rounded-full mt-2 mx-auto"></span>
+    </h2>
+  </div>
+
+
+  {/* Responsive Layout: horizontal scroll on mobile, grid on md+ */}
+  <div className="flex md:grid md:grid-cols-3 gap-8 overflow-x-auto scrollbar-thin scrollbar-thumb-orange-400 pb-4">
+    {services.map(({ title, desc, img, click }, index) => (
+      <div
+        key={index}
+        onClick={click}
+        className="flex-shrink-0 w-80 md:w-auto bg-white rounded-2xl border border-gray-200 shadow hover:shadow-lg hover:scale-[1.02] transition-transform duration-300 cursor-pointer"
+      >
+        <img
+          src={img}
+          alt={title}
+          className="w-full h-44 object-cover rounded-t-2xl"
+        />
+        <div className="p-5">
+          <h3 className="text-xl font-bold text-orange-500 mb-2">
+            {title}
+          </h3>
+          <p className="text-gray-600 text-sm leading-relaxed">
+            {desc}
+          </p>
         </div>
-      </section>
+      </div>
+    ))}
+  </div>
+</section>
+
 
       {/* Ad Section */}
       <section className="py-10 bg-white">
@@ -109,9 +127,9 @@ function HomePage() {
       </section>
 
       {/* About Section */}
-      <section className="py-20 bg-indigo-50 px-4 sm:px-6 lg:px-8">
+      <section className="py-20 bg-orange-50 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-6 text-indigo-700">
+          <h2 className="text-4xl font-bold mb-6 text-orange-500">
             About UniTunes
           </h2>
           <p className="text-gray-700 text-lg leading-relaxed">
