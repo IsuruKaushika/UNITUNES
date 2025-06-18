@@ -15,6 +15,7 @@ const Navbar = ({ setToken }) => {
         <Link to="/shops" className='hover:text-blue-600'>Shops</Link>
         <Link to="/renting" className='hover:text-blue-600'>Renting</Link>
         <Link to="/skill-sharing" className='hover:text-blue-600'>Skill Sharing</Link>
+        <Link to="/ad" className='hover:text-blue-600'>Advertisement</Link>
       </div>
 
       {/* Logout Button */}

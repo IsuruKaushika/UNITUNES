@@ -1,5 +1,5 @@
 import {v2 as cloudinary} from "cloudinary"
-import shopModel from "../models/adModel.js"
+import adModel from "../models/adModel.js"
 
 //add product
 const addAd =async(req,res)=>{
@@ -47,7 +47,7 @@ const addAd =async(req,res)=>{
 //list product
 const listAds =async(req,res)=>{
     try{
-        const products =await shopModel.find({})
+        const products =await adModel.find({})
         res.json({success:true,products})
     }
     catch(error){
@@ -58,11 +58,11 @@ const listAds =async(req,res)=>{
 }
 
 //function remove Product
-const removeShop =async(req,res)=>{
+const removeAd =async(req,res)=>{
     try{
-        await  shopModel.findByIdAndDelete(req.body.id)
-        res.json({success:true,message:"shop Deleted Successfully"})
-        
+        await  adModel.findByIdAndDelete(req.body.id)
+        res.json({success:true,message:"Ad Deleted Successfully"})
+
     }catch(error){
         console.log(error)
         res.json({success:false,message:error.message})
@@ -71,11 +71,11 @@ const removeShop =async(req,res)=>{
 }
 
 //single product info
-const singleShop =async(req,res)=>{
+const singleAd =async(req,res)=>{
     try{
-        const {shopId} =req.body
-        const shop =await shopModel.findById(shopId)
-        res.json({success:true,shop})
+        const {adId} =req.body
+        const ad =await adModel.findById(adId)
+        res.json({success:true,ad})
     }catch(error){
         console.log(error)
         res.json({success:false,message:error.message})
@@ -83,4 +83,4 @@ const singleShop =async(req,res)=>{
 
 }
 
-export{singleShop,removeShop,listShop,addShop}
+export{singleAd,removeAd,listAds,addAd}
