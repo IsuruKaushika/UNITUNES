@@ -6,7 +6,7 @@ import "./Styles/MediSelect.css";
 
 function MediSelect() {
   const navigate = useNavigate();
-
+  
   const handleSelectPharmacy = () => {
     navigate("/medi-list?category=pharmacy");
   };
