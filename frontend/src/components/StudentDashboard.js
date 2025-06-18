@@ -59,7 +59,7 @@ function HomePage() {
 
       {/* Hero Section */}
       <div className="flex flex-col items-center  flex flex-col justify-center h-[40vh] bg-gradient-to-r from-indigo-700 to-orange-700 text-white text-center px-6">
-       <div>
+       <div className="flex flex-col items-center  flex flex-col justify-center">
         <h1 className="text-5xl md:text-7xl font-extrabold mb-4 tracking-tight drop-shadow-md">
           UniTunes
         </h1>
