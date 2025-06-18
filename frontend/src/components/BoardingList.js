@@ -34,13 +34,13 @@ const BoardingList = () => {
 
   return (
     <div className="min-h-screen bg-blue-50 py-12 px-4">
-      <h1 className="text-4xl font-bold text-center text-blue-800 mb-12 drop-shadow-sm">
+      <h1 className="text-4xl font-bold text-center text-slate-900 mb-12 drop-shadow-sm">
         🏡 Near Boarding Places
       </h1>
 
       {loading ? (
         <div className="flex justify-center items-center">
-          <p className="text-lg text-gray-500 animate-pulse">Loading boardings...</p>
+          <p className="text-lg text-gray-600 animate-pulse">Loading boardings...</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
@@ -57,14 +57,22 @@ const BoardingList = () => {
                   className="w-full h-48 object-cover"
                 />
                 <div className="p-4">
-                  <h3 className="text-lg font-semibold text-blue-900 line-clamp-1">{boarding.Title}</h3>
-                  <p className="text-sm text-blue-700 mt-1 line-clamp-2">{boarding.address}</p>
-                  <p className="mt-2 text-indigo-600 font-bold">Rs {boarding.price} / month</p>
+                  <h3 className="text-lg font-semibold text-slate-900 line-clamp-1">
+                    {boarding.Title}
+                  </h3>
+                  <p className="text-sm text-gray-700 mt-1 line-clamp-2">
+                    {boarding.address}
+                  </p>
+                  <p className="mt-2 text-emerald-600 font-bold">
+                    Rs {boarding.price} / month
+                  </p>
                 </div>
               </div>
             ))
           ) : (
-            <p className="text-center text-gray-500 col-span-full">No boardings available.</p>
+            <p className="text-center text-gray-600 col-span-full">
+              No boardings available.
+            </p>
           )}
         </div>
       )}
