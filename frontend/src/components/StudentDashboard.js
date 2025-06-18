@@ -58,7 +58,8 @@ function HomePage() {
       <Navbar setShowLogin={setShowLogin} />
 
       {/* Hero Section */}
-      <header className="flex flex-col items-center justify-center h-[60vh] bg-gradient-to-r from-indigo-700 to-purple-700 text-white text-center px-6">
+      <div className="flex flex-col items-center  flex flex-col justify-center h-[40vh] bg-gradient-to-r from-indigo-700 to-orange-700 text-white text-center px-6">
+       <div>
         <h1 className="text-5xl md:text-7xl font-extrabold mb-4 tracking-tight drop-shadow-md">
           UniTunes
         </h1>
@@ -71,7 +72,8 @@ function HomePage() {
         >
           View Menu
         </button>
-      </header>
+     </div>
+      </div>
 
       {/* Services Section - Horizontal Scroll */}
       <section id="services" className="py-20 bg-gray-100 px-4 sm:px-6 lg:px-8">
