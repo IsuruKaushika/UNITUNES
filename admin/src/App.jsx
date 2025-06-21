@@ -27,6 +27,9 @@ import RentingList from './pages/RentingList';
 import SkillSharingList from './pages/SkillSharingList';
 import SkillSharing from './pages/skillSharing';
 
+import AdList from './pages/AdvertisementList';
+import AddAd from './pages/Advertisement';
+
 export const backendUrl = import.meta.env.VITE_BACKEND_URL;
 export const currency = 'Rs';
 
@@ -74,6 +77,10 @@ const App = () => {
                 {/* Skill Sharing */}
                 <Route path="/skill-sharing" element={<SkillSharing token={token} />} />
                 <Route path="/skillsharinglist" element={<SkillSharingList token={token} />} />
+
+                {/* Advertisement */}
+                <Route path="/ad" element={<AddAd token={token} />} />
+                <Route path="/adlist" element={<AdList token={token} />} />
               </Routes>
             </div>
           </div>

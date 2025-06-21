@@ -10,6 +10,7 @@ import shopRouter from './routes/shopRoute.js';
 import rentingRouter from './routes/rentingRouter.js'; 
 import skillRouter from './routes/skillRoutes.js';
 import medicareRouter from './routes/medicareRoutes.js';
+import adRouter from './routes/adRoute.js'; // Uncomment if you want to use ad routes
 
 
 //import routes
@@ -27,9 +28,10 @@ app.use('/api/user', userRouter)
 app.use('/api/boarding', boardingRouter)
 app.use('/api/taxi', taxiRouter)
 app.use('/api/shop', shopRouter)
-app.use('/api/renting', rentingRouter)
+//app.use('/api/renting', rentingRouter)
 app.use('/api/skill', skillRouter);
 app.use('/api/medicare', medicareRouter);
+app.use('/api/ad', adRouter);
 
 app.get('/', (req, res) => {
     res.send('API Working')
