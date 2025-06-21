@@ -36,7 +36,7 @@ export default function BoardingList() {
     price: '',
     persons: '',
     gender: '',
-    image: '', // For simplicity, image URL as string. (You can use expo-image-picker for real images)
+    image: '', 
   });
   const [adding, setAdding] = useState(false);
 
@@ -49,7 +49,7 @@ export default function BoardingList() {
     setLoading(true);
     try {
       const res = await fetch(`${backendUrl}/api/boarding/list`);
-      const text = await res.text(); // read raw response as text
+      const text = await res.text(); 
       if (data.success && Array.isArray(data.products)) {
         setBoardingListData(data.products);
       } else {
