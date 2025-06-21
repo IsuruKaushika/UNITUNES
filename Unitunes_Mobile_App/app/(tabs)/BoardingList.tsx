@@ -16,7 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
 const defaultImage = require('../../assets/images/Bording_2.png');
-const backendUrl = 'http://192.168.79.81:4000';
+const backendUrl = 'http://192.168.122.81:8081';
 
 export default function BoardingList() {
   const router = useRouter();
@@ -49,7 +49,7 @@ export default function BoardingList() {
     setLoading(true);
     try {
       const res = await fetch(`${backendUrl}/api/boarding/list`);
-      const data = await res.json();
+      const text = await res.text(); // read raw response as text
       if (data.success && Array.isArray(data.products)) {
         setBoardingListData(data.products);
       } else {
