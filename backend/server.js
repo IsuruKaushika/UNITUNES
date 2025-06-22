@@ -27,10 +27,9 @@ app.use('/api/user', userRouter)
 app.use('/api/boarding', boardingRouter)
 app.use('/api/taxi', taxiRouter)
 app.use('/api/shop', shopRouter)
-<<<<<<< Updated upstream
+
 //app.use('/api/renting', rentingRouter)
-=======
->>>>>>> Stashed changes
+
 app.use('/api/skill', skillRouter);
 app.use('/api/medicare', medicareRouter);
 app.use('/api/ad', adRouter);
