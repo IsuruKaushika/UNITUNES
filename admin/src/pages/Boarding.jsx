@@ -1,180 +1,245 @@
-import React, { useState } from 'react'
-import { assets } from '../assets/assets'
-import axios from 'axios'
-import { toast } from 'react-toastify'
-import { useNavigate } from 'react-router-dom'
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import axios from 'axios';
+import { assets } from '../assets/assets';
 
-const backendUrl = 'http://localhost:4000'; // Adjust this if needed
+const backendUrl = 'http://localhost:4000'; // Change for production
 
 const Boarding = ({ token }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const [image1, setImage1] = useState(false)
-  const [image2, setImage2] = useState(false)
-  const [image3, setImage3] = useState(false)
-  const [image4, setImage4] = useState(false)
+  const [image1, setImage1] = useState(false);
+  const [image2, setImage2] = useState(false);
+  const [image3, setImage3] = useState(false);
+  const [image4, setImage4] = useState(false);
 
-  const [Title, setTitle] = useState('')
-  const [owner, setOwner] = useState('')
-  const [address, setAddress] = useState('')
-  const [contact, setContact] = useState('')
-  const [description, setDescription] = useState('')
-  const [Rooms, setRooms] = useState('1')
-  const [bathRooms, setBathRooms] = useState('1')
-  const [price, setPrice] = useState('')
-  const [gender, setGender] = useState([])
+  const [Title, setTitle] = useState('');
+  const [owner, setOwner] = useState('');
+  const [address, setAddress] = useState('');
+  const [contact, setContact] = useState('');
+  const [description, setDescription] = useState('');
+  const [Rooms, setRooms] = useState('1');
+  const [bathRooms, setBathRooms] = useState('1');
+  const [price, setPrice] = useState('');
+  const [gender, setGender] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleGenderSelect = (label) => {
+    setGender((prev) =>
+      prev.includes(label)
+        ? prev.filter((item) => item !== label)
+        : [...prev, label]
+    );
+  };
+
+  const handleImageUpload = (e, setter) => {
+    const file = e.target.files[0];
+    if (file) setter(file);
+  };
 
   const onSubmitHandler = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
+    setIsSubmitting(true);
 
     try {
-      const formData = new FormData()
-      formData.append('Title', Title)
-      formData.append('description', description)
-      formData.append('Rooms', Rooms)
-      formData.append('bathRooms', bathRooms)
-      formData.append('price', price)
-      formData.append('gender', JSON.stringify(gender))
-      formData.append('contact', contact)
-      formData.append('address', address)
-      formData.append('owner', owner)
+      const formData = new FormData();
+      formData.append('Title', Title);
+      formData.append('owner', owner);
+      formData.append('address', address);
+      formData.append('contact', contact);
+      formData.append('description', description);
+      formData.append('Rooms', Rooms);
+      formData.append('bathRooms', bathRooms);
+      formData.append('price', price);
+      formData.append('gender', JSON.stringify(gender));
 
-      image1 && formData.append('image1', image1)
-      image2 && formData.append('image2', image2)
-      image3 && formData.append('image3', image3)
-      image4 && formData.append('image4', image4)
+      image1 && formData.append('image1', image1);
+      image2 && formData.append('image2', image2);
+      image3 && formData.append('image3', image3);
+      image4 && formData.append('image4', image4);
 
       const response = await axios.post(`${backendUrl}/api/boarding/add`, formData, {
         headers: { token },
-      })
+      });
 
       if (response.data.success) {
-        toast.success(response.data.message)
-        setTitle('')
-        setOwner('')
-        setAddress('')
-        setContact('')
-        setDescription('')
-        setBathRooms('1')
-        setRooms('1')
-        setPrice('')
-        setGender([])
-        setImage1(false)
-        setImage2(false)
-        setImage3(false)
-        setImage4(false)
+        toast.success(response.data.message);
+        // reset all
+        setTitle('');
+        setOwner('');
+        setAddress('');
+        setContact('');
+        setDescription('');
+        setBathRooms('1');
+        setRooms('1');
+        setPrice('');
+        setGender([]);
+        setImage1(false);
+        setImage2(false);
+        setImage3(false);
+        setImage4(false);
       } else {
-        toast.error(response.data.message)
+        toast.error(response.data.message);
       }
     } catch (error) {
-      console.error(error)
-      toast.error(error.message)
+      console.error(error);
+      toast.error('Something went wrong!');
+    } finally {
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
-    <form onSubmit={onSubmitHandler} className='flex flex-col w-full items-start gap-3'>
-      <div className='w-full'>
-        <p>Title</p>
-        <input onChange={(e) => setTitle(e.target.value)} value={Title} className='w-full max-w-[500px] px-3 py-2' type='text' placeholder='Type Here' required />
-      </div>
+    <form onSubmit={onSubmitHandler} className='p-6 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 min-h-screen'>
+      <div className='max-w-4xl mx-auto space-y-6'>
 
-      <div>
-        <p className='mb-2'>Upload Image</p>
-        <div className='flex gap-2'>
-          {[image1, image2, image3, image4].map((img, idx) => (
-            <label key={idx} htmlFor={`image${idx + 1}`}>
-              <img className='w-20' src={!img ? assets.upload_area : URL.createObjectURL(img)} alt='' />
-              <input
-                type='file'
-                id={`image${idx + 1}`}
-                hidden
-                onChange={(e) => {
-                  const setter = [setImage1, setImage2, setImage3, setImage4][idx]
-                  setter(e.target.files[0])
-                }}
-              />
-            </label>
-          ))}
+        {/* Header */}
+        <div className='bg-white/80 p-6 rounded-xl shadow-xl border border-gray-200'>
+          <h1 className='text-2xl font-bold text-gray-800 flex items-center gap-2'>
+            🏠 Add New Boarding
+          </h1>
+          <p className='text-sm text-gray-500 mt-1'>Provide accurate information to help students find your listing.</p>
         </div>
-      </div>
 
-      <div className='w-full'>
-        <p>Owner's Name</p>
-        <input onChange={(e) => setOwner(e.target.value)} value={owner} className='w-full max-w-[500px] px-3 py-2' type='text' placeholder='Type Here' required />
-      </div>
-
-      <div className='w-full'>
-        <p>Address</p>
-        <textarea onChange={(e) => setAddress(e.target.value)} value={address} className='w-full max-w-[500px] px-3 py-2' placeholder='Write Address Here' required />
-      </div>
-
-      <div className='flex flex-col sm:flex-row gap-2 w-full sm:gap-8'>
-        <div>
-          <p className='mb-2'>Rooms</p>
-          <select onChange={(e) => setRooms(e.target.value)} value={Rooms} className='w-full max-w-[500px] px-3 py-2' required>
-            {[1, 2, 3, 4, 5].map((num) => (
-              <option key={num} value={num}>{num}</option>
+        {/* Images Upload */}
+        <div className='bg-white/80 p-6 rounded-xl shadow-md border border-gray-200'>
+          <p className='mb-4 font-semibold text-gray-700 flex items-center gap-2'>📸 Upload Images</p>
+          <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
+            {[image1, image2, image3, image4].map((img, idx) => (
+              <label key={idx} htmlFor={`image${idx + 1}`}>
+                <div className='w-full h-28 bg-gray-100 border border-gray-300 rounded-xl flex items-center justify-center overflow-hidden'>
+                  <img
+                    src={img ? URL.createObjectURL(img) : assets.upload_area}
+                    className='w-full h-full object-cover'
+                    alt={`Upload ${idx + 1}`}
+                  />
+                </div>
+                <input
+                  type='file'
+                  id={`image${idx + 1}`}
+                  hidden
+                  accept='image/*'
+                  onChange={(e) => handleImageUpload(e, [setImage1, setImage2, setImage3, setImage4][idx])}
+                />
+              </label>
             ))}
-          </select>
+          </div>
         </div>
 
-        <div>
-          <p className='mb-2'>Bathrooms</p>
-          <select onChange={(e) => setBathRooms(e.target.value)} value={bathRooms} className='w-full max-w-[500px] px-3 py-2' required>
-            {[1, 2, 3].map((num) => (
-              <option key={num} value={num}>{num}</option>
-            ))}
-          </select>
+        {/* Basic Info */}
+        <div className='bg-white/80 p-6 rounded-xl shadow-md border border-gray-200 grid gap-4'>
+          <InputField label="Boarding Title" value={Title} setValue={setTitle} required />
+          <InputField label="Owner's Name" value={owner} setValue={setOwner} required />
+          <InputField label="Contact Number" value={contact} setValue={setContact} type='tel' required />
+          <TextArea label="Address" value={address} setValue={setAddress} required />
         </div>
 
-        <div>
-          <p className='mb-2'>Boarding Fee Per Student</p>
-          <input onChange={(e) => setPrice(e.target.value)} value={price} className='w-full max-w-[180px] px-2 py-2' type='number' placeholder='0' required />
+        {/* Details */}
+        <div className='bg-white/80 p-6 rounded-xl shadow-md border border-gray-200 grid gap-4 md:grid-cols-3'>
+          <Dropdown label="Rooms" value={Rooms} setValue={setRooms} options={[1, 2, 3, 4, 5]} />
+          <Dropdown label="Bathrooms" value={bathRooms} setValue={setBathRooms} options={[1, 2, 3]} />
+          <InputField label="Monthly Fee (LKR)" value={price} setValue={setPrice} type='number' required />
         </div>
-      </div>
 
-      <div>
-        <p className='mb-2'>For</p>
-        <div className='flex gap-3'>
-          {["Female", "Male", "Male or Female"].map((label) => (
-            <div key={label} onClick={() =>
-              setGender((prev) =>
-                prev.includes(label)
-                  ? prev.filter((item) => item !== label)
-                  : [...prev, label]
-              )
-            }>
-              <p className={`${gender.includes(label) ? 'bg-blue-200' : 'bg-slate-200'} px-3 py-1 cursor-pointer`}>
+        {/* Gender */}
+        <div className='bg-white/80 p-6 rounded-xl shadow-md border border-gray-200'>
+          <p className='font-semibold mb-2'>Suitable For</p>
+          <div className='flex flex-wrap gap-3'>
+            {["Female", "Male", "Male or Female"].map((label) => (
+              <button
+                key={label}
+                type='button'
+                onClick={() => handleGenderSelect(label)}
+                className={`px-4 py-2 rounded-xl text-sm font-medium ${
+                  gender.includes(label)
+                    ? 'bg-blue-600 text-white shadow-md'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
                 {label}
-              </p>
-            </div>
-          ))}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
 
-      <div className='w-full'>
-        <p>More Details</p>
-        <textarea onChange={(e) => setDescription(e.target.value)} value={description} className='w-full max-w-[500px] px-3 py-2' placeholder='Write Content Here' required />
-      </div>
+        {/* Description */}
+        <div className='bg-white/80 p-6 rounded-xl shadow-md border border-gray-200'>
+          <TextArea
+            label="More Details"
+            value={description}
+            setValue={setDescription}
+            placeholder='Write about amenities, rules, etc.'
+            required
+          />
+        </div>
 
-      <div className='w-full'>
-        <p>Contact Number</p>
-        <input onChange={(e) => setContact(e.target.value)} value={contact} className='w-full max-w-[500px] px-3 py-2' type='text' placeholder='Enter contact number' required />
-      </div>
-
-      <div className='flex gap-4 mt-4'>
-        <button type='submit' className='w-28 py-3 bg-black text-white'>ADD</button>
-        <button
-          type='button'
-          className='w-28 py-3 bg-gray-800 text-white'
-          onClick={() => navigate('/boardinglist')}
-        >
-          Boarding List
-        </button>
+        {/* Buttons */}
+        <div className='flex gap-4 justify-center'>
+          <button
+            type='submit'
+            disabled={isSubmitting}
+            className='px-6 py-3 bg-blue-600 text-white rounded-xl shadow-md hover:bg-blue-700 disabled:opacity-50'
+          >
+            {isSubmitting ? 'Submitting...' : 'Add Boarding'}
+          </button>
+          <button
+            type='button'
+            onClick={() => navigate('/boardinglist')}
+            className='px-6 py-3 bg-gray-700 text-white rounded-xl shadow-md hover:bg-gray-800'
+          >
+            View Boarding List
+          </button>
+        </div>
       </div>
     </form>
-  )
-}
+  );
+};
 
-export default Boarding
+// Reusable Input
+const InputField = ({ label, value, setValue, type = 'text', required = false }) => (
+  <div className='w-full'>
+    <label className='block text-sm font-semibold text-gray-700 mb-1'>{label}</label>
+    <input
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      type={type}
+      required={required}
+      className='w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-300'
+    />
+  </div>
+);
+
+// Reusable TextArea
+const TextArea = ({ label, value, setValue, required = false, placeholder = '' }) => (
+  <div className='w-full'>
+    <label className='block text-sm font-semibold text-gray-700 mb-1'>{label}</label>
+    <textarea
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      required={required}
+      placeholder={placeholder}
+      className='w-full px-4 py-2 border border-gray-300 rounded-xl min-h-[100px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-300'
+    />
+  </div>
+);
+
+// Reusable Dropdown
+const Dropdown = ({ label, value, setValue, options }) => (
+  <div className='w-full'>
+    <label className='block text-sm font-semibold text-gray-700 mb-1'>{label}</label>
+    <select
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      className='w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-300'
+    >
+      {options.map((opt) => (
+        <option key={opt} value={opt}>
+          {opt}
+        </option>
+      ))}
+    </select>
+  </div>
+);
+
+export default Boarding;
