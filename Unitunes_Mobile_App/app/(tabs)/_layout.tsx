@@ -8,7 +8,7 @@ export default function Layout() {
         headerShown: false, // Hide the header for all screens
       }}
     >
-      <Stack.Screen name="Login-Main1" />
+      <Stack.Screen name="index" />
       <Stack.Screen name="explore" />
     </Stack>
   );

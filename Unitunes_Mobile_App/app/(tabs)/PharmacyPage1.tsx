@@ -26,5 +26,3 @@ export const PharmacyPage1 = () => {
     </ScrollView>
   );
 };
-
-export default PropertyDetails;
