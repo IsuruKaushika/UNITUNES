@@ -1,4 +1,3 @@
-// src/pages/AddVehicle.jsx
 import React, { useState } from 'react';
 import { assets } from '../assets/assets';
 import axios from 'axios';
@@ -17,9 +16,11 @@ const AddVehicle = ({ token }) => {
   const [description, setDescription] = useState('');
   const [owner, setOwner] = useState('');
   const [vehicleNo, setVehicleNo] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     try {
       const formData = new FormData();
@@ -30,11 +31,7 @@ const AddVehicle = ({ token }) => {
       formData.append('description', description);
       formData.append('owner', owner);
       formData.append('vehicleNo', vehicleNo);
-      
-      // Handle image upload - backend expects an array
-      if (image) {
-        formData.append('image', image);
-      }
+      if (image) formData.append('image', image);
 
       const response = await axios.post(`${backendUrl}/api/taxi/add`, formData, {
         headers: { token },
@@ -55,116 +52,113 @@ const AddVehicle = ({ token }) => {
       }
     } catch (error) {
       toast.error(error.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <form onSubmit={onSubmitHandler} className="flex flex-col w-full items-start gap-3">
-      
-      <div className="w-full">
-        <p>Vehicle Type</p>
-        <select
-          onChange={(e) => setCategory(e.target.value)}
-          value={Category}
-          className="w-full max-w-[500px] px-3 py-2 border border-gray-300 rounded"
-          required
-        >
-          <option value="">Select a vehicle type</option>
-          <option value="Car">Car</option>
-          <option value="Van">Van</option>
-          <option value="Three-Wheeler">Three-Wheeler</option>
-          <option value="Bike">Bike</option>
-          <option value="Bus">Bus</option>
-          <option value="Lorry">Lorry</option>
-        </select>
-      </div>
-      <div className="w-full">
-        <p>Vehicle Number</p>
-        <input
-          onChange={(e) => setVehicleNo(e.target.value)}
-          value={vehicleNo}
-          className="w-full max-w-[500px] px-3 py-2 border border-gray-300 rounded"
-          type="text"
-          placeholder="Enter vehicle number"
-          required
-        />    
-      </div>
+    <form onSubmit={onSubmitHandler} className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-6">
+      <div className="max-w-3xl mx-auto bg-white/80 p-8 rounded-2xl shadow-xl backdrop-blur-md space-y-6 border border-white/20">
 
-      <div>
-        <p className="mb-2">Upload Image</p>
-        <label htmlFor="image">
-          <img className="w-20" src={!image ? assets.upload_area : URL.createObjectURL(image)} alt="" />
-          <input type="file" id="image" hidden onChange={(e) => setImage(e.target.files[0])} />
-        </label>
-      </div>
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-gray-800 mb-1">🚖 Add New Vehicle</h1>
+          <p className="text-sm text-gray-600">Fill in vehicle details for your taxi listing</p>
+        </div>
 
-      <div className="w-full">
-        <p>Owner</p>
-        <input
-          onChange={(e) => setOwner(e.target.value)}
-          value={owner}
-          className="w-full max-w-[500px] px-3 py-2 border border-gray-300 rounded"
-          type="text"
-          placeholder="Enter owner name"
-          required
-        />
-      </div>
+        <div className="grid gap-4">
+          {/* Vehicle Type */}
+          <div>
+            <label className="block font-semibold text-gray-700 mb-1">Vehicle Type</label>
+            <select
+              onChange={(e) => setCategory(e.target.value)}
+              value={Category}
+              className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-300"
+              required
+            >
+              <option value="">Select vehicle type</option>
+              <option value="Car">Car</option>
+              <option value="Van">Van</option>
+              <option value="Three-Wheeler">Three-Wheeler</option>
+              <option value="Bike">Bike</option>
+              <option value="Bus">Bus</option>
+              <option value="Lorry">Lorry</option>
+            </select>
+          </div>
 
-      <div className="w-full">
-        <p>Contact Number</p>
-        <input
-          onChange={(e) => setContact(e.target.value)}
-          value={contact}
-          className="w-full max-w-[500px] px-3 py-2 border border-gray-300 rounded"
-          type="text"
-          placeholder="Enter contact number"
-          required
-        />
-      </div>
+          {/* Vehicle Number */}
+          <InputField label="Vehicle Number" value={vehicleNo} setValue={setVehicleNo} placeholder="e.g., WP CAB-1234" required />
 
-      <div className="w-full">
-        <p>Location</p>
-        <input
-          onChange={(e) => setAddress(e.target.value)}
-          value={address}
-          className="w-full max-w-[500px] px-3 py-2 border border-gray-300 rounded"
-          type="text"
-          placeholder="City or address"
-          required
-        />
-      </div>
+          {/* Upload Image */}
+          <div>
+            <label className="block font-semibold text-gray-700 mb-2">Upload Image</label>
+            <label htmlFor="image">
+              <div className="w-28 h-28 border border-gray-300 rounded-xl overflow-hidden flex items-center justify-center bg-gray-100">
+                <img className="w-full h-full object-cover" src={!image ? assets.upload_area : URL.createObjectURL(image)} alt="Upload Preview" />
+              </div>
+              <input type="file" id="image" hidden onChange={(e) => setImage(e.target.files[0])} />
+            </label>
+          </div>
 
-      <div className="w-full">
-        <p>Rental Fee(Price For one KM)</p>
-        <input
-          onChange={(e) => setPrice(e.target.value)}
-          value={price}
-          className="w-full max-w-[500px] px-3 py-2 border border-gray-300 rounded"
-          type="number"
-          placeholder="Enter price"
-          required
-        />
-      </div>
+          {/* Owner Info */}
+          <InputField label="Owner's Name" value={owner} setValue={setOwner} placeholder="Enter owner name" required />
+          <InputField label="Contact Number" value={contact} setValue={setContact} placeholder="Enter phone number" required />
+          <InputField label="Location" value={address} setValue={setAddress} placeholder="City or address" required />
+          <InputField label="Rental Fee (Per KM)" value={price} setValue={setPrice} placeholder="Enter price (LKR)" type="number" required />
 
-      <div className="w-full">
-        <p>More Details</p>
-        <textarea
-          onChange={(e) => setDescription(e.target.value)}
-          value={description}
-          className="w-full max-w-[500px] px-3 py-2 border border-gray-300 rounded"
-          placeholder="Write Content Here"
-          required
-        />
-      </div>
+          {/* Description */}
+          <TextArea label="More Details" value={description} setValue={setDescription} placeholder="Mention rules, conditions, etc." required />
 
-      <div className="flex gap-4 mt-4">
-        <button type="submit" className="w-28 py-3 bg-black text-white rounded">ADD</button>
-        <button type="button" className="w-28 py-3 bg-gray-800 text-white rounded" onClick={() => navigate('/vehiclelist')}>
-          Vehicle List
-        </button>
+          {/* Buttons */}
+          <div className="flex justify-center gap-4 mt-6">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="px-6 py-3 bg-blue-600 text-white rounded-xl shadow-md hover:bg-blue-700 disabled:opacity-50"
+            >
+              {isSubmitting ? 'Submitting...' : 'Add Vehicle'}
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate('/vehiclelist')}
+              className="px-6 py-3 bg-gray-700 text-white rounded-xl shadow-md hover:bg-gray-800"
+            >
+              Vehicle List
+            </button>
+          </div>
+        </div>
       </div>
     </form>
   );
 };
+
+// Reusable InputField
+const InputField = ({ label, value, setValue, type = 'text', placeholder = '', required = false }) => (
+  <div className="w-full">
+    <label className="block text-sm font-semibold text-gray-700 mb-1">{label}</label>
+    <input
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      type={type}
+      required={required}
+      placeholder={placeholder}
+      className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-300"
+    />
+  </div>
+);
+
+// Reusable TextArea
+const TextArea = ({ label, value, setValue, placeholder = '', required = false }) => (
+  <div className="w-full">
+    <label className="block text-sm font-semibold text-gray-700 mb-1">{label}</label>
+    <textarea
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      placeholder={placeholder}
+      required={required}
+      className="w-full px-4 py-2 border border-gray-300 rounded-xl min-h-[100px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-300"
+    />
+  </div>
+);
 
 export default AddVehicle;
