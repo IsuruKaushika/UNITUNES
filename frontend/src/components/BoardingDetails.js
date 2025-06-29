@@ -76,7 +76,7 @@ const BoardingDetails = () => {
         </div>
 
         {/* Details */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8 text-[17px]">
+        <div className=" grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8 text-[17px]">
           <p><span className="font-semibold text-slate-700">Owner:</span> {details.owner}</p>
           <p><span className="font-semibold text-slate-700">Address:</span> {details.address}</p>
           <p><span className="font-semibold text-slate-700">Rooms:</span> {details.Rooms}</p>
