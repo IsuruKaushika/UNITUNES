@@ -12,7 +12,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
-const backendUrl = 'http://192.168.79.81:4000'; // update this if needed
+const backendUrl = 'http://192.168.86.81:4000'; // update this if needed
 
 export default function TaxiList() {
   const router = useRouter();
