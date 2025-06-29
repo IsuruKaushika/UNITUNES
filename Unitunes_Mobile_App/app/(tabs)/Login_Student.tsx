@@ -32,7 +32,7 @@ const StudentLogin = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:4000/api/user/stulogin', {
+      const response = await fetch('http://192.168.86.81:4000', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
