@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 
 const backendUrl = 'http://192.168.86.81:4000';
-const defaultImage = require('../../../assets/images/default-taxi.png'); // Adjust path if needed
+const defaultImage = require('../../../assets/images/default-taxi.png'); // Adjust if needed
 
 export default function TaxiPage() {
   const router = useRouter();
@@ -16,18 +16,26 @@ export default function TaxiPage() {
   useEffect(() => {
     async function fetchTaxiDetails() {
       try {
-        const res = await fetch(`${backendUrl}/api/taxi/list/${id}`);
+        console.log(`Fetching list to find taxi with ID: ${id}`);
+        const res = await fetch(`${backendUrl}/api/taxi/list`);
         if (!res.ok) {
-          throw new Error(res.status === 404 ? 'Taxi not found' : `HTTP error: ${res.status}`);
+          throw new Error(`HTTP error: ${res.status}`);
         }
 
         const data = await res.json();
-        if (data.success && data.product) {
-          setTaxiData(data.product);
+        console.log('API response data:', data);
+        if (data.success && Array.isArray(data.products)) {
+          const foundTaxi = data.products.find((item: any) => item._id === id);
+          if (foundTaxi) {
+            setTaxiData(foundTaxi);
+          } else {
+            throw new Error('Taxi not found');
+          }
         } else {
           throw new Error('Invalid API response');
         }
       } catch (err: any) {
+        console.error('Fetch error:', err);
         setError(err.message || 'Failed to load taxi details');
       } finally {
         setLoading(false);
@@ -80,6 +88,7 @@ export default function TaxiPage() {
           source={taxiData.image?.[0] ? { uri: taxiData.image[0] } : defaultImage}
           style={styles.taxiImage}
           resizeMode="cover"
+          onError={(e) => console.log('Image load error:', e.nativeEvent.error)}
         />
         <View style={styles.detailsContent}>
           <Text style={styles.title}>{taxiData.driverName || 'Taxi Driver'}</Text>
