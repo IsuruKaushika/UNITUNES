@@ -12,13 +12,15 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
-const backendUrl = 'http://192.168.86.81:4000'; // update this if needed
+const defaultImage = require('../../assets/images/Bording_2.png'); // fallback image similar to BoardingList
+
+const backendUrl = 'http://192.168.86.81:4000';
 
 export default function TaxiList() {
   const router = useRouter();
 
   const [taxiListData, setTaxiListData] = useState<any[]>([]);
-  const [filteredTaxiListData, setFilteredTaxiListData] = useState<any[]>([]); // Separate state for filtered data
+  const [filteredTaxiListData, setFilteredTaxiListData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [location, setLocation] = useState('');
   const [vehicleType, setVehicleType] = useState('');
@@ -28,18 +30,12 @@ export default function TaxiList() {
     async function fetchTaxis() {
       try {
         const res = await fetch(`${backendUrl}/api/taxi/list`);
-        if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
-
         const data = await res.json();
         if (data.success && Array.isArray(data.products)) {
           setTaxiListData(data.products);
-          setFilteredTaxiListData(data.products); // Initialize filtered data
-          // Log the first item to inspect the image field
-          if (data.products.length > 0) {
-            console.log('First taxi item:', data.products[0]);
-          }
+          setFilteredTaxiListData(data.products);
         } else {
-          console.error('Unexpected taxi API response:', data);
+          console.error('Invalid response format:', data);
         }
       } catch (err) {
         console.error('Error fetching taxi data:', err);
@@ -47,7 +43,6 @@ export default function TaxiList() {
         setLoading(false);
       }
     }
-
     fetchTaxis();
   }, []);
 
@@ -59,11 +54,11 @@ export default function TaxiList() {
         (priceRange === '' || (item.price && parseFloat(item.price) <= parseFloat(priceRange)))
       );
     });
-    setFilteredTaxiListData(filtered); // Update filtered data instead of original data
+    setFilteredTaxiListData(filtered);
   };
 
   const handlePress = (id: string) => {
-    router.push(`/TaxiPage/${id}`); //page is under developing
+    router.push(`/TaxiPage/${id}`);
   };
 
   return (
@@ -114,10 +109,9 @@ export default function TaxiList() {
                 onPress={() => handlePress(item._id)}
               >
                 <Image
-                  source={{ uri: item.image ? `${backendUrl}/${item.image}` : 'https://via.placeholder.com/180' }} // Fallback image if item.image is undefined
+                  source={item.image?.[0] ? { uri: item.image[0] } : defaultImage}
                   style={styles.cardImage}
                   resizeMode="cover"
-                  onError={(error) => console.log(`Image loading error for ${item._id}:`, error.nativeEvent.error)} // Log errors
                 />
                 <View style={styles.cardContent}>
                   <Text style={styles.cardTitle}>{item.driverName || 'Taxi Driver'}</Text>
@@ -140,28 +134,41 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
   header: {
     backgroundColor: '#FFA733',
-    paddingTop: 50, paddingHorizontal: 20, paddingBottom: 20,
-    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'
+    paddingTop: 50,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   headerTitle: { fontSize: 22, fontWeight: 'bold' },
   filterContainer: {
     backgroundColor: '#FFF3E0',
-    borderRadius: 16, padding: 16, margin: 16
+    borderRadius: 16,
+    padding: 16,
+    margin: 16,
   },
   input: {
-    borderWidth: 1, borderColor: '#ccc', borderRadius: 10,
-    padding: 10, marginBottom: 10
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 10,
   },
   filterButton: {
-    backgroundColor: '#FFA726', borderRadius: 10,
-    paddingVertical: 10, alignItems: 'center'
+    backgroundColor: '#FFA726',
+    borderRadius: 10,
+    paddingVertical: 10,
+    alignItems: 'center',
   },
   filterButtonText: { color: '#fff', fontWeight: 'bold' },
   loader: { marginTop: 20 },
   list: { padding: 16 },
   card: {
     backgroundColor: '#FFF3E0',
-    borderRadius: 12, marginBottom: 16, overflow: 'hidden'
+    borderRadius: 12,
+    marginBottom: 16,
+    overflow: 'hidden',
   },
   cardImage: { width: '100%', height: 180 },
   cardContent: { padding: 12 },
