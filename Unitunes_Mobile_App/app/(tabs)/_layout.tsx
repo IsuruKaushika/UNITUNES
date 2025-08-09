@@ -119,15 +119,15 @@ export default function Layout() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
   ribbon: {
-    height: 56,
-    backgroundColor: '#FFA726',
+    height: 48,
+    backgroundColor: '#000',
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
     paddingBottom: Platform.OS === 'ios' ? 10 : 0,
-    borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
-    elevation: 8,
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
+    elevation: 6,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -3 },
     shadowOpacity: 0.3,
@@ -141,8 +141,8 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#FFF',
-    fontSize: 11,
-    marginTop: 2,
+    fontSize: 9,
+    marginTop: 1,
   },
   disabledText: {
     color: '#AAA',
