@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, ActivityIndicator, Linking } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 
@@ -50,6 +50,12 @@ export default function TaxiPage() {
     }
   }, [id]);
 
+  const handleBookRide = () => {
+    if (taxiData.mobileNumber) {
+      Linking.openURL(`tel:${taxiData.mobileNumber}`);
+    }
+  };
+
   if (loading) {
     return (
       <View style={styles.container}>
@@ -95,6 +101,11 @@ export default function TaxiPage() {
           <Text style={styles.detailText}>Vehicle Type: {taxiData.vehicleType || 'N/A'}</Text>
           <Text style={styles.detailText}>Location: {taxiData.location || 'N/A'}</Text>
           <Text style={styles.detailText}>Price: Rs {taxiData.price || 'N/A'} / km</Text>
+          {taxiData.mobileNumber && (
+            <TouchableOpacity style={styles.bookButton} onPress={handleBookRide}>
+              <Text style={styles.bookButtonText}>Book Ride</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </View>
@@ -126,4 +137,12 @@ const styles = StyleSheet.create({
   detailText: { fontSize: 16, color: '#555', marginBottom: 8 },
   loader: { marginTop: 20 },
   errorText: { textAlign: 'center', color: 'red', marginTop: 20, fontSize: 16 },
+  bookButton: {
+    backgroundColor: '#FFA726',
+    borderRadius: 10,
+    paddingVertical: 10,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  bookButtonText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
 });
