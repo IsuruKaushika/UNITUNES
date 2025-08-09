@@ -12,15 +12,13 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
-const defaultImage = require('../../assets/images/Bording_2.png'); // fallback image similar to BoardingList
-
-const backendUrl = 'http://192.168.86.81:4000';
+const backendUrl = 'http://192.168.86.81:4000'; // update this if needed
 
 export default function TaxiList() {
   const router = useRouter();
 
   const [taxiListData, setTaxiListData] = useState<any[]>([]);
-  const [filteredTaxiListData, setFilteredTaxiListData] = useState<any[]>([]);
+  const [filteredTaxiListData, setFilteredTaxiListData] = useState<any[]>([]); // Separate state for filtered data
   const [loading, setLoading] = useState(true);
   const [location, setLocation] = useState('');
   const [vehicleType, setVehicleType] = useState('');
@@ -30,12 +28,18 @@ export default function TaxiList() {
     async function fetchTaxis() {
       try {
         const res = await fetch(`${backendUrl}/api/taxi/list`);
+        if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
+
         const data = await res.json();
         if (data.success && Array.isArray(data.products)) {
           setTaxiListData(data.products);
-          setFilteredTaxiListData(data.products);
+          setFilteredTaxiListData(data.products); // Initialize filtered data
+          // Log the first item to inspect the image field
+          if (data.products.length > 0) {
+            console.log('First taxi item:', data.products[0]);
+          }
         } else {
-          console.error('Invalid response format:', data);
+          console.error('Unexpected taxi API response:', data);
         }
       } catch (err) {
         console.error('Error fetching taxi data:', err);
@@ -43,6 +47,7 @@ export default function TaxiList() {
         setLoading(false);
       }
     }
+
     fetchTaxis();
   }, []);
 
@@ -54,11 +59,11 @@ export default function TaxiList() {
         (priceRange === '' || (item.price && parseFloat(item.price) <= parseFloat(priceRange)))
       );
     });
-    setFilteredTaxiListData(filtered);
+    setFilteredTaxiListData(filtered); // Update filtered data instead of original data
   };
 
   const handlePress = (id: string) => {
-    router.push(`/TaxiPage/${id}`);
+    router.push(`/TaxiPage/${id}`); //page is under developing
   };
 
   return (
@@ -134,41 +139,28 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
   header: {
     backgroundColor: '#FFA733',
-    paddingTop: 50,
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    paddingTop: 50, paddingHorizontal: 20, paddingBottom: 20,
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'
   },
   headerTitle: { fontSize: 22, fontWeight: 'bold' },
   filterContainer: {
     backgroundColor: '#FFF3E0',
-    borderRadius: 16,
-    padding: 16,
-    margin: 16,
+    borderRadius: 16, padding: 16, margin: 16
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 10,
+    borderWidth: 1, borderColor: '#ccc', borderRadius: 10,
+    padding: 10, marginBottom: 10
   },
   filterButton: {
-    backgroundColor: '#FFA726',
-    borderRadius: 10,
-    paddingVertical: 10,
-    alignItems: 'center',
+    backgroundColor: '#FFA726', borderRadius: 10,
+    paddingVertical: 10, alignItems: 'center'
   },
   filterButtonText: { color: '#fff', fontWeight: 'bold' },
   loader: { marginTop: 20 },
   list: { padding: 16 },
   card: {
     backgroundColor: '#FFF3E0',
-    borderRadius: 12,
-    marginBottom: 16,
-    overflow: 'hidden',
+    borderRadius: 12, marginBottom: 16, overflow: 'hidden'
   },
   cardImage: { width: '100%', height: 180 },
   cardContent: { padding: 12 },
