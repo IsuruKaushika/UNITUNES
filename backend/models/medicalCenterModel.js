@@ -4,9 +4,10 @@ const medicalCenterSchema = new mongoose.Schema({
   centerName: { type: String, required: true },
   address: { type: String, required: true },
   contactNumber: { type: String, required: true },
+  doctorName: { type: String, required: true },
   description: { type: String },
-  openTime: { type: String },
-  closeTime: { type: String },
+  availableTime: { type: String },
+ 
   image: { type: String },
 }, { timestamps: true });
 

@@ -8,8 +8,10 @@ import boardingRouter from './routes/boardingRoute.js';
 import taxiRouter from './routes/taxiRoute.js';
 import shopRouter from './routes/shopRoute.js';
 import skillRouter from './routes/skillRoutes.js';
-import medicareRouter from './routes/medicareRoutes.js';
+import Medicalrouter from './routes/medicareRoute.js';
 import adRouter from './routes/adRoute.js'; // Uncomment if you want to use ad routes
+import Pharmacyrouter from './routes/pharmacyRoute.js';
+
 
 
 //import routes
@@ -31,7 +33,8 @@ app.use('/api/shop', shopRouter)
 //app.use('/api/renting', rentingRouter)
 
 app.use('/api/skill', skillRouter);
-app.use('/api/medicare', medicareRouter);
+app.use('/api/medicare', Medicalrouter);
+app.use ('/api/pharmacy',Pharmacyrouter);
 app.use('/api/ad', adRouter);
 
 app.get('/', (req, res) => {

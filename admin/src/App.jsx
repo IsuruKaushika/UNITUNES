@@ -13,19 +13,21 @@ import Orders from './pages/Orders';
 import AddVehicle from './pages/AddVehicle';
 import VehicleList from './pages/VehicleList';
 
-import Medicare from './pages/Medicare';
 import AddPharmacy from './pages/AddPharmacy';
-import AddMedicalCenter from './pages/AddMedicalCenter';
+import PharmacyList from './pages/PharmacyList';  
+import AddMedicalCenter from './pages/MedicalCenter';
+import MedicalCenterList from './pages/MedicalCenterList'; // Import the Medical Center List component
+// Import the Medicare component - adjust the path as needed
+import Medicare from './pages/Medicare';
 
-import Shop from './pages/Shops'
+import Shop from './pages/Shops';
 import ShopList from './pages/ShopList';
 
 import Renting from './pages/Renting';
 import RentingList from './pages/RentingList';
 
-
 import SkillSharingList from './pages/SkillSharingList';
-import SkillSharing from './pages/skillSharing';
+import SkillSharing from './pages/SkillSharing'; // Fixed capitalization
 
 import AdList from './pages/AdvertisementList';
 import AddAd from './pages/Advertisement';
@@ -62,9 +64,12 @@ const App = () => {
                 <Route path="/vehiclelist" element={<VehicleList token={token} />} />
 
                 {/* Medicare */}
-                <Route path="/medicare" element={<Medicare />} />
+                {/* Uncomment the line below and import Medicare component if needed */}
+                <Route path="/medicare" element={<Medicare />} /> 
                 <Route path="/add-pharmacy" element={<AddPharmacy token={token} />} />
                 <Route path="/add-medical-center" element={<AddMedicalCenter token={token} />} />
+                <Route path ="/medilist" element = {<MedicalCenterList token={token}/>}/>
+                <Route path= "/pharmacylist" element={<PharmacyList token={token} />} />
 
                 {/* Shops */}
                 <Route path="/shops" element={<Shop token={token} />} />
