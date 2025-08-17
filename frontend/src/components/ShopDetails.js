@@ -1,32 +1,59 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
-import "./Styles/ShopDetails.css";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 function ShopDetails() {
   const location = useLocation();
-  const { item, category } = location.state || {};
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const { item } = location.state || {};
 
-  const shopDetails = {
-    1: { address: "Town Center, Matara", phone: "011-1234567", status: "Open" },
-    2: { address: "Main Street, Galle", phone: "011-2233445", status: "Closed" },
-    3: { address: "Kamburugamuwa, Matara", phone: "071-9988776", status: "Open" },
-    4: { address: "Galle Road, Colombo", phone: "077-8888888", status: "Open" },
-    5: { address: "Fort, Colombo", phone: "078-4445555", status: "Closed" },
-  };
-
-  const details = shopDetails[item?.id];
+  if (!item) {
+    return (
+      <div className="min-h-screen flex flex-col justify-center items-center bg-yellow-50 text-gray-800">
+        <h2 className="text-2xl font-bold mb-4">Shop data not found</h2>
+        <button
+          onClick={() => navigate(-1)}
+          className="bg-black text-white px-4 py-2 rounded-lg hover:bg-yellow-400 hover:text-black transition"
+        >
+          ← Back
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <div className="shop-details-container">
-      <h2>{item?.name}</h2>
-      <img src={item?.image} alt={item?.name} className="shop-image" />
-      {details && (
-        <div className="shop-info">
-          <p><strong>Address:</strong> {details.address}</p>
-          <p><strong>Phone:</strong> {details.phone}</p>
-          <p><strong>Status:</strong> {details.status}</p>
+    <div className="min-h-screen bg-yellow-50 py-12 px-4 flex justify-center items-center">
+      {/* Back Button */}
+      <button
+        onClick={() => navigate(-1)}
+        className="absolute top-4 left-4 bg-black text-white px-4 py-2 rounded-lg hover:bg-yellow-400 hover:text-black transition"
+      >
+        ← Back
+      </button>
+
+      {/* Shop Details Box */}
+      <div className="max-w-5xl w-full bg-white shadow-2xl rounded-2xl overflow-hidden flex flex-col md:flex-row transform scale-105">
+        {/* Shop Image */}
+        <img
+          src={item.image[0]}
+          alt={item.Title}
+          className="w-full md:w-1/2 h-96 object-cover"
+        />
+
+        {/* Shop Info */}
+        <div className="p-8 md:w-1/2">
+          <h2 className="text-3xl font-extrabold text-black mb-4">{item.Title}</h2>
+          <p className="text-gray-700 mb-2"><strong>Address:</strong> {item.address}</p>
+          <p className="text-gray-700 mb-2"><strong>Price:</strong> Rs. {item.price} / month</p>
+          <p className="text-gray-700 mb-2"><strong>Status:</strong> {item.status || "Open"}</p>
+          <p className="text-gray-700 mb-5"><strong>Owner Contact:</strong> {item.phone || "Not Provided"}</p>
+
+          {/* Action Button */}
+          <button className="bg-yellow-500 text-black px-6 py-3 rounded-lg shadow-md hover:bg-yellow-600 transition font-semibold">
+            📞 Contact Shop
+          </button>
         </div>
-      )}
+      </div>
     </div>
   );
 }

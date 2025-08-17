@@ -26,14 +26,10 @@ import ShopDetails from "./components/ShopDetails";
 import SkillList from "./components/SkillList";
 import SkillDetails from "./components/SkillDetails";
 
-
-
-
 // ✅ New Imports for Rent Feature (Add this section only if missing)
 import ProductList from "./components/ProductList";
-import RentItems from "./components/RentItems"; // make sure the file name is RentItems.js
+import RentItems from "./components/RentItems"; 
 import Testing from "./components/testing";
-// No need to route these separately unless required individually
 
 function App() {
   return (
@@ -50,7 +46,8 @@ function App() {
         <Route path="/boarding-list" element={<BoardingList />} />
         <Route path="/boarding-details/:id" element={<BoardingDetails />} />
         <Route path="/rent-items" element={<RentItemsPage />} />
-        <Route path="/rent-details/:id" element={<RentItemDetails />} />
+        {/* ✅ Updated path to match navigation */}
+        <Route path="/rent-item/:id" element={<RentItemDetails />} />
         <Route path="/taxi-list" element={<TaxiList />} />
         <Route path="/taxi-details/:id" element={<TaxiDetails />} />
 
@@ -63,7 +60,6 @@ function App() {
         <Route path="/shop-details/:id" element={<ShopDetails />} />
         <Route path="/skill-list" element={<SkillList />} />
         <Route path="/skill-details/:id" element={<SkillDetails />} />
-
       </Routes>
     </div>
   );
