@@ -14,6 +14,7 @@ import Pharmacyrouter from './routes/pharmacyRoute.js';
 import rentingRouter from './routes/rentingRouter.js';
 import rentRouter from './routes/rentingRouter.js'; // New rent router
 
+
 const app = express();
 const port = process.env.PORT || 4000;
 
@@ -30,10 +31,11 @@ app.use('/api/taxi', taxiRouter)
 app.use('/api/shop', shopRouter)
 app.use('/api/rent', rentRouter) // Updated to use the new rent router
 app.use('/api/renting', rentingRouter) // Keep existing renting router if needed
-app.use('/api/skill', skillRouter);
+app.use('/api/skillshare', skillRouter);
 app.use('/api/medicare', Medicalrouter);
 app.use('/api/pharmacy', Pharmacyrouter);
 app.use('/api/ad', adRouter);
+
 
 app.get('/', (req, res) => {
     res.send('API Working')
