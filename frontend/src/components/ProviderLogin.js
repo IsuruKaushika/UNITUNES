@@ -4,6 +4,8 @@ import axios from "axios";
 import "../components/Styles/LoginAccount.css"; // Import the correct CSS file
 import { Link, useNavigate } from "react-router-dom";
 
+const backendUrl = process.env.VITE_BACKEND_URL;
+
 function ProfessionalLogin() {
   // State variables to store user input and any error messages
   const [email, setEmail] = useState("");
@@ -17,7 +19,7 @@ function ProfessionalLogin() {
 
     try {
       // Send a POST request to the backend for login
-      const response = await axios.post('http://localhost:4000/api/user/serlogin', {
+      const response = await axios.post(`${backendUrl}/api/user/serlogin`, {
         email,
         password,
         

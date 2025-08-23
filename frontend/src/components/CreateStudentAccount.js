@@ -4,6 +4,8 @@ import Tesseract from "tesseract.js";
 import "./Styles/CreateAccount.css";
 import { Link } from "react-router-dom";
 
+const backendUrl = process.env.VITE_BACKEND_URL;
+
 function CreateStudentAccount() {
   const [formData, setFormData] = useState({
     name: "",
@@ -213,7 +215,7 @@ function CreateStudentAccount() {
       setMessage("Creating account...");
       
       const response = await axios.post(
-        "http://localhost:4000/api/user/sturegister",
+        `${backendUrl}/api/user/sturegister`,
         {
           ...formData,
           name: formData.name.trim(),
