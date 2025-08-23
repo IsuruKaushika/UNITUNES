@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://unitunes-backend.vercel.app/api/$1"
+      "destination": "/api/$1"
     },
     {
       "source": "/(.*)",
