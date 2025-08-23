@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import logo from "../assets/logo.png"; // UniTunes logo
 
-const backendUrl = "https://unitunes-backend.vercel.app";
+const backendUrl = "https://unitunes-backend.vercel.app" || "http://localhost:4000";
 
 const BoardingList = () => {
   const navigate = useNavigate();

@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { assets } from '../assets/assets';
 
-const backendUrl = process.env.VITE_BACKEND_URL
+const backendUrl = "http://localhost:4000";
 
 const Renting = ({ token }) => {
   const navigate = useNavigate();

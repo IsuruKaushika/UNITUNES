@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
 
-const backendUrl = process.env.VITE_BACKEND_URL
+const backendUrl = "http://localhost:4000";
 
 const Shop = ({ token }) => {
   const navigate = useNavigate();
