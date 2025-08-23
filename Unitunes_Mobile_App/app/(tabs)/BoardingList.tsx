@@ -18,7 +18,7 @@ import { useRouter } from 'expo-router';
 const defaultImage = require('../../assets/images/Bording_2.png');
 
 
-const backendUrl = 'http://192.168.86.81:4000';
+const backendUrl = 'https://unitunes-backend.vercel.app/';
 
 export default function BoardingList() {
   const router = useRouter();

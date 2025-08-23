@@ -32,7 +32,7 @@ const StudentLogin = () => {
     }
 
     try {
-      const response = await fetch('http://192.168.86.81:4000', {
+      const response = await fetch('https://unitunes-backend.vercel.app/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
