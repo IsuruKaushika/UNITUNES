@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import logo from "../assets/logo.png";
 
-const backendUrl = "http://localhost:4000";
+const backendUrl = process.env.VITE_BACKEND_URL;
 
 const BoardingDetails = () => {
   const { id } = useParams();

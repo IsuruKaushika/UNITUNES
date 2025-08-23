@@ -4,7 +4,8 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import { assets } from '../assets/assets';
 
-const backendUrl = 'http://localhost:4000'; // Change for production
+const backendUrl = process.env.VITE_BACKEND_URL
+
 
 const Boarding = ({ token }) => {
   const navigate = useNavigate();

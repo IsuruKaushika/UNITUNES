@@ -3,6 +3,7 @@ import axios from "axios";
 import "./Styles/CreateAccount.css";
 
 import { Link } from "react-router-dom";
+const backendUrl = process.env.VITE_BACKEND_URL;
 
 
 function CreateProviderAccount() {
@@ -26,7 +27,7 @@ function CreateProviderAccount() {
   
 
     try {
-      const response = await axios.post("http://localhost:4000/api/user/serregister", formData);
+      const response = await axios.post(`${backendUrl}/api/user/serregister`, formData);
       if (response.status === 200) {
         setMessage("Account created successfully!");
       } else {

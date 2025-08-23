@@ -4,8 +4,8 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
-const backendUrl = 'http://localhost:4000';
 
+const backendUrl = process.env.VITE_BACKEND_URL
 const RentingList = ({ token }) => {
   const navigate = useNavigate();
   const [rentItems, setRentItems] = useState([]);

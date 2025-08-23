@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const backendUrl = "http://localhost:4000";
+const backendUrl = process.env.VITE_BACKEND_URL;
 
 const TaxiList = () => {
   const navigate = useNavigate();

@@ -3,6 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../components/Styles/LoginAccount.css"; // Import the correct CSS file
 
+const backendUrl = process.env.REACT_APP_BACKEND_URL || "http://localhost:4000";
+
+
 function StudentLogin() {
   // State variables to store user input and any error messages
 
@@ -17,9 +20,8 @@ function StudentLogin() {
     e.preventDefault();
 
     try {
-      // Send a POST request to the backend for 
-      const response =await axios.post('http://localhost:4000/api/user/stulogin',{email,password})
-     
+      // Send a POST request to the backend for
+      const response = await axios.post(`${backendUrl}/api/user/stulogin`, { email, password });
 
       // If successful, handle the success response
       if (response.status === 200 && response.data.success) {
