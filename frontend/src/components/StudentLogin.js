@@ -3,7 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../components/Styles/LoginAccount.css"; // Import the correct CSS file
 
-const backendUrl = process.env.VITE_BACKEND_URL;
+const backendUrl = process.env.REACT_APP_BACKEND_URL || "http://localhost:4000";
+
 
 function StudentLogin() {
   // State variables to store user input and any error messages
