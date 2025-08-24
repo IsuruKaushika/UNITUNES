@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import axios from 'axios';
 import { assets } from '../assets/assets';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
+// Use environment variable with fallback to localhost
 const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000';
 
 const Boarding = ({ token }) => {
@@ -31,11 +32,6 @@ const Boarding = ({ token }) => {
         ? prev.filter((item) => item !== label)
         : [...prev, label]
     );
-  };
-
-  const handleImageUpload = (e, setter) => {
-    const file = e.target.files[0];
-    if (file) setter(file);
   };
 
   const onSubmitHandler = async (e) => {
@@ -106,24 +102,73 @@ const Boarding = ({ token }) => {
         <div className='bg-white/80 p-6 rounded-xl shadow-md border border-gray-200'>
           <p className='mb-4 font-semibold text-gray-700 flex items-center gap-2'>📸 Upload Images</p>
           <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
-            {[image1, image2, image3, image4].map((img, idx) => (
-              <label key={idx} htmlFor={`image${idx + 1}`}>
-                <div className='w-full h-28 bg-gray-100 border border-gray-300 rounded-xl flex items-center justify-center overflow-hidden'>
-                  <img
-                    src={img ? URL.createObjectURL(img) : assets.upload_area}
-                    className='w-full h-full object-cover'
-                    alt={`Upload ${idx + 1}`}
-                  />
-                </div>
-                <input
-                  type='file'
-                  id={`image${idx + 1}`}
-                  hidden
-                  accept='image/*'
-                  onChange={(e) => handleImageUpload(e, [setImage1, setImage2, setImage3, setImage4][idx])}
+            <label htmlFor="image1">
+              <div className='w-full h-28 bg-gray-100 border border-gray-300 rounded-xl flex items-center justify-center overflow-hidden'>
+                <img
+                  src={image1 ? URL.createObjectURL(image1) : assets.upload_area}
+                  className='w-full h-full object-cover'
+                  alt="Upload 1"
                 />
-              </label>
-            ))}
+              </div>
+              <input
+                type='file'
+                id="image1"
+                hidden
+                accept='image/*'
+                onChange={(e) => setImage1(e.target.files[0])}
+              />
+            </label>
+            
+            <label htmlFor="image2">
+              <div className='w-full h-28 bg-gray-100 border border-gray-300 rounded-xl flex items-center justify-center overflow-hidden'>
+                <img
+                  src={image2 ? URL.createObjectURL(image2) : assets.upload_area}
+                  className='w-full h-full object-cover'
+                  alt="Upload 2"
+                />
+              </div>
+              <input
+                type='file'
+                id="image2"
+                hidden
+                accept='image/*'
+                onChange={(e) => setImage2(e.target.files[0])}
+              />
+            </label>
+            
+            <label htmlFor="image3">
+              <div className='w-full h-28 bg-gray-100 border border-gray-300 rounded-xl flex items-center justify-center overflow-hidden'>
+                <img
+                  src={image3 ? URL.createObjectURL(image3) : assets.upload_area}
+                  className='w-full h-full object-cover'
+                  alt="Upload 3"
+                />
+              </div>
+              <input
+                type='file'
+                id="image3"
+                hidden
+                accept='image/*'
+                onChange={(e) => setImage3(e.target.files[0])}
+              />
+            </label>
+            
+            <label htmlFor="image4">
+              <div className='w-full h-28 bg-gray-100 border border-gray-300 rounded-xl flex items-center justify-center overflow-hidden'>
+                <img
+                  src={image4 ? URL.createObjectURL(image4) : assets.upload_area}
+                  className='w-full h-full object-cover'
+                  alt="Upload 4"
+                />
+              </div>
+              <input
+                type='file'
+                id="image4"
+                hidden
+                accept='image/*'
+                onChange={(e) => setImage4(e.target.files[0])}
+              />
+            </label>
           </div>
         </div>
 
@@ -137,9 +182,33 @@ const Boarding = ({ token }) => {
 
         {/* Details */}
         <div className='bg-white/80 p-6 rounded-xl shadow-md border border-gray-200 grid gap-4 md:grid-cols-3'>
-          <Dropdown label="Rooms" value={Rooms} setValue={setRooms} options={[1, 2, 3, 4, 5]} />
-          <Dropdown label="Bathrooms" value={bathRooms} setValue={setBathRooms} options={[1, 2, 3]} />
-          <InputField label="Monthly Fee (LKR)" value={price} setValue={setPrice} type='number' required />
+          <div className='w-full'>
+            <label className='block text-sm font-semibold text-gray-700 mb-1'>Rooms</label>
+            <select
+              value={Rooms}
+              onChange={(e) => setRooms(e.target.value)}
+              className='w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-300'
+            >
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </div>
+          <div className='w-full'>
+            <label className='block text-sm font-semibold text-gray-700 mb-1'>Bathrooms</label>
+            <select
+              value={bathRooms}
+              onChange={(e) => setBathRooms(e.target.value)}
+              className='w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-300'
+            >
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
+          </div>
+          <InputField label="Monthly Fee (LKR)" value={price} setValue={setPrice} type="number" required />
         </div>
 
         {/* Gender */}
@@ -221,24 +290,6 @@ const TextArea = ({ label, value, setValue, required = false, placeholder = '' }
       placeholder={placeholder}
       className='w-full px-4 py-2 border border-gray-300 rounded-xl min-h-[100px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-300'
     />
-  </div>
-);
-
-// Reusable Dropdown
-const Dropdown = ({ label, value, setValue, options }) => (
-  <div className='w-full'>
-    <label className='block text-sm font-semibold text-gray-700 mb-1'>{label}</label>
-    <select
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
-      className='w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-300'
-    >
-      {options.map((opt) => (
-        <option key={opt} value={opt}>
-          {opt}
-        </option>
-      ))}
-    </select>
   </div>
 );
 
