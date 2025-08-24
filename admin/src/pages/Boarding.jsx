@@ -87,7 +87,7 @@ const Boarding = ({ token }) => {
       setIsSubmitting(false);
     }
   };
-
+  // comment
   return (
     <form onSubmit={onSubmitHandler} className='p-6 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 min-h-screen'>
       <div className='max-w-4xl mx-auto space-y-6'>
