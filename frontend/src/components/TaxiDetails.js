@@ -1,52 +1,43 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import logo from "../assets/logo.png";
 
-const backendUrl = process.env.VITE_BACKEND_URL;
+const backendUrl = process.env.VITE_BACKEND_URL || "http://localhost:4000";
 
 const TaxiDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [details, setDetails] = useState(null);
+  const [taxi, setTaxi] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   useEffect(() => {
-    const fetchDetails = async () => {
+    const fetchTaxi = async () => {
       try {
-        const response = await axios.post(`${backendUrl}/api/taxi/single`, {
-          taxiId: id,
-        });
+        const response = await axios.post(`${backendUrl}/api/taxi/single`, { taxiId: id });
         if (response.data?.success && response.data.taxi) {
-          setDetails(response.data.taxi);
+          setTaxi(response.data.taxi);
         } else {
-          console.error("Invalid response:", response.data);
+          console.warn("Invalid response:", response.data);
         }
-      } catch (err) {
-        console.error("Error:", err.message);
+      } catch (error) {
+        console.error("Error fetching taxi details:", error.message);
       } finally {
         setLoading(false);
       }
     };
-    fetchDetails();
+
+    fetchTaxi();
   }, [id]);
 
-  if (loading)
+  if (loading) return <p className="text-center text-gray-500 mt-20">Loading taxi details...</p>;
+  if (!taxi)
     return (
-      <div className="min-h-screen flex items-center justify-center bg-orange-50">
-        <div className="animate-spin h-16 w-16 border-b-2 border-orange-500 rounded-full"></div>
-      </div>
-    );
-
-  if (!details)
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-orange-50">
-        <h2 className="text-2xl font-bold text-orange-600 mb-3">
-          Taxi Not Found
-        </h2>
+      <div className="text-center mt-20">
+        <h2 className="text-2xl font-bold text-black mb-3">Taxi Not Found</h2>
         <button
           onClick={() => navigate(-1)}
-          className="bg-orange-500 text-white px-5 py-2 rounded-lg hover:bg-orange-600 transition"
+          className="bg-yellow-500 text-white px-5 py-2 rounded-lg hover:bg-yellow-600 transition"
         >
           Back
         </button>
@@ -54,79 +45,64 @@ const TaxiDetails = () => {
     );
 
   return (
-    <div className="min-h-screen bg-orange-50 py-10 px-4">
-      <div className="max-w-6xl mx-auto">
-        {/* Back */}
+    <div className="min-h-screen bg-yellow-50 px-4 py-6">
+      <div className="flex justify-between items-center max-w-6xl mx-auto mb-6">
         <button
           onClick={() => navigate(-1)}
-          className="mb-6 px-4 py-2 bg-orange-500 text-white rounded-lg shadow hover:bg-orange-600 transition"
+          className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition"
         >
-          ← Back to List
+          ← Back
         </button>
+        <img
+          src={logo}
+          alt="UniTunes Logo"
+          className="h-16 rounded-xl shadow cursor-pointer"
+          onClick={() => navigate("/")}
+        />
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Images */}
-          <div>
+      <div className="max-w-6xl mx-auto bg-white p-6 rounded-2xl shadow-xl">
+        <h2 className="text-3xl font-bold mb-6 text-slate-900">{taxi.Title}</h2>
+
+        <div className="flex gap-4 overflow-x-auto mb-6">
+          {taxi.image?.map((img, index) => (
             <img
-              src={details.image?.[selectedImageIndex]}
-              alt={details.Title}
-              className="w-full h-96 object-cover rounded-xl shadow-lg"
+              key={index}
+              src={img}
+              alt={`Taxi ${index + 1}`}
+              className="rounded-lg object-cover w-72 h-48 shadow"
             />
-            {details.image?.length > 1 && (
-              <div className="flex gap-3 mt-3 overflow-x-auto">
-                {details.image.map((img, i) => (
-                  <img
-                    key={i}
-                    src={img}
-                    alt="Thumbnail"
-                    onClick={() => setSelectedImageIndex(i)}
-                    className={`w-20 h-20 object-cover rounded-lg cursor-pointer border-2 ${
-                      selectedImageIndex === i
-                        ? "border-orange-500"
-                        : "border-gray-200 hover:border-orange-400"
-                    }`}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Details */}
-          <div className="space-y-6">
-            <div className="bg-white p-6 rounded-xl shadow">
-              <h1 className="text-3xl font-bold text-orange-600 mb-3">
-                {details.Title}
-              </h1>
-              <p className="text-gray-700 mb-2">{details.address}</p>
-              <p className="text-2xl font-semibold text-orange-500">
-                Rs {details.price} / trip
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-xl shadow">
-              <h2 className="text-xl font-bold text-orange-600 mb-3">
-                Description
-              </h2>
-              <p className="text-gray-700">{details.description}</p>
-            </div>
-
-            {/* Contact */}
-            <div className="bg-white p-6 rounded-xl shadow space-y-3">
-              <h2 className="text-xl font-bold text-orange-600 mb-3">
-                Contact
-              </h2>
-              <a
-                href={`https://wa.me/${details.contact?.replace(/\D/g, "")}`}
-                className="block w-full text-center bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 transition"
-              >
-                WhatsApp
-              </a>
-              <button className="w-full bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-600 transition">
-                Call Now
-              </button>
-            </div>
-          </div>
+          ))}
         </div>
+
+        <div className="text-emerald-600 text-2xl font-bold mb-6">
+          Rs {taxi.price} <span className="text-lg text-slate-700 font-medium">/ trip</span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8 text-[17px]">
+          <p><strong className="text-slate-700">Owner:</strong> {taxi.owner}</p>
+          <p><strong className="text-slate-700">Address:</strong> {taxi.address}</p>
+          <p><strong className="text-slate-700">Contact:</strong> {taxi.contact}</p>
+        </div>
+
+        {taxi.description && (
+          <div className="mb-8">
+            <h3 className="font-bold text-lg text-slate-900 mb-2">Description</h3>
+            <p className="text-slate-700">{taxi.description}</p>
+          </div>
+        )}
+
+        {taxi.contact && (
+          <a
+            href={`https://wa.me/${taxi.contact.replace(/\D/g, "")}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <button className="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-2 px-6 rounded-xl shadow transition">
+              Contact via WhatsApp
+            </button>
+          </a>
+        )}
       </div>
     </div>
   );
