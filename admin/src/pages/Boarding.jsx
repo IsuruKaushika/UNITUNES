@@ -4,8 +4,10 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
-// Use environment variable with fallback to localhost
+
 const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000';
+
+
 
 const Boarding = ({ token }) => {
   const navigate = useNavigate();
