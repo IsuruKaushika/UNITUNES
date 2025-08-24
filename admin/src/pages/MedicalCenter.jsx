@@ -3,13 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { assets } from '../assets/assets';
-const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000';
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000';
 
 const AddMedicalCenter = ({ token }) => {
   const navigate = useNavigate();
 
-  const [doctorImage, setDoctorImage] = useState(false);
+  // multiple images like Boarding
+  const [image1, setImage1] = useState(false);
+  const [image2, setImage2] = useState(false);
+  const [image3, setImage3] = useState(false);
+  const [image4, setImage4] = useState(false);
 
   const [centerName, setName] = useState('');
   const [address, setAddress] = useState('');
@@ -18,11 +22,6 @@ const AddMedicalCenter = ({ token }) => {
   const [doctorName, setDoctorName] = useState('');
   const [availableTime, setAvailableTime] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleImageUpload = (e, setter) => {
-    const file = e.target.files[0];
-    if (file) setter(file);
-  };
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
@@ -33,17 +32,18 @@ const AddMedicalCenter = ({ token }) => {
       formData.append('name', centerName);
       formData.append('address', address);
       formData.append('contact', contactNumber);
-      formData.append('description', description); // Changed from 'services' to 'description'
+      formData.append('description', description);
       formData.append('doctorName', doctorName);
       formData.append('availableTime', availableTime);
-      
-      doctorImage && formData.append('doctorImage', doctorImage);
+
+      // append images like Boarding
+      image1 && formData.append('image1', image1);
+      image2 && formData.append('image2', image2);
+      image3 && formData.append('image3', image3);
+      image4 && formData.append('image4', image4);
 
       const response = await axios.post(`${backendUrl}/api/medicare/add`, formData, {
-        headers: { 
-          token,
-          // Don't set Content-Type - let axios handle it automatically for FormData
-        },
+        headers: { token },
       });
 
       if (response.data.success) {
@@ -55,7 +55,10 @@ const AddMedicalCenter = ({ token }) => {
         setDescription('');
         setDoctorName('');
         setAvailableTime('');
-        setDoctorImage(false);
+        setImage1(false);
+        setImage2(false);
+        setImage3(false);
+        setImage4(false);
       } else {
         toast.error(response.data.message || 'Failed to add medical center');
       }
@@ -80,25 +83,32 @@ const AddMedicalCenter = ({ token }) => {
           <p className='text-sm text-gray-500 mt-1'>Provide accurate information about the medical center and doctor.</p>
         </div>
 
-        {/* Doctor's Image Upload */}
+        {/* Image Uploads */}
         <div className='bg-white/80 p-6 rounded-xl shadow-md border border-gray-200'>
-          <p className='mb-4 font-semibold text-gray-700 flex items-center gap-2'>👨‍⚕️ Upload Doctor's Picture</p>
-          <label htmlFor="doctorImage">
-            <div className='w-full max-w-xs h-40 bg-gray-100 border border-gray-300 rounded-xl flex items-center justify-center overflow-hidden mx-auto'>
-              <img
-                src={doctorImage ? URL.createObjectURL(doctorImage) : assets.upload_area}
-                className='w-full h-full object-cover'
-                alt='Doctor Upload'
-              />
-            </div>
-            <input
-              type='file'
-              id='doctorImage'
-              hidden
-              accept='image/*'
-              onChange={(e) => handleImageUpload(e, setDoctorImage)}
-            />
-          </label>
+          <p className='mb-4 font-semibold text-gray-700 flex items-center gap-2'>📸 Upload Images</p>
+          <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
+            {[{ id: "image1", state: image1, setter: setImage1 },
+              { id: "image2", state: image2, setter: setImage2 },
+              { id: "image3", state: image3, setter: setImage3 },
+              { id: "image4", state: image4, setter: setImage4 }].map(({ id, state, setter }, index) => (
+              <label htmlFor={id} key={id}>
+                <div className='w-full h-28 bg-gray-100 border border-gray-300 rounded-xl flex items-center justify-center overflow-hidden'>
+                  <img
+                    src={state ? URL.createObjectURL(state) : assets.upload_area}
+                    className='w-full h-full object-cover'
+                    alt={`Upload ${index + 1}`}
+                  />
+                </div>
+                <input
+                  type='file'
+                  id={id}
+                  hidden
+                  accept='image/*'
+                  onChange={(e) => setter(e.target.files[0])}
+                />
+              </label>
+            ))}
+          </div>
         </div>
 
         {/* Medical Center Info */}
@@ -111,15 +121,15 @@ const AddMedicalCenter = ({ token }) => {
         {/* Doctor Info */}
         <div className='bg-white/80 p-6 rounded-xl shadow-md border border-gray-200 grid gap-4'>
           <InputField label="Doctor's Name" value={doctorName} setValue={setDoctorName} required />
-          <TextArea 
-            label="Available Time" 
-            value={availableTime} 
+          <TextArea
+            label="Available Time"
+            value={availableTime}
             setValue={setAvailableTime}
             placeholder='e.g., 9:00 AM - 5:00 PM, Monday to Friday'
           />
         </div>
 
-        {/* Services Description */}
+        {/* Services */}
         <div className='bg-white/80 p-6 rounded-xl shadow-md border border-gray-200'>
           <TextArea
             label="Services Offered"
@@ -140,7 +150,7 @@ const AddMedicalCenter = ({ token }) => {
           </button>
           <button
             type='button'
-            onClick={() => navigate('/medilist')} // Adjust navigation path as needed
+            onClick={() => navigate('/medilist')}
             className='px-6 py-3 bg-gray-700 text-white rounded-xl shadow-md hover:bg-gray-800'
           >
             View Medical Centers
@@ -160,7 +170,7 @@ const InputField = ({ label, value, setValue, type = 'text', required = false })
       onChange={(e) => setValue(e.target.value)}
       type={type}
       required={required}
-      className='w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-300'
+      className='w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-300'
     />
   </div>
 );
@@ -174,7 +184,7 @@ const TextArea = ({ label, value, setValue, required = false, placeholder = '' }
       onChange={(e) => setValue(e.target.value)}
       required={required}
       placeholder={placeholder}
-      className='w-full px-4 py-2 border border-gray-300 rounded-xl min-h-[100px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-300'
+      className='w-full px-4 py-2 border border-gray-300 rounded-xl min-h-[100px] focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-300'
     />
   </div>
 );
