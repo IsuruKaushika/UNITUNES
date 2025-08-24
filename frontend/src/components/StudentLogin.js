@@ -20,7 +20,7 @@ function StudentLogin() {
     e.preventDefault();
 
     try {
-      // Send a POST request to the backend for
+      //      Send a POST request to the backend for
       const response = await axios.post(`${backendUrl}/api/user/stulogin`, { email, password });
 
       // If successful, handle the success response
