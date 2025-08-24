@@ -4,7 +4,8 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
-const backendUrl = 'http://localhost:4000';
+// Use environment variable with fallback to localhost
+const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000';
 
 const AddVehicle = ({ token }) => {
   const navigate = useNavigate();
