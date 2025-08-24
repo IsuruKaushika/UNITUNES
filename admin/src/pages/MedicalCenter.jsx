@@ -9,19 +9,27 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000';
 const AddMedicalCenter = ({ token }) => {
   const navigate = useNavigate();
 
-  // multiple images like Boarding
   const [image1, setImage1] = useState(false);
   const [image2, setImage2] = useState(false);
   const [image3, setImage3] = useState(false);
   const [image4, setImage4] = useState(false);
 
-  const [centerName, setName] = useState('');
+  const [centerName, setCenterName] = useState('');
   const [address, setAddress] = useState('');
-  const [contactNumber, setContact] = useState('');
+  const [contactNumber, setContactNumber] = useState('');
   const [description, setDescription] = useState('');
   const [doctorName, setDoctorName] = useState('');
   const [availableTime, setAvailableTime] = useState('');
+  const [specialties, setSpecialties] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSpecialtySelect = (label) => {
+    setSpecialties((prev) =>
+      prev.includes(label)
+        ? prev.filter((item) => item !== label)
+        : [...prev, label]
+    );
+  };
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
@@ -29,14 +37,14 @@ const AddMedicalCenter = ({ token }) => {
 
     try {
       const formData = new FormData();
-      formData.append('name', centerName);
+      formData.append('centerName', centerName);
       formData.append('address', address);
-      formData.append('contact', contactNumber);
+      formData.append('contactNumber', contactNumber);
       formData.append('description', description);
       formData.append('doctorName', doctorName);
       formData.append('availableTime', availableTime);
+      formData.append('specialties', JSON.stringify(specialties));
 
-      // append images like Boarding
       image1 && formData.append('image1', image1);
       image2 && formData.append('image2', image2);
       image3 && formData.append('image3', image3);
@@ -47,25 +55,25 @@ const AddMedicalCenter = ({ token }) => {
       });
 
       if (response.data.success) {
-        toast.success(response.data.message || 'Medical Center added successfully!');
+        toast.success(response.data.message);
         // Reset all fields
-        setName('');
+        setCenterName('');
         setAddress('');
-        setContact('');
+        setContactNumber('');
         setDescription('');
         setDoctorName('');
         setAvailableTime('');
+        setSpecialties([]);
         setImage1(false);
         setImage2(false);
         setImage3(false);
         setImage4(false);
       } else {
-        toast.error(response.data.message || 'Failed to add medical center');
+        toast.error(response.data.message);
       }
     } catch (error) {
       console.error(error);
-      const errorMessage = error.response?.data?.message || error.message || 'Something went wrong!';
-      toast.error(errorMessage);
+      toast.error('Something went wrong!');
     } finally {
       setIsSubmitting(false);
     }
@@ -78,64 +86,133 @@ const AddMedicalCenter = ({ token }) => {
         {/* Header */}
         <div className='bg-white/80 p-6 rounded-xl shadow-xl border border-gray-200'>
           <h1 className='text-2xl font-bold text-gray-800 flex items-center gap-2'>
-            🏥 Add Medical Center
+            🏥 Add New Medical Center
           </h1>
-          <p className='text-sm text-gray-500 mt-1'>Provide accurate information about the medical center and doctor.</p>
+          <p className='text-sm text-gray-500 mt-1'>Provide accurate information to help students find medical services.</p>
         </div>
 
-        {/* Image Uploads */}
+        {/* Images Upload */}
         <div className='bg-white/80 p-6 rounded-xl shadow-md border border-gray-200'>
           <p className='mb-4 font-semibold text-gray-700 flex items-center gap-2'>📸 Upload Images</p>
           <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
-            {[{ id: "image1", state: image1, setter: setImage1 },
-              { id: "image2", state: image2, setter: setImage2 },
-              { id: "image3", state: image3, setter: setImage3 },
-              { id: "image4", state: image4, setter: setImage4 }].map(({ id, state, setter }, index) => (
-              <label htmlFor={id} key={id}>
-                <div className='w-full h-28 bg-gray-100 border border-gray-300 rounded-xl flex items-center justify-center overflow-hidden'>
-                  <img
-                    src={state ? URL.createObjectURL(state) : assets.upload_area}
-                    className='w-full h-full object-cover'
-                    alt={`Upload ${index + 1}`}
-                  />
-                </div>
-                <input
-                  type='file'
-                  id={id}
-                  hidden
-                  accept='image/*'
-                  onChange={(e) => setter(e.target.files[0])}
+            <label htmlFor="image1">
+              <div className='w-full h-28 bg-gray-100 border border-gray-300 rounded-xl flex items-center justify-center overflow-hidden'>
+                <img
+                  src={image1 ? URL.createObjectURL(image1) : assets.upload_area}
+                  className='w-full h-full object-cover'
+                  alt="Upload 1"
                 />
-              </label>
-            ))}
+              </div>
+              <input
+                type='file'
+                id="image1"
+                hidden
+                accept='image/*'
+                onChange={(e) => setImage1(e.target.files[0])}
+              />
+            </label>
+            
+            <label htmlFor="image2">
+              <div className='w-full h-28 bg-gray-100 border border-gray-300 rounded-xl flex items-center justify-center overflow-hidden'>
+                <img
+                  src={image2 ? URL.createObjectURL(image2) : assets.upload_area}
+                  className='w-full h-full object-cover'
+                  alt="Upload 2"
+                />
+              </div>
+              <input
+                type='file'
+                id="image2"
+                hidden
+                accept='image/*'
+                onChange={(e) => setImage2(e.target.files[0])}
+              />
+            </label>
+            
+            <label htmlFor="image3">
+              <div className='w-full h-28 bg-gray-100 border border-gray-300 rounded-xl flex items-center justify-center overflow-hidden'>
+                <img
+                  src={image3 ? URL.createObjectURL(image3) : assets.upload_area}
+                  className='w-full h-full object-cover'
+                  alt="Upload 3"
+                />
+              </div>
+              <input
+                type='file'
+                id="image3"
+                hidden
+                accept='image/*'
+                onChange={(e) => setImage3(e.target.files[0])}
+              />
+            </label>
+            
+            <label htmlFor="image4">
+              <div className='w-full h-28 bg-gray-100 border border-gray-300 rounded-xl flex items-center justify-center overflow-hidden'>
+                <img
+                  src={image4 ? URL.createObjectURL(image4) : assets.upload_area}
+                  className='w-full h-full object-cover'
+                  alt="Upload 4"
+                />
+              </div>
+              <input
+                type='file'
+                id="image4"
+                hidden
+                accept='image/*'
+                onChange={(e) => setImage4(e.target.files[0])}
+              />
+            </label>
           </div>
         </div>
 
-        {/* Medical Center Info */}
+        {/* Basic Info */}
         <div className='bg-white/80 p-6 rounded-xl shadow-md border border-gray-200 grid gap-4'>
-          <InputField label="Medical Center Name" value={centerName} setValue={setName} required />
+          <InputField label="Medical Center Name" value={centerName} setValue={setCenterName} required />
+          <InputField label="Doctor's Name" value={doctorName} setValue={setDoctorName} required />
+          <InputField label="Contact Number" value={contactNumber} setValue={setContactNumber} type='tel' required />
           <TextArea label="Address" value={address} setValue={setAddress} required />
-          <InputField label="Contact Number" value={contactNumber} setValue={setContact} type='tel' required />
         </div>
 
-        {/* Doctor Info */}
-        <div className='bg-white/80 p-6 rounded-xl shadow-md border border-gray-200 grid gap-4'>
-          <InputField label="Doctor's Name" value={doctorName} setValue={setDoctorName} required />
+        {/* Available Time */}
+        <div className='bg-white/80 p-6 rounded-xl shadow-md border border-gray-200'>
           <TextArea
             label="Available Time"
             value={availableTime}
             setValue={setAvailableTime}
-            placeholder='e.g., 9:00 AM - 5:00 PM, Monday to Friday'
+            placeholder='e.g., Monday to Friday: 9:00 AM - 5:00 PM, Saturday: 9:00 AM - 1:00 PM'
+            required
           />
         </div>
 
-        {/* Services */}
+        {/* Specialties */}
+        <div className='bg-white/80 p-6 rounded-xl shadow-md border border-gray-200'>
+          <p className='font-semibold mb-2'>Medical Specialties</p>
+          <div className='flex flex-wrap gap-3'>
+            {["General Practice", "Pediatrics", "Cardiology", "Dermatology", "Orthopedics", "Gynecology", "Dentistry", "Eye Care", "Mental Health", "Emergency Care"].map((label) => (
+              <button
+                key={label}
+                type='button'
+                onClick={() => handleSpecialtySelect(label)}
+                className={`px-4 py-2 rounded-xl text-sm font-medium ${
+                  specialties.includes(label)
+                    ? 'bg-blue-600 text-white shadow-md'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Description */}
         <div className='bg-white/80 p-6 rounded-xl shadow-md border border-gray-200'>
           <TextArea
-            label="Services Offered"
+            label="Services & Facilities"
             value={description}
             setValue={setDescription}
-            placeholder='Describe the medical services and specialties offered...'
+            placeholder='Describe the medical services, facilities, equipment, and any special features...'
+            required
           />
         </div>
 
@@ -144,9 +221,9 @@ const AddMedicalCenter = ({ token }) => {
           <button
             type='submit'
             disabled={isSubmitting}
-            className='px-6 py-3 bg-green-600 text-white rounded-xl shadow-md hover:bg-green-700 disabled:opacity-50'
+            className='px-6 py-3 bg-blue-600 text-white rounded-xl shadow-md hover:bg-blue-700 disabled:opacity-50'
           >
-            {isSubmitting ? 'Adding...' : 'Add Medical Center'}
+            {isSubmitting ? 'Submitting...' : 'Add Medical Center'}
           </button>
           <button
             type='button'
@@ -161,7 +238,7 @@ const AddMedicalCenter = ({ token }) => {
   );
 };
 
-// Reusable Input Component
+// Reusable Input
 const InputField = ({ label, value, setValue, type = 'text', required = false }) => (
   <div className='w-full'>
     <label className='block text-sm font-semibold text-gray-700 mb-1'>{label}</label>
@@ -170,12 +247,12 @@ const InputField = ({ label, value, setValue, type = 'text', required = false })
       onChange={(e) => setValue(e.target.value)}
       type={type}
       required={required}
-      className='w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-300'
+      className='w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-300'
     />
   </div>
 );
 
-// Reusable TextArea Component
+// Reusable TextArea
 const TextArea = ({ label, value, setValue, required = false, placeholder = '' }) => (
   <div className='w-full'>
     <label className='block text-sm font-semibold text-gray-700 mb-1'>{label}</label>
@@ -184,7 +261,7 @@ const TextArea = ({ label, value, setValue, required = false, placeholder = '' }
       onChange={(e) => setValue(e.target.value)}
       required={required}
       placeholder={placeholder}
-      className='w-full px-4 py-2 border border-gray-300 rounded-xl min-h-[100px] focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-300'
+      className='w-full px-4 py-2 border border-gray-300 rounded-xl min-h-[100px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-300'
     />
   </div>
 );
