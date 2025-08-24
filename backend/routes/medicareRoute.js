@@ -11,8 +11,14 @@ import adminAuth from "../middleware/adminAuth.js";
 
 const Medicalrouter = express.Router();
 
-// POST - Fixed: Changed from "image" to "doctorImage" to match frontend
-Medicalrouter.post("/add", adminAuth, upload.single("doctorImage"), addMedicalCenter);
+// POST - Changed to handle multiple images like boarding
+Medicalrouter.post('/add', adminAuth, upload.fields([
+  {name: 'image1', maxCount: 1},
+  {name: 'image2', maxCount: 1},
+  {name: 'image3', maxCount: 1},
+  {name: 'image4', maxCount: 1}
+]), addMedicalCenter);
+
 Medicalrouter.post("/remove", adminAuth, removeMedicalCenter);
 Medicalrouter.post("/single", singleMedicalCenter);
 
