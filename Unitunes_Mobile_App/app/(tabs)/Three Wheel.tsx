@@ -13,7 +13,8 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
-const backendUrl = 'http://192.168.86.81:4000'; // update this if needed
+const backendUrl = 'https://unitunes-backend.vercel.app'; // update this if needed
+
 const defaultImage = require('../../assets/images/default-taxi.png'); // Add this line for defaultImage in TaxiList
 
 export default function TaxiList() {
