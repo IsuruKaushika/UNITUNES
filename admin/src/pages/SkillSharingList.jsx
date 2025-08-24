@@ -15,7 +15,6 @@ const SkillSharingList = () => {
     activeOnly: true
   });
 
-  // Skill categories and experience levels
   const skillCategories = [
     'Programming', 'Design', 'Music', 'Sports', 
     'Cooking', 'Language', 'Academic', 'Art', 

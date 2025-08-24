@@ -19,7 +19,6 @@ const SkillSharing = ({ token }) => {
   const [location, setLocation] = useState('');
   const [price, setPrice] = useState(0);
   
-  // Image state - supporting up to 4 images
   const [images, setImages] = useState({
     image1: null,
     image2: null,
