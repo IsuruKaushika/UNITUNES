@@ -3,6 +3,8 @@ import { backendUrl, currency } from '../App'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000';
+
 const BoardingList = ({ token }) => {
   const [list, setList] = useState([])
 

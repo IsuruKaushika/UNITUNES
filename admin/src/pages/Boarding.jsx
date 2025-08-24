@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import { assets } from '../assets/assets';
 
-const backendUrl =  "http://localhost:4000";
+const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000';
 
 const Boarding = ({ token }) => {
   const navigate = useNavigate();
