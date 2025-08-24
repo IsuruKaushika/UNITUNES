@@ -37,9 +37,9 @@ const AddMedicalCenter = ({ token }) => {
 
     try {
       const formData = new FormData();
-      formData.append('centerName', centerName);
+      formData.append('name', centerName);
       formData.append('address', address);
-      formData.append('contactNumber', contactNumber);
+      formData.append('contact', contactNumber);
       formData.append('description', description);
       formData.append('doctorName', doctorName);
       formData.append('availableTime', availableTime);
