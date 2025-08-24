@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { backendUrl } from '../App'; // adjust the path as needed
+
+// Use environment variable with fallback to localhost
+const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000';
 
 const Login = ({ setToken }) => {
   const [email, setEmail] = useState('');
