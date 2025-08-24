@@ -65,7 +65,7 @@ const Boarding = ({ token }) => {
 
       if (response.data.success) {
         toast.success(response.data.message);
-        // reset all
+        // reset all - Fixed the setTitle call
         setTitle('');
         setOwner('');
         setAddress('');
