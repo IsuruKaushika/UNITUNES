@@ -37,21 +37,37 @@ const AddMedicalCenter = ({ token }) => {
 
     try {
       const formData = new FormData();
+      
+      // Add all fields exactly like the boarding component
       formData.append('name', centerName);
       formData.append('address', address);
       formData.append('contact', contactNumber);
       formData.append('description', description);
       formData.append('doctorName', doctorName);
       formData.append('availableTime', availableTime);
-      formData.append('specialties', JSON.stringify(specialties));
+      
+      // Only append specialties if it has values
+      if (specialties && specialties.length > 0) {
+        formData.append('specialties', JSON.stringify(specialties));
+      }
 
-      image1 && formData.append('image1', image1);
-      image2 && formData.append('image2', image2);
-      image3 && formData.append('image3', image3);
-      image4 && formData.append('image4', image4);
+      // Add images only if they exist
+      if (image1) formData.append('image1', image1);
+      if (image2) formData.append('image2', image2);
+      if (image3) formData.append('image3', image3);
+      if (image4) formData.append('image4', image4);
+
+      // Debug: Log what we're sending
+      console.log('Sending FormData:');
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value instanceof File ? `File: ${value.name}` : value);
+      }
 
       const response = await axios.post(`${backendUrl}/api/medicare/add`, formData, {
-        headers: { token },
+        headers: { 
+          token,
+          'Content-Type': 'multipart/form-data'
+        },
       });
 
       if (response.data.success) {
@@ -69,11 +85,17 @@ const AddMedicalCenter = ({ token }) => {
         setImage3(false);
         setImage4(false);
       } else {
-        toast.error(response.data.message);
+        toast.error(response.data.message || 'Failed to add medical center');
       }
     } catch (error) {
-      console.error(error);
-      toast.error('Something went wrong!');
+      console.error('Full error:', error);
+      console.error('Error response:', error.response?.data);
+      
+      const errorMessage = error.response?.data?.message || 
+                          error.response?.data?.error || 
+                          error.message || 
+                          'Something went wrong!';
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
