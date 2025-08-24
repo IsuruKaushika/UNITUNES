@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
 
-const backendUrl = "http://localhost:4000";
+const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000';
 const RentingList = ({ token }) => {
   const navigate = useNavigate();
   const [rentItems, setRentItems] = useState([]);
