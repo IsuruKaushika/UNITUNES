@@ -3,7 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import logo from "../assets/logo.png";
 
-const backendUrl = process.env.VITE_BACKEND_URL;
+// backend URL
+const backendUrl = "https://unitunes-backend.vercel.app" || "http://localhost:4000";
 
 const BoardingDetails = () => {
   const { id } = useParams();
@@ -69,7 +70,8 @@ const BoardingDetails = () => {
 
         {/* Price */}
         <div className="text-emerald-600 text-2xl font-bold mb-6">
-          Rs {boarding.price} <span className="text-lg text-slate-700 font-medium">/ month</span>
+          Rs {boarding.price}
+          <span className="text-lg text-slate-700 font-medium"> / month</span>
         </div>
 
         {/* Details */}

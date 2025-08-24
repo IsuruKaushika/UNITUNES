@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import logo from "../assets/logo.png"; // UniTunes logo
 
+// backend URL
 const backendUrl = "https://unitunes-backend.vercel.app" || "http://localhost:4000";
 
 const BoardingList = () => {
@@ -30,7 +31,7 @@ const BoardingList = () => {
   }, []);
 
   const handleCardClick = (id) => {
-    navigate(`/boarding-details/${id}`);
+    navigate(`/boarding-details/${id}`); // ✅ fixed route
   };
 
   return (
