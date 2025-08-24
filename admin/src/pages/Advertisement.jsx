@@ -3,8 +3,7 @@ import { assets } from '../assets/assets';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-
-const backendUrl = 'http://localhost:4000';
+const backendUrl = import.meta.env.VITE_BACKEND_URL ;
 
 const AdAdd = ({ token }) => {
   const navigate = useNavigate();
