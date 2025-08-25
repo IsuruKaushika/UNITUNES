@@ -10,12 +10,15 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type RootStackParamList = {
   AdminLogin: undefined;
   Create_Professional: undefined;
   Dashboard: undefined; // Admin homepage
 };
+
+const backendUrl = 'https://unitunes-backend.vercel.app';
 
 const AdminLogin = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -29,7 +32,7 @@ const AdminLogin = () => {
     }
 
     try {
-      const response = await fetch('https://unitunes-backend.vercel.app', {
+      const response = await fetch(`${backendUrl}/api/admin/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -39,14 +42,18 @@ const AdminLogin = () => {
       console.log('Admin Login response:', data);
 
       if (response.ok && data.success) {
-        Alert.alert('Logging Successful!', 'Welcome Admin!', [
+        // ✅ Save login flag
+        await AsyncStorage.setItem('loggedIn', 'true');
+        await AsyncStorage.setItem('userRole', 'admin');
+
+        Alert.alert('Login Successful!', 'Welcome Admin!', [
           {
             text: 'OK',
-            onPress: () => navigation.navigate('Dashboard'), // Admin homepage
+            onPress: () => navigation.navigate('Dashboard'),
           },
         ]);
       } else {
-        Alert.alert('Login Failed', data.message || 'No admin found. Please create an account.');
+        Alert.alert('Login Failed', data.message || 'Invalid email or password');
       }
     } catch (err) {
       console.error('Fetch error:', err);
@@ -68,6 +75,7 @@ const AdminLogin = () => {
           placeholder="Email"
           placeholderTextColor="#ccc"
           keyboardType="email-address"
+          autoCapitalize="none"
           value={email}
           onChangeText={setEmail}
         />

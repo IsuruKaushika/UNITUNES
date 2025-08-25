@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type RootStackParamList = {
   StudentLogin: undefined;
@@ -17,8 +18,7 @@ type RootStackParamList = {
   index: undefined; // Homepage after login
 };
 
-const backendUrl = 'https://unitunes-backend.vercel.app'; 
-// or use process.env.EXPO_PUBLIC_BACKEND_URL if you configured env vars
+const backendUrl = 'https://unitunes-backend.vercel.app';
 
 const StudentLogin = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -32,7 +32,7 @@ const StudentLogin = () => {
     }
 
     try {
-      const response = await fetch(`${backendUrl}/api/user/serlogin`, {
+      const response = await fetch(`${backendUrl}/api/user/stulogin`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -42,6 +42,10 @@ const StudentLogin = () => {
       console.log('Student Login response:', data);
 
       if (response.ok && data.success) {
+        // ✅ Save login flag
+        await AsyncStorage.setItem('loggedIn', 'true');
+        await AsyncStorage.setItem('userRole', 'student');
+
         Alert.alert('Login Successful!', 'Welcome back!', [
           {
             text: 'OK',
