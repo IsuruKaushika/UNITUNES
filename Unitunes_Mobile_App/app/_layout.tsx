@@ -39,7 +39,7 @@ export default function RootLayout() {
         <Stack.Screen name="+not-found" />
       </Stack>
       <LinearGradient
-        colors={['rgba(255, 255, 255, 0.2)', 'rgba(255, 255, 255, 0.1)']}
+        colors={['rgba(255, 255, 255, 0.01)', 'rgba(255, 255, 255, 0.4)']}
         style={styles.bottomBar}
       >
         <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
@@ -64,19 +64,21 @@ const styles = StyleSheet.create({
   bottomBar: {
     position: 'absolute',
     bottom: 15,
-    left: 200,
-    right: 200,
-    height: 85,
-    borderTopEndRadius: 35,
-    borderTopStartRadius: 35,
-    borderBottomRightRadius: 35,
-    borderBottomLeftRadius: 35,
+    left: 20,
+    right: 20,
+    height: 60,
+
+    borderBottomRightRadius: 30,
+    borderBottomLeftRadius: 30,
+    borderTopRightRadius: 30,
+    borderTopLeftRadius: 30,
+
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
     paddingHorizontal: 20,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.2)',
+    borderTopWidth: 0,
+    // borderTopColor: 'rgba(255, 255, 255, 0.2)',
     ...Platform.select({
       ios: {
         shadowColor: '#000',
@@ -84,7 +86,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 6,
       },
-      android: { elevation: 10 },
+      //android: { elevation: 10 },
     }),
   },
   button: {
@@ -92,9 +94,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   label: {
-    color: '#708090',
-    fontSize: 14,
+    color: '#696969',
+    fontSize: 10,
     fontWeight: 'bold',
-    marginTop: 4,
+    marginTop: 3,
   },
 });
