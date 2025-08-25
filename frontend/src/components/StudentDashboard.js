@@ -30,8 +30,8 @@ function HomePage() {
         className="relative flex flex-col items-center justify-center h-[85vh] text-white text-center px-6 bg-cover bg-center overflow-hidden"
         style={{ backgroundImage: "url('/images/back.jpg')" }}
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-yellow-800/40 via-yellow-300/30 to-transparent animate-pulse" />
-        <div className="absolute inset-0 bg-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-800/50 via-blue-300/50 to-transparent animate-pulse" />
+        <div className="absolute inset-0 bg-orange/20" />
 
         {/* Floating decor */}
         <div className="absolute top-20 left-10 w-20 h-20 bg-white/10 rounded-full blur-xl animate-bounce"></div>
@@ -40,7 +40,7 @@ function HomePage() {
 
         <div className="relative z-10 flex flex-col items-center justify-center transform hover:scale-105 transition-transform duration-500">
           <h1 className="text-6xl md:text-8xl font-black mb-2 tracking-tight text-white drop-shadow-2xl">
-            Uni<span className="text-orange-300">Tunes</span>
+            Uni<span className="text-orange-600">Tunes</span>
           </h1>
           <div className="h-2 w-32 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full mx-auto animate-pulse"></div>
 
