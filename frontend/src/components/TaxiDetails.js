@@ -32,6 +32,8 @@ const TaxiDetails = () => {
   const navigate = useNavigate();
   const [taxi, setTaxi] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [relatedTaxis, setRelatedTaxis] = useState([]);
+  const [relatedLoading, setRelatedLoading] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
@@ -40,6 +42,8 @@ const TaxiDetails = () => {
         const response = await axios.post(`${backendUrl}/api/taxi/single`, { taxiId: id });
         if (response.data?.success && response.data.taxi) {
           setTaxi(response.data.taxi);
+          // Fetch related taxis
+          fetchRelatedTaxis(response.data.taxi);
         } else {
           console.warn("Invalid response:", response.data);
         }
@@ -52,6 +56,75 @@ const TaxiDetails = () => {
 
     fetchTaxi();
   }, [id]);
+
+  // Enhanced function to fetch related taxis
+  const fetchRelatedTaxis = async (currentTaxi) => {
+    setRelatedLoading(true);
+    try {
+      // Get all taxis
+      const response = await axios.get(`${backendUrl}/api/taxi/list`);
+      if (response.data?.success && Array.isArray(response.data.products)) {
+        let related = [];
+        
+        // First, try to find taxis in the same area
+        if (currentTaxi.address) {
+          const currentLocation = currentTaxi.address.toLowerCase();
+          const locationKeywords = currentLocation.split(',').map(s => s.trim());
+          
+          related = response.data.products
+            .filter(t => {
+              if (t._id === id) return false; // Exclude current taxi
+              if (!t.address) return false;
+              
+              const taxiLocation = t.address.toLowerCase();
+              // Check if any location keyword matches
+              return locationKeywords.some(keyword => 
+                keyword.length > 2 && taxiLocation.includes(keyword)
+              );
+            });
+        }
+        
+        // If not enough related taxis found by location, add more random ones
+        if (related.length < 4) {
+          const remaining = response.data.products
+            .filter(t => t._id !== id && !related.find(r => r._id === t._id))
+            .slice(0, 4 - related.length);
+          related = [...related, ...remaining];
+        }
+        
+        // Limit to 4 and shuffle for variety
+        related = related
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 4);
+        
+        setRelatedTaxis(related);
+      }
+    } catch (error) {
+      console.error("Error fetching related taxis:", error);
+      // Fallback: fetch some random taxis
+      try {
+        const fallbackResponse = await axios.get(`${backendUrl}/api/taxi/list`);
+        if (fallbackResponse.data?.success && Array.isArray(fallbackResponse.data.products)) {
+          const randomTaxis = fallbackResponse.data.products
+            .filter(t => t._id !== id)
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 4);
+          setRelatedTaxis(randomTaxis);
+        }
+      } catch (fallbackError) {
+        console.error("Fallback fetch also failed:", fallbackError);
+      }
+    } finally {
+      setRelatedLoading(false);
+    }
+  };
+
+  // Handle related taxi click
+  const handleRelatedTaxiClick = (taxiId) => {
+    // Scroll to top and navigate
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    navigate(`/taxi-details/${taxiId}`);
+  };
 
   // Image navigation
   const nextImage = () => {
@@ -320,6 +393,144 @@ const TaxiDetails = () => {
               </button>
             </div>
           </div>
+        </div>
+
+        {/* Enhanced Related Taxis Section */}
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-gray-600 bg-clip-text text-transparent mb-4">
+              Other Taxis You Might Like
+            </h2>
+            <p className="text-gray-600">
+              {relatedTaxis.length > 0 
+                ? "Discover more taxi services in your area and beyond" 
+                : "Loading more taxi options for you..."}
+            </p>
+          </div>
+
+          {relatedLoading ? (
+            <div className="flex flex-col items-center justify-center py-12">
+              <div className="w-12 h-12 border-4 border-yellow-200 border-t-yellow-500 rounded-full animate-spin mb-4"></div>
+              <p className="text-gray-600 font-medium">Finding similar taxis...</p>
+              <p className="text-sm text-gray-500 mt-1">Please wait a moment</p>
+            </div>
+          ) : relatedTaxis.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              {relatedTaxis.map((related) => (
+                <div
+                  key={related._id}
+                  onClick={() => handleRelatedTaxiClick(related._id)}
+                  className="group bg-white rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer overflow-hidden border border-gray-100 hover:border-yellow-200"
+                >
+                  <div className="relative h-48 overflow-hidden">
+                    {related.image?.[0] ? (
+                      <img
+                        src={related.image[0]}
+                        alt={related.Title}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                        <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                    )}
+                    
+                    {/* Overlay on hover */}
+                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                      <div className="bg-white/90 rounded-full p-2 transform scale-75 group-hover:scale-100 transition-transform duration-300">
+                        <svg className="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                      </div>
+                    </div>
+
+                    {/* Available badge */}
+                    <div className="absolute top-3 right-3 bg-green-500/90 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-semibold">
+                      <div className="flex items-center gap-1">
+                        <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
+                        Available
+                      </div>
+                    </div>
+
+                    {/* Price badge */}
+                    <div className="absolute bottom-3 left-3 bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full">
+                      <p className="text-sm font-bold text-gray-800">
+                        Rs {related.price}
+                        <span className="text-xs text-gray-600 font-normal">/trip</span>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="p-4">
+                    <h3 className="font-bold text-gray-800 mb-2 line-clamp-1 group-hover:text-yellow-600 transition-colors duration-300">
+                      {related.Title}
+                    </h3>
+                    
+                    <div className="flex items-start gap-2 mb-3">
+                      <svg className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      <p className="text-gray-600 text-sm line-clamp-2 leading-relaxed">
+                        {related.address || 'Location not specified'}
+                      </p>
+                    </div>
+
+                    {/* Quick info */}
+                    <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
+                      <div className="flex items-center gap-4">
+                        {related.owner && (
+                          <div className="flex items-center gap-1">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            <span className="truncate">{related.owner}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <button className="w-full bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-500 hover:to-orange-500 text-gray-800 font-semibold py-2.5 px-4 rounded-lg transition-all duration-300 transform group-hover:scale-105 shadow-md hover:shadow-lg">
+                      View Details
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 bg-white rounded-xl border border-gray-100">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">No Related Taxis Found</h3>
+              <p className="text-gray-600 mb-4">We couldn't find similar taxis at the moment.</p>
+              <button
+                onClick={() => navigate('/')}
+                className="bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-800 px-6 py-2 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
+              >
+                Browse All Taxis
+              </button>
+            </div>
+          )}
+
+          {/* View More Button */}
+          {relatedTaxis.length > 0 && (
+            <div className="text-center">
+              <button
+                onClick={() => navigate('/')}
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-yellow-500 hover:to-yellow-400 hover:text-gray-900 text-white font-semibold py-3 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+                </svg>
+                View All Taxis
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
