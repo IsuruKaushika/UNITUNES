@@ -14,7 +14,7 @@ const HomePage = () => {
     { name: 'Taxies', icon: require('../../assets/images/Taxi.jpg'), route: 'Three Wheel' },
     { name: 'Medicare', icon: require('../../assets/images/Medicine.jpg'), route: 'MedicalCenterList' },
     { name: 'Foods & Stationary', icon: require('../../assets/images/Food.jpg'), route: 'Food' },
-    { name: 'Renting', icon: require('../../assets/images/Rental.jpg'), route: 'Studemt Service - Fassion' },
+    { name: 'Renting', icon: require('../../assets/images/Rental.jpg'), route: 'RentItemList' },
     { name: 'Skill Sharing', icon: require('../../assets/images/Skill Sharing.jpg'), route: '' },
   ];
 
