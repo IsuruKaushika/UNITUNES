@@ -10,20 +10,20 @@ import {
   TextInput,
   StyleSheet,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
 const defaultImage = require('../../assets/images/Bording_2.png');
-
-
 const backendUrl = 'https://unitunes-backend.vercel.app';
 
 export default function BoardingList() {
   const router = useRouter();
 
   const [boardingListData, setBoardingListData] = useState<any[]>([]);
+  const [filteredData, setFilteredData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [location, setLocation] = useState('');
   const [persons, setPersons] = useState('');
@@ -37,6 +37,7 @@ export default function BoardingList() {
         const data = await res.json();
         if (data.success && Array.isArray(data.products)) {
           setBoardingListData(data.products);
+          setFilteredData(data.products); // Initially show all
         } else {
           console.error('Invalid response format:', data);
         }
@@ -51,18 +52,27 @@ export default function BoardingList() {
 
   const applyFilters = () => {
     const filtered = boardingListData.filter(item => {
-      return (
-        (location === '' || item.address.toLowerCase().includes(location.toLowerCase())) &&
-        (persons === '' || parseInt(item.persons) === parseInt(persons)) &&
-        (priceRange === '' || parseFloat(item.price) <= parseFloat(priceRange)) &&
-        (gender === '' || gender === 'any' || item.gender?.toLowerCase() === gender.toLowerCase())
-      );
+      const matchLocation =
+        location === '' || (item.address || '').toLowerCase().includes(location.toLowerCase());
+      const matchPersons =
+        persons === '' || parseInt(item.persons || '0') === parseInt(persons);
+      const matchPrice =
+        priceRange === '' || parseFloat(item.price || '0') <= parseFloat(priceRange);
+      const itemGender = item.gender ? String(item.gender).toLowerCase() : '';
+      const matchGender =
+        gender === '' || gender === 'any' || itemGender === gender.toLowerCase();
+
+      return matchLocation && matchPersons && matchPrice && matchGender;
     });
-    setBoardingListData(filtered);
+
+    setFilteredData(filtered);
+    if (filtered.length === 0) {
+      Alert.alert('No Results', 'No boarding found matching the filters.');
+    }
   };
 
   const handlePress = (id: string) => {
-    router.push(`/BoardingID/${id}`); // Fixed: Added backticks for template literal
+    router.push(`/BoardingID/${id}`);
   };
 
   return (
@@ -103,7 +113,7 @@ export default function BoardingList() {
           style={styles.input}
         />
         <View style={styles.pickerContainer}>
-          <Picker selectedValue={gender} onValueChange={(val) => setGender(val)}>
+          <Picker selectedValue={gender} onValueChange={val => setGender(val)}>
             <Picker.Item label="Select Gender" value="" />
             <Picker.Item label="Male" value="male" />
             <Picker.Item label="Female" value="female" />
@@ -120,8 +130,8 @@ export default function BoardingList() {
         <ActivityIndicator size="large" color="#FFA726" style={styles.loader} />
       ) : (
         <ScrollView contentContainerStyle={styles.list}>
-          {boardingListData.length > 0 ? (
-            boardingListData.map(item => (
+          {filteredData.length > 0 ? (
+            filteredData.map(item => (
               <TouchableOpacity key={item._id} style={styles.card} onPress={() => handlePress(item._id)}>
                 <Image
                   source={item.image?.[0] ? { uri: item.image[0] } : defaultImage}
@@ -132,6 +142,8 @@ export default function BoardingList() {
                   <Text style={styles.cardTitle}>{item.Title}</Text>
                   <Text style={styles.cardText}>{item.address}</Text>
                   <Text style={styles.cardText}>Rs {item.price} / month</Text>
+                  <Text style={styles.cardText}>Gender: {item.gender || 'Any'}</Text>
+                  <Text style={styles.cardText}>Persons: {item.persons || 'N/A'}</Text>
                 </View>
               </TouchableOpacity>
             ))
