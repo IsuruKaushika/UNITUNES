@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Unitunes_v1.1",
-    "slug": "Unitunes_v1.1",
+    "slug": "Unitunes_Mobile_App",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -36,6 +36,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "704940b9-fe25-4888-a6f7-62a13116b461"
+      }
     }
   }
 }
