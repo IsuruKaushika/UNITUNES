@@ -328,7 +328,7 @@ const TaxiList = () => {
         )}
       </div>
 
-      {/* Footer ftthyf*/}
+      {/* Footer*/}
       <div className="mt-20 py-8 bg-white border-t border-gray-100">
         <div className="container mx-auto px-4 text-center">
           <p className="text-gray-500 text-sm">
