@@ -11,11 +11,10 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 
-// Replace this with your root stack param list
 type RootStackParamList = {
   AdminLogin: undefined;
   Create_Professional: undefined;
-  Dashboard: undefined; // Change this to your admin landing page
+  Dashboard: undefined; // Admin homepage
 };
 
 const AdminLogin = () => {
@@ -30,7 +29,7 @@ const AdminLogin = () => {
     }
 
     try {
-      const response = await fetch('https://unitunes-backend.vercel.app/admin-login', {
+      const response = await fetch('https://unitunes-backend.vercel.app', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -40,10 +39,14 @@ const AdminLogin = () => {
       console.log('Admin Login response:', data);
 
       if (response.ok && data.success) {
-        Alert.alert('Success', 'Admin logged in!');
-        navigation.navigate('Dashboard'); // Redirect to Admin Dashboard
+        Alert.alert('Logging Successful!', 'Welcome Admin!', [
+          {
+            text: 'OK',
+            onPress: () => navigation.navigate('Dashboard'), // Admin homepage
+          },
+        ]);
       } else {
-        Alert.alert('Login Failed', data.message || 'Invalid admin credentials');
+        Alert.alert('Login Failed', data.message || 'No admin found. Please create an account.');
       }
     } catch (err) {
       console.error('Fetch error:', err);
@@ -88,13 +91,10 @@ const AdminLogin = () => {
           <Text style={styles.registerText}>Register here</Text>
         </TouchableOpacity>
 
-        {/*
         <View style={styles.googleContainer}>
           <Ionicons name="logo-google" size={20} color="#fff" />
           <Text style={styles.googleText}> or continue with</Text>
         </View>
-        */}
-
       </View>
     </ImageBackground>
   );

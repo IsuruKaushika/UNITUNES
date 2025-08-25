@@ -3,7 +3,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet, ActivityIndicator, Lin
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 
-const backendUrl = 'http://192.168.86.81:4000';
+const backendUrl = 'https://unitunes-backend.vercel.app';
 const defaultImage = require('../../../assets/images/default-taxi.png'); // Adjust if needed
 
 export default function TaxiPage() {

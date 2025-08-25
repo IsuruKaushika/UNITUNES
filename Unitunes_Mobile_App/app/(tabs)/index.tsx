@@ -11,7 +11,7 @@ const HomePage = () => {
 
   const features = [
     { name: 'Boarding', icon: require('../../assets/images/Bording.jpg'), route: 'BoardingList' },
-    { name: 'Taxies', icon: require('../../assets/images/Taxi.jpg'), route: 'Travel Page' },
+    { name: 'Taxies', icon: require('../../assets/images/Taxi.jpg'), route: 'Three Wheel' },
     { name: 'Medicare', icon: require('../../assets/images/Medicine.jpg'), route: 'MedicalCenterList' },
     { name: 'Foods & Stationary', icon: require('../../assets/images/Food.jpg'), route: 'Food' },
     { name: 'Renting', icon: require('../../assets/images/Rental.jpg'), route: 'Studemt Service - Fassion' },
