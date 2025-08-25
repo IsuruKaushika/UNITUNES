@@ -1,4 +1,3 @@
-// StudentLogin.tsx
 import React, { useState } from 'react';
 import {
   View,
@@ -12,12 +11,10 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 
-// Replace this with your root stack param list
 type RootStackParamList = {
   StudentLogin: undefined;
   Create_Student: undefined;
-  BoardingList: undefined;
-  // ...other screens
+  index: undefined; // Homepage after login
 };
 
 const StudentLogin = () => {
@@ -39,14 +36,17 @@ const StudentLogin = () => {
       });
 
       const data = await response.json();
-      console.log('Login response:', data);
+      console.log('Student Login response:', data);
 
       if (response.ok && data.success) {
-        Alert.alert('Success', 'Logged in!');
-        // ← Navigate to the BoardingList screen
-        navigation.navigate('index');
+        Alert.alert('Logging Successful!', 'Welcome back!', [
+          {
+            text: 'OK',
+            onPress: () => navigation.navigate('index'), // Homepage
+          },
+        ]);
       } else {
-        Alert.alert('Login Failed', data.message || 'Invalid credentials');
+        Alert.alert('Login Failed', data.message || 'No user found. Please create an account.');
       }
     } catch (err) {
       console.error('Fetch error:', err);
@@ -91,14 +91,10 @@ const StudentLogin = () => {
           <Text style={styles.registerText}>Register here</Text>
         </TouchableOpacity>
 
-        {/*
         <View style={styles.googleContainer}>
           <Ionicons name="logo-google" size={20} color="#fff" />
           <Text style={styles.googleText}> or continue with</Text>
         </View>
-        */}
-
-
       </View>
     </ImageBackground>
   );
