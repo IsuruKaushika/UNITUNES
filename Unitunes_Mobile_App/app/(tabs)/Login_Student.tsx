@@ -17,6 +17,9 @@ type RootStackParamList = {
   index: undefined; // Homepage after login
 };
 
+const backendUrl = 'https://unitunes-backend.vercel.app'; 
+// or use process.env.EXPO_PUBLIC_BACKEND_URL if you configured env vars
+
 const StudentLogin = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [email, setEmail] = useState('');
@@ -29,7 +32,7 @@ const StudentLogin = () => {
     }
 
     try {
-      const response = await fetch('https://unitunes-backend.vercel.app', {
+      const response = await fetch(`${backendUrl}/api/user/serlogin`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -39,18 +42,18 @@ const StudentLogin = () => {
       console.log('Student Login response:', data);
 
       if (response.ok && data.success) {
-        Alert.alert('Logging Successful!', 'Welcome back!', [
+        Alert.alert('Login Successful!', 'Welcome back!', [
           {
             text: 'OK',
-            onPress: () => navigation.navigate('index'), // Homepage
+            onPress: () => navigation.navigate('index'),
           },
         ]);
       } else {
-        Alert.alert('Login Failed', data.message || 'No user found. Please create an account.');
+        Alert.alert('Login Failed', data.message || 'Invalid email or password');
       }
     } catch (err) {
       console.error('Fetch error:', err);
-      Alert.alert('Error', 'Unable to connect to server');
+      Alert.alert('Error', 'Unable to connect to the server');
     }
   };
 
@@ -68,6 +71,7 @@ const StudentLogin = () => {
           placeholder="Email"
           placeholderTextColor="#ccc"
           keyboardType="email-address"
+          autoCapitalize="none"
           value={email}
           onChangeText={setEmail}
         />
