@@ -1,16 +1,40 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import logo from "../assets/logo.png";
 
 // backend URL
 const backendUrl = "https://unitunes-backend.vercel.app" || "http://localhost:4000";
+
+// Custom Logo Component
+const CustomLogo = ({ onClick, className = "" }) => (
+  <div 
+    onClick={onClick}
+    className={`cursor-pointer hover:scale-110 transition-transform duration-300 ${className}`}
+  >
+    <div className="bg-gradient-to-br from-yellow-400 via-orange-400 to-red-400 rounded-2xl p-3 shadow-lg">
+      <div className="flex items-center gap-2">
+        <div className="relative">
+          <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+          </svg>
+          <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
+        </div>
+        <div className="text-white font-bold text-lg">
+          BoardingHub
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 const BoardingDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [boarding, setBoarding] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [relatedBoardings, setRelatedBoardings] = useState([]);
+  const [relatedLoading, setRelatedLoading] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
     const fetchBoarding = async () => {
@@ -18,6 +42,8 @@ const BoardingDetails = () => {
         const response = await axios.post(`${backendUrl}/api/boarding/single`, { boardingId: id });
         if (response.data?.success && response.data.boarding) {
           setBoarding(response.data.boarding);
+          // Fetch related boardings based on location
+          fetchRelatedBoardings(response.data.boarding);
         } else {
           console.warn("Invalid data received:", response.data);
         }
@@ -30,6 +56,47 @@ const BoardingDetails = () => {
 
     fetchBoarding();
   }, [id]);
+
+  // Fetch related boardings based on location
+  const fetchRelatedBoardings = async (currentBoarding) => {
+    if (!currentBoarding?.address) return;
+    
+    setRelatedLoading(true);
+    try {
+      // Try backend search for related boardings
+      // const response = await axios.get(`${backendUrl}/api/boarding/search?location=${currentBoarding.address.split(',')[0]}&exclude=${id}`);
+      // if (response.data?.success) {
+      //   setRelatedBoardings(response.data.boardings.slice(0, 4));
+      // }
+      
+      // Fallback: get all boardings and filter
+      const response = await axios.get(`${backendUrl}/api/boarding/list`);
+      if (response.data?.success && Array.isArray(response.data.products)) {
+        const related = response.data.products
+          .filter(b => b._id !== id && 
+            b.address?.toLowerCase().includes(currentBoarding.address.split(',')[0].toLowerCase()))
+          .slice(0, 4);
+        setRelatedBoardings(related);
+      }
+    } catch (error) {
+      console.error("Error fetching related boardings:", error);
+    } finally {
+      setRelatedLoading(false);
+    }
+  };
+
+  // Image navigation
+  const nextImage = () => {
+    if (boarding?.image?.length > 1) {
+      setCurrentImageIndex((prev) => (prev + 1) % boarding.image.length);
+    }
+  };
+
+  const prevImage = () => {
+    if (boarding?.image?.length > 1) {
+      setCurrentImageIndex((prev) => (prev - 1 + boarding.image.length) % boarding.image.length);
+    }
+  };
 
   if (loading) {
     return (
@@ -91,13 +158,10 @@ const BoardingDetails = () => {
             Back
           </button>
 
-          {/* Logo */}
-          <img
-            src={logo}
-            alt="UniTunes Logo"
-            onClick={() => navigate("/")}
-            className="absolute top-6 right-4 w-28 h-12 rounded-2xl shadow-lg cursor-pointer hover:scale-110 transition-transform duration-300 bg-white p-2"
-          />
+          {/* Custom Logo */}
+          <div className="absolute top-6 right-4">
+            <CustomLogo onClick={() => navigate("/")} />
+          </div>
         </div>
       </div>
 
@@ -112,26 +176,88 @@ const BoardingDetails = () => {
         </div>
 
         {/* Main Boarding Card */}
-        <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
+        <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 mb-12">
           
-          {/* Image Gallery */}
+          {/* Enhanced Image Gallery */}
           <div className="relative">
-            <div className="flex gap-2 overflow-x-auto p-6 pb-0 scrollbar-hide">
-              {boarding.image?.map((img, index) => (
-                <div key={index} className="relative flex-shrink-0">
-                  <img
-                    src={img}
-                    alt={`Boarding ${index + 1}`}
-                    className="rounded-2xl object-cover w-80 h-56 shadow-lg hover:shadow-xl transition-shadow duration-300"
-                  />
-                  {index === 0 && (
-                    <div className="absolute top-4 left-4 bg-yellow-400 text-gray-800 px-3 py-1 rounded-full text-sm font-semibold shadow-lg">
-                      Main Photo
-                    </div>
-                  )}
+            {boarding.image && boarding.image.length > 0 ? (
+              <div className="relative h-96 overflow-hidden">
+                <img
+                  src={boarding.image[currentImageIndex]}
+                  alt={`${boarding.Title} - Image ${currentImageIndex + 1}`}
+                  className="w-full h-full object-cover"
+                />
+                
+                {/* Image Navigation */}
+                {boarding.image.length > 1 && (
+                  <>
+                    <button
+                      onClick={prevImage}
+                      className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors duration-300"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={nextImage}
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors duration-300"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  </>
+                )}
+                
+                {/* Image Counter */}
+                {boarding.image.length > 1 && (
+                  <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-1 rounded-full text-sm">
+                    {currentImageIndex + 1} / {boarding.image.length}
+                  </div>
+                )}
+                
+                {/* Available Badge */}
+                <div className="absolute top-4 left-4 bg-green-500 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                    Available Now
+                  </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ) : (
+              <div className="h-96 bg-gray-200 flex items-center justify-center">
+                <div className="text-center">
+                  <svg className="w-16 h-16 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <p className="text-gray-500">No images available</p>
+                </div>
+              </div>
+            )}
+
+            {/* Thumbnail Strip */}
+            {boarding.image && boarding.image.length > 1 && (
+              <div className="p-6 pb-0">
+                <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+                  {boarding.image.map((img, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentImageIndex(index)}
+                      className={`flex-shrink-0 w-20 h-16 rounded-lg overflow-hidden border-2 transition-colors duration-300 ${
+                        index === currentImageIndex ? 'border-yellow-400' : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <img
+                        src={img}
+                        alt={`Thumbnail ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Content Section */}
@@ -223,31 +349,103 @@ const BoardingDetails = () => {
               </div>
             )}
 
-            {/* WhatsApp Contact Button */}
-            {boarding.contact && (
-              <div className="flex justify-center">
+            {/* Contact Actions */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              {boarding.contact && (
                 <a
                   href={`https://wa.me/${boarding.contact.replace(/\D/g, "")}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-4 px-8 rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                  className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-4 px-8 rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                 >
                   <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.108"/>
                   </svg>
                   Contact via WhatsApp
                 </a>
+              )}
+              
+              <button
+                onClick={() => navigator.share && navigator.share({ 
+                  title: boarding.Title, 
+                  text: `Check out this boarding: ${boarding.Title}`, 
+                  url: window.location.href 
+                })}
+                className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-4 px-8 rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+                </svg>
+                Share Boarding
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Related Boardings Section */}
+        {relatedBoardings.length > 0 && (
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-gray-600 bg-clip-text text-transparent mb-4">
+                Similar Boardings in the Area
+              </h2>
+              <p className="text-gray-600">
+                Other boarding places you might be interested in
+              </p>
+            </div>
+
+            {relatedLoading ? (
+              <div className="flex justify-center py-8">
+                <div className="w-8 h-8 border-2 border-yellow-200 border-t-yellow-500 rounded-full animate-spin"></div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {relatedBoardings.map((related) => (
+                  <div
+                    key={related._id}
+                    onClick={() => navigate(`/boarding-details/${related._id}`)}
+                    className="group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer overflow-hidden border border-gray-100"
+                  >
+                    <div className="relative h-48 overflow-hidden">
+                      <img
+                        src={related.image?.[0]}
+                        alt={related.Title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute top-2 right-2 bg-white/90 px-2 py-1 rounded-full text-xs font-semibold text-gray-800">
+                        Available
+                      </div>
+                    </div>
+                    <div className="p-4">
+                      <h3 className="font-bold text-gray-800 mb-2 line-clamp-1 group-hover:text-yellow-600 transition-colors duration-300">
+                        {related.Title}
+                      </h3>
+                      <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                        {related.address}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-lg font-bold text-green-600">
+                          Rs {related.price}
+                          <span className="text-sm text-gray-500 font-normal">/mo</span>
+                        </span>
+                        <button className="bg-yellow-400 hover:bg-yellow-500 text-gray-800 px-3 py-1 rounded-lg text-sm font-semibold transition-colors duration-300">
+                          View
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </div>
-        </div>
+        )}
       </div>
 
       {/* Footer */}
       <div className="mt-20 py-8 bg-white border-t border-gray-100">
         <div className="container mx-auto px-4 text-center">
           <p className="text-gray-500 text-sm">
-            © 2024 UniTunes. Find your perfect boarding place with confidence.
+            © 2024 BoardingHub. Find your perfect boarding place with confidence.
           </p>
         </div>
       </div>
