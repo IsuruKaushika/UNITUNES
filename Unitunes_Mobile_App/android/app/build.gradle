@@ -86,9 +86,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.thivanka2001.unitunes_mobile_app_v1'
+    namespace 'com.thivanka2001.Unitunes_Mobile_App'
     defaultConfig {
-        applicationId 'com.thivanka2001.unitunes_mobile_app_v1'
+        applicationId 'com.thivanka2001.Unitunes_Mobile_App'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

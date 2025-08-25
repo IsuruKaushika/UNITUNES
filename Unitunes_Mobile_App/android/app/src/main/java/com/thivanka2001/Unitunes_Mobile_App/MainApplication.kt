@@ -1,4 +1,4 @@
-package com.thivanka2001.unitunes_mobile_app_v1
+package com.thivanka2001.Unitunes_Mobile_App
 
 import android.app.Application
 import android.content.res.Configuration
