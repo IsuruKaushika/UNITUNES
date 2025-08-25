@@ -162,7 +162,7 @@ const HomePage = () => {
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: "#fff" },
-  container: { flexGrow: 1, backgroundColor: "#FED4A5", paddingBottom: 10, paddingTop: 50 },
+  container: { flexGrow: 1, backgroundColor: "#FED4A5", paddingBottom: 70, paddingTop: 50 },
   header: {
     flexDirection: "row",
     alignItems: "center",

@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   titleWrapper: { alignItems: 'center' },
-  logo: { width: 80, height: 80 },
+  logo: { width: 60, height: 60 },
   headerTitle: { fontSize: 30, fontWeight: 'bold', marginTop: 8 },
   headerTitleHighlight: { color: '#FFF' },
   loader: { marginTop: 20 },
