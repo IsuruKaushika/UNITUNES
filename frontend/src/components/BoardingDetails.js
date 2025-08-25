@@ -20,7 +20,7 @@ const CustomLogo = ({ onClick, className = "" }) => (
           <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
         </div>
         <div className="text-white font-bold text-lg">
-          uniTunes
+          UniTunes
         </div>
       </div>
     </div>
