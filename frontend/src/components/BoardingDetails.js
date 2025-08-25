@@ -42,7 +42,7 @@ const BoardingDetails = () => {
         const response = await axios.post(`${backendUrl}/api/boarding/single`, { boardingId: id });
         if (response.data?.success && response.data.boarding) {
           setBoarding(response.data.boarding);
-          // Fetch related boardings based on location
+          // Fetch related boardings
           fetchRelatedBoardings(response.data.boarding);
         } else {
           console.warn("Invalid data received:", response.data);
@@ -57,29 +57,63 @@ const BoardingDetails = () => {
     fetchBoarding();
   }, [id]);
 
-  // Fetch related boardings based on location
+  // Enhanced function to fetch related boardings
   const fetchRelatedBoardings = async (currentBoarding) => {
-    if (!currentBoarding?.address) return;
-    
     setRelatedLoading(true);
     try {
-      // Try backend search for related boardings
-      // const response = await axios.get(`${backendUrl}/api/boarding/search?location=${currentBoarding.address.split(',')[0]}&exclude=${id}`);
-      // if (response.data?.success) {
-      //   setRelatedBoardings(response.data.boardings.slice(0, 4));
-      // }
-      
-      // Fallback: get all boardings and filter
+      // Get all boardings
       const response = await axios.get(`${backendUrl}/api/boarding/list`);
       if (response.data?.success && Array.isArray(response.data.products)) {
-        const related = response.data.products
-          .filter(b => b._id !== id && 
-            b.address?.toLowerCase().includes(currentBoarding.address.split(',')[0].toLowerCase()))
+        let related = [];
+        
+        // First, try to find boardings in the same area
+        if (currentBoarding.address) {
+          const currentLocation = currentBoarding.address.toLowerCase();
+          const locationKeywords = currentLocation.split(',').map(s => s.trim());
+          
+          related = response.data.products
+            .filter(b => {
+              if (b._id === id) return false; // Exclude current boarding
+              if (!b.address) return false;
+              
+              const boardingLocation = b.address.toLowerCase();
+              // Check if any location keyword matches
+              return locationKeywords.some(keyword => 
+                keyword.length > 2 && boardingLocation.includes(keyword)
+              );
+            });
+        }
+        
+        // If not enough related boardings found by location, add more random ones
+        if (related.length < 4) {
+          const remaining = response.data.products
+            .filter(b => b._id !== id && !related.find(r => r._id === b._id))
+            .slice(0, 4 - related.length);
+          related = [...related, ...remaining];
+        }
+        
+        // Limit to 4 and shuffle for variety
+        related = related
+          .sort(() => Math.random() - 0.5)
           .slice(0, 4);
+        
         setRelatedBoardings(related);
       }
     } catch (error) {
       console.error("Error fetching related boardings:", error);
+      // Fallback: fetch some random boardings
+      try {
+        const fallbackResponse = await axios.get(`${backendUrl}/api/boarding/list`);
+        if (fallbackResponse.data?.success && Array.isArray(fallbackResponse.data.products)) {
+          const randomBoardings = fallbackResponse.data.products
+            .filter(b => b._id !== id)
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 4);
+          setRelatedBoardings(randomBoardings);
+        }
+      } catch (fallbackError) {
+        console.error("Fallback fetch also failed:", fallbackError);
+      }
     } finally {
       setRelatedLoading(false);
     }
@@ -96,6 +130,13 @@ const BoardingDetails = () => {
     if (boarding?.image?.length > 1) {
       setCurrentImageIndex((prev) => (prev - 1 + boarding.image.length) % boarding.image.length);
     }
+  };
+
+  // Handle related boarding click
+  const handleRelatedBoardingClick = (boardingId) => {
+    // Scroll to top and navigate
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    navigate(`/boarding-details/${boardingId}`);
   };
 
   if (loading) {
@@ -382,71 +423,167 @@ const BoardingDetails = () => {
           </div>
         </div>
 
-        {/* Related Boardings Section */}
-        {relatedBoardings.length > 0 && (
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-gray-600 bg-clip-text text-transparent mb-4">
-                Similar Boardings in the Area
-              </h2>
-              <p className="text-gray-600">
-                Other boarding places you might be interested in
-              </p>
-            </div>
+        {/* Enhanced Related Boardings Section */}
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-gray-600 bg-clip-text text-transparent mb-4">
+              Other Boardings You Might Like
+            </h2>
+            <p className="text-gray-600">
+              {relatedBoardings.length > 0 
+                ? "Discover more boarding places in your area and beyond" 
+                : "Loading more boarding options for you..."}
+            </p>
+          </div>
 
-            {relatedLoading ? (
-              <div className="flex justify-center py-8">
-                <div className="w-8 h-8 border-2 border-yellow-200 border-t-yellow-500 rounded-full animate-spin"></div>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {relatedBoardings.map((related) => (
-                  <div
-                    key={related._id}
-                    onClick={() => navigate(`/boarding-details/${related._id}`)}
-                    className="group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer overflow-hidden border border-gray-100"
-                  >
-                    <div className="relative h-48 overflow-hidden">
+          {relatedLoading ? (
+            <div className="flex flex-col items-center justify-center py-12">
+              <div className="w-12 h-12 border-4 border-yellow-200 border-t-yellow-500 rounded-full animate-spin mb-4"></div>
+              <p className="text-gray-600 font-medium">Finding similar boardings...</p>
+              <p className="text-sm text-gray-500 mt-1">Please wait a moment</p>
+            </div>
+          ) : relatedBoardings.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              {relatedBoardings.map((related) => (
+                <div
+                  key={related._id}
+                  onClick={() => handleRelatedBoardingClick(related._id)}
+                  className="group bg-white rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer overflow-hidden border border-gray-100 hover:border-yellow-200"
+                >
+                  <div className="relative h-48 overflow-hidden">
+                    {related.image?.[0] ? (
                       <img
-                        src={related.image?.[0]}
+                        src={related.image[0]}
                         alt={related.Title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       />
-                      <div className="absolute top-2 right-2 bg-white/90 px-2 py-1 rounded-full text-xs font-semibold text-gray-800">
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                        <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                    )}
+                    
+                    {/* Overlay on hover */}
+                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                      <div className="bg-white/90 rounded-full p-2 transform scale-75 group-hover:scale-100 transition-transform duration-300">
+                        <svg className="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                      </div>
+                    </div>
+
+                    {/* Available badge */}
+                    <div className="absolute top-3 right-3 bg-green-500/90 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-semibold">
+                      <div className="flex items-center gap-1">
+                        <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
                         Available
                       </div>
                     </div>
-                    <div className="p-4">
-                      <h3 className="font-bold text-gray-800 mb-2 line-clamp-1 group-hover:text-yellow-600 transition-colors duration-300">
-                        {related.Title}
-                      </h3>
-                      <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                        {related.address}
+
+                    {/* Price badge */}
+                    <div className="absolute bottom-3 left-3 bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full">
+                      <p className="text-sm font-bold text-gray-800">
+                        Rs {related.price}
+                        <span className="text-xs text-gray-600 font-normal">/mo</span>
                       </p>
-                      <div className="flex items-center justify-between">
-                        <span className="text-lg font-bold text-green-600">
-                          Rs {related.price}
-                          <span className="text-sm text-gray-500 font-normal">/mo</span>
-                        </span>
-                        <button className="bg-yellow-400 hover:bg-yellow-500 text-gray-800 px-3 py-1 rounded-lg text-sm font-semibold transition-colors duration-300">
-                          View
-                        </button>
-                      </div>
                     </div>
                   </div>
-                ))}
+
+                  <div className="p-4">
+                    <h3 className="font-bold text-gray-800 mb-2 line-clamp-1 group-hover:text-yellow-600 transition-colors duration-300">
+                      {related.Title}
+                    </h3>
+                    
+                    <div className="flex items-start gap-2 mb-3">
+                      <svg className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      <p className="text-gray-600 text-sm line-clamp-2 leading-relaxed">
+                        {related.address || 'Location not specified'}
+                      </p>
+                    </div>
+
+                    {/* Quick info */}
+                    <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
+                      <div className="flex items-center gap-4">
+                        {related.Rooms && (
+                          <div className="flex items-center gap-1">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
+                            <span>{related.Rooms} rooms</span>
+                          </div>
+                        )}
+                        {related.bathRooms && (
+                          <div className="flex items-center gap-1">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10v11M20 10v11" />
+                            </svg>
+                            <span>{related.bathRooms} baths</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <button className="w-full bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-500 hover:to-orange-500 text-gray-800 font-semibold py-2.5 px-4 rounded-lg transition-all duration-300 transform group-hover:scale-105 shadow-md hover:shadow-lg">
+                      View Details
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 bg-white rounded-xl border border-gray-100">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
               </div>
-            )}
-          </div>
-        )}
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">No Related Boardings Found</h3>
+              <p className="text-gray-600 mb-4">We couldn't find similar boardings at the moment.</p>
+              <button
+                onClick={() => navigate('/')}
+                className="bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-800 px-6 py-2 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
+              >
+                Browse All Boardings
+              </button>
+            </div>
+          )}
+
+          {/* View More Button */}
+          {relatedBoardings.length > 0 && (
+            <div className="text-center">
+              <button
+                onClick={() => navigate('/')}
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-yellow-500 hover:to-yellow-400 hover:text-gray-900 text-white font-semibold py-3 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+                View All Boardings
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Footer */}
-      <div className="mt-20 py-8 bg-white border-t border-gray-100">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-gray-500 text-sm">
-            © 2025 unitunes. Find your perfect boarding place with confidence.
-          </p>
+      <div className="mt-20 py-12 bg-gradient-to-r from-gray-800 to-gray-900 text-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center">
+            <div className="flex justify-center mb-6">
+              <CustomLogo className="opacity-90 hover:opacity-100" />
+            </div>
+            <p className="text-gray-300 text-sm mb-4">
+              © 2025 UniTunes. Find your perfect boarding place with confidence.
+            </p>
+            <p className="text-gray-400 text-xs">
+              Connecting students with quality accommodation since 2025
+            </p>
+          </div>
         </div>
       </div>
     </div>
