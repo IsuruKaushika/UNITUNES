@@ -7,9 +7,9 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
-  Linking,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 const backendUrl = 'https://unitunes-backend.vercel.app';
 const defaultImage = require('../../assets/images/GroceryGoods.png');
@@ -17,6 +17,7 @@ const defaultImage = require('../../assets/images/GroceryGoods.png');
 export default function ShopsList() {
   const [shops, setShops] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchShops() {
@@ -37,52 +38,53 @@ export default function ShopsList() {
     fetchShops();
   }, []);
 
-  const handleWhatsApp = (phone: string) => {
-    const formattedNumber = phone.replace(/\D/g, ''); // remove non-numeric characters
-    const url = `https://wa.me/${formattedNumber}`;
-    Linking.openURL(url).catch((err) => console.error('Error opening WhatsApp:', err));
+  const handlePress = (id: string) => {
+    router.push(`/GroceryID/${id}`);
   };
 
   return (
     <View style={styles.container}>
       {/* Header */}
-      <View style={styles.headerContainer}>
-        <TouchableOpacity style={styles.iconButton}>
-          <Ionicons name="menu" size={28} color="#000" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>UNITUNES</Text>
-        <TouchableOpacity style={styles.iconButton}>
-          <Ionicons name="notifications-outline" size={28} color="#000" />
-        </TouchableOpacity>
+      <View style={styles.header}>
+        <Ionicons name="menu" size={28} color="black" onPress={() => {}} />
+        <View style={styles.titleWrapper}>
+          <Image source={require('../../assets/images/UnitunesLogo_2.png')} style={styles.logo} />
+          <Text style={styles.headerTitle}>
+            UNI<Text style={styles.headerTitleHighlight}>TUNES</Text>
+          </Text>
+        </View>
+        <Ionicons name="notifications-outline" size={28} color="black" onPress={() => {}} />
       </View>
 
-      {/* Content */}
+      {/* List */}
       {loading ? (
         <ActivityIndicator size="large" color="#FFA726" style={styles.loader} />
       ) : (
-        <ScrollView contentContainerStyle={styles.content}>
-          <Text style={styles.title}>Shops & Delivery Services</Text>
-          <Text style={styles.subtitle}>Contact shop owners via WhatsApp</Text>
+        <ScrollView contentContainerStyle={styles.list}>
+          <Text style={styles.pageTitle}>Shops & Delivery Services</Text>
+          <Text style={styles.pageSubtitle}>Tap a shop for details</Text>
           {shops.length > 0 ? (
             shops.map((item) => (
-              <View key={item._id} style={styles.item}>
+              <TouchableOpacity
+                key={item._id}
+                style={styles.card}
+                onPress={() => handlePress(item._id)}
+              >
                 <Image
                   source={item.image?.[0] ? { uri: item.image[0] } : defaultImage}
-                  style={styles.itemImage}
+                  style={styles.cardImage}
+                  resizeMode="cover"
                 />
-                <View style={styles.itemDetails}>
-                  <Text style={styles.itemName}>{item.shopName || 'Shop Name'}</Text>
-                  <Text style={styles.itemContact}>{item.contact || 'No contact available'}</Text>
+                <View style={styles.cardContent}>
+                  <Text style={styles.cardTitle}>{item.shopName || 'Shop Name'}</Text>
+                  <Text style={styles.cardText}>
+                    Contact: {item.contact || 'Not available'}
+                  </Text>
+                  <Text style={styles.cardText}>
+                    Location: {item.location || 'Not available'}
+                  </Text>
                 </View>
-                {item.contact && (
-                  <TouchableOpacity
-                    style={styles.contactButton}
-                    onPress={() => handleWhatsApp(item.contact)}
-                  >
-                    <Text style={styles.buttonText}>WhatsApp</Text>
-                  </TouchableOpacity>
-                )}
-              </View>
+              </TouchableOpacity>
             ))
           ) : (
             <Text style={styles.emptyText}>No shops available.</Text>
@@ -94,44 +96,35 @@ export default function ShopsList() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFF', paddingBottom: 10 },
-  headerContainer: {
-    height: 150,
+  container: { flex: 1, backgroundColor: '#fff' },
+  header: {
     backgroundColor: '#FFA733',
+    paddingTop: 50,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 16,
+    alignItems: 'center',
   },
-  iconButton: { padding: 8 },
-  headerTitle: {
-    fontSize: 40,
-    fontWeight: 'bold',
-    color: '#000',
-    paddingTop: 80,
-  },
-  content: { padding: 20 },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 10 },
-  subtitle: { fontSize: 16, color: '#FFA500', marginBottom: 20 },
-  item: {
+  titleWrapper: { alignItems: 'center' },
+  logo: { width: 80, height: 80 },
+  headerTitle: { fontSize: 30, fontWeight: 'bold', marginTop: 8 },
+  headerTitleHighlight: { color: '#FFF' },
+  loader: { marginTop: 20 },
+  list: { padding: 16 },
+  pageTitle: { fontSize: 24, fontWeight: 'bold', marginBottom: 5 },
+  pageSubtitle: { fontSize: 16, color: '#FFA500', marginBottom: 20 },
+  card: {
+    backgroundColor: '#FFF3E0',
+    borderRadius: 12,
+    marginBottom: 16,
+    overflow: 'hidden',
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 5,
-    padding: 10,
   },
-  itemImage: { width: 80, height: 80, marginRight: 15, borderRadius: 8 },
-  itemDetails: { flex: 1 },
-  itemName: { fontSize: 18, fontWeight: 'bold' },
-  itemContact: { fontSize: 16, color: '#555' },
-  contactButton: {
-    backgroundColor: '#25D366', // WhatsApp green
-    padding: 10,
-    borderRadius: 5,
-  },
-  buttonText: { color: '#fff', fontSize: 16 },
-  loader: { marginTop: 20 },
+  cardImage: { width: 100, height: 100 },
+  cardContent: { flex: 1, padding: 12 },
+  cardTitle: { fontSize: 18, fontWeight: 'bold' },
+  cardText: { color: '#555', marginTop: 4 },
   emptyText: { textAlign: 'center', color: 'gray', marginTop: 20 },
 });
