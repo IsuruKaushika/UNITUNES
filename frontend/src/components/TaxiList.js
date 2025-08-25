@@ -19,7 +19,7 @@ const CustomLogo = ({ onClick, className = "" }) => (
           <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
         </div>
         <div className="text-white font-bold text-lg">
-          TaxiHub
+          UniTunes
         </div>
       </div>
     </div>
@@ -332,7 +332,7 @@ const TaxiList = () => {
       <div className="mt-20 py-8 bg-white border-t border-gray-100">
         <div className="container mx-auto px-4 text-center">
           <p className="text-gray-500 text-sm">
-            © 2024 TaxiHub. Your reliable transportation partner.
+            © 2025 UniTunes. Your reliable transportation partner.
           </p>
         </div>
       </div>
