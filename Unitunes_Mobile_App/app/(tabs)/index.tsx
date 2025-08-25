@@ -37,7 +37,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchAds = async () => {
       try {
-        const response = await fetch(`${backendUrl}/api/ad`); // Adjust endpoint as needed ---------------------------------------------------
+        const response = await fetch(`${backendUrl}/api/ads/list`); // Adjust endpoint as needed ---------------------------------------------------
         const data = await response.json();
         if (data && Array.isArray(data.ads)) {
           setAds(data.ads); // assuming backend returns { ads: [url1, url2, ...] }
