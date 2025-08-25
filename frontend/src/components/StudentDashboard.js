@@ -72,8 +72,9 @@ function HomePage() {
         </div>
 
         {/* Transparent Map Background */}
+        
 <div
-  className="absolute inset-0 z-0 bg-cover bg-center rounded-3xl opacity-6 pointer-events-none filter blur-sm"
+  className="absolute inset-0 z-0 bg-cover bg-center  opacity-6 pointer-events-none filter blur-sm"
   style={{ backgroundImage: "url('/images/map.jpg')" }}
 ></div>
 
