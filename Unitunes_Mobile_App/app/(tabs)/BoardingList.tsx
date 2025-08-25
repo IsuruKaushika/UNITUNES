@@ -62,7 +62,7 @@ export default function BoardingList() {
   };
 
   const handlePress = (id: string) => {
-    router.push(`/BoardingPage_2/${id}`);
+    router.push(`/BoardingID/${id}`); // Fixed: Added backticks for template literal
   };
 
   return (
