@@ -1,4 +1,3 @@
-// Your existing TaxiList.tsx with fixed syntax in handlePress (added backticks for template literal)
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -13,15 +12,15 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
-const backendUrl = 'https://unitunes-backend.vercel.app'; // update this if needed
+const backendUrl = 'https://unitunes-backend.vercel.app';
 
-const defaultImage = require('../../assets/images/default-taxi.png'); // Add this line for defaultImage in TaxiList
+const defaultImage = require('../../assets/images/default-taxi.png');
 
 export default function TaxiList() {
   const router = useRouter();
 
   const [taxiListData, setTaxiListData] = useState<any[]>([]);
-  const [filteredTaxiListData, setFilteredTaxiListData] = useState<any[]>([]); // Separate state for filtered data
+  const [filteredTaxiListData, setFilteredTaxiListData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [location, setLocation] = useState('');
   const [vehicleType, setVehicleType] = useState('');
@@ -36,11 +35,7 @@ export default function TaxiList() {
         const data = await res.json();
         if (data.success && Array.isArray(data.products)) {
           setTaxiListData(data.products);
-          setFilteredTaxiListData(data.products); // Initialize filtered data
-          // Log the first item to inspect the image field
-          if (data.products.length > 0) {
-            console.log('First taxi item:', data.products[0]);
-          }
+          setFilteredTaxiListData(data.products);
         } else {
           console.error('Unexpected taxi API response:', data);
         }
@@ -62,20 +57,28 @@ export default function TaxiList() {
         (priceRange === '' || (item.price && parseFloat(item.price) <= parseFloat(priceRange)))
       );
     });
-    setFilteredTaxiListData(filtered); // Update filtered data instead of original data
+    setFilteredTaxiListData(filtered);
   };
 
   const handlePress = (id: string) => {
-    router.push(`/TaxiPage/${id}`); // Fixed: Added backticks for template literal
+    router.push(`/TaxiPage/${id}`);
   };
 
   return (
     <View style={styles.container}>
-      {/* Header */}
+      {/* ✅ Updated Header Style */}
       <View style={styles.header}>
-        <Ionicons name="car-outline" size={28} color="black" />
-        <Text style={styles.headerTitle}>Available Taxis</Text>
-        <Ionicons name="notifications-outline" size={28} color="black" />
+        <Ionicons name="menu" size={28} color="black" onPress={() => {}} />
+        <View style={styles.titleWrapper}>
+          <Image
+            source={require('../../assets/images/UnitunesLogo_2.png')}
+            style={styles.logo}
+          />
+          <Text style={styles.headerTitle}>
+            UNI<Text style={styles.headerTitleHighlight}>TUNES</Text>
+          </Text>
+        </View>
+        <Ionicons name="notifications-outline" size={28} color="black" onPress={() => {}} />
       </View>
 
       {/* Filters */}
@@ -104,11 +107,13 @@ export default function TaxiList() {
         </TouchableOpacity>
       </View>
 
-      {/* Taxi Cards */}
+      {/* Taxi List */}
       {loading ? (
         <ActivityIndicator size="large" color="#FFA726" style={styles.loader} />
       ) : (
         <ScrollView contentContainerStyle={styles.list}>
+          <Text style={styles.pageTitle}>Available Taxis</Text>
+          <Text style={styles.pageSubtitle}>Tap a taxi for details</Text>
           {filteredTaxiListData.length > 0 ? (
             filteredTaxiListData.map(item => (
               <TouchableOpacity
@@ -123,8 +128,8 @@ export default function TaxiList() {
                 />
                 <View style={styles.cardContent}>
                   <Text style={styles.cardTitle}>{item.driverName || 'Taxi Driver'}</Text>
-                  <Text style={styles.cardText}>{item.vehicleType || 'N/A'}</Text>
-                  <Text style={styles.cardText}>{item.location || 'N/A'}</Text>
+                  <Text style={styles.cardText}>Vehicle: {item.vehicleType || 'N/A'}</Text>
+                  <Text style={styles.cardText}>Location: {item.location || 'N/A'}</Text>
                   <Text style={styles.cardText}>Rs {item.price || 'N/A'} / km</Text>
                 </View>
               </TouchableOpacity>
@@ -142,32 +147,50 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
   header: {
     backgroundColor: '#FFA733',
-    paddingTop: 50, paddingHorizontal: 20, paddingBottom: 20,
-    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'
+    paddingTop: 50,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
-  headerTitle: { fontSize: 22, fontWeight: 'bold' },
+  titleWrapper: { alignItems: 'center' },
+  logo: { width: 80, height: 80 },
+  headerTitle: { fontSize: 30, fontWeight: 'bold', marginTop: 8 },
+  headerTitleHighlight: { color: '#FFF' },
+  loader: { marginTop: 20 },
   filterContainer: {
     backgroundColor: '#FFF3E0',
-    borderRadius: 16, padding: 16, margin: 16
+    borderRadius: 16,
+    padding: 16,
+    margin: 16,
   },
   input: {
-    borderWidth: 1, borderColor: '#ccc', borderRadius: 10,
-    padding: 10, marginBottom: 10
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 10,
   },
   filterButton: {
-    backgroundColor: '#FFA726', borderRadius: 10,
-    paddingVertical: 10, alignItems: 'center'
+    backgroundColor: '#FFA726',
+    borderRadius: 10,
+    paddingVertical: 10,
+    alignItems: 'center',
   },
   filterButtonText: { color: '#fff', fontWeight: 'bold' },
-  loader: { marginTop: 20 },
   list: { padding: 16 },
+  pageTitle: { fontSize: 24, fontWeight: 'bold', marginBottom: 5 },
+  pageSubtitle: { fontSize: 16, color: '#FFA500', marginBottom: 20 },
   card: {
     backgroundColor: '#FFF3E0',
-    borderRadius: 12, marginBottom: 16, overflow: 'hidden'
+    borderRadius: 12,
+    marginBottom: 16,
+    overflow: 'hidden',
   },
   cardImage: { width: '100%', height: 180 },
   cardContent: { padding: 12 },
-  cardTitle: { fontSize: 16, fontWeight: 'bold' },
+  cardTitle: { fontSize: 18, fontWeight: 'bold' },
   cardText: { color: '#555', marginTop: 4 },
   emptyText: { textAlign: 'center', color: 'gray', marginTop: 20 },
 });

@@ -1,32 +1,25 @@
-// app/(tabs)/RentItemList.tsx
+// app/(tabs)/RentalItemList.tsx
 
 import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
+  StyleSheet,
   Image,
   TouchableOpacity,
   ScrollView,
-  TextInput,
-  StyleSheet,
   ActivityIndicator,
 } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
-const defaultImage = require('../../assets/images/Bording_2.png');
-
 const backendUrl = 'https://unitunes-backend.vercel.app';
+const defaultImage = require('../../assets/images/Rental.jpg'); // Replace with a default rental item image
 
-export default function RentItemList() {
-  const router = useRouter();
-
-  const [rentItemListData, setRentItemListData] = useState<any[]>([]);
+export default function RentalItemList() {
+  const [rentItems, setRentItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [location, setLocation] = useState('');
-  const [priceRange, setPriceRange] = useState('');
-  const [category, setCategory] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchRentItems() {
@@ -34,12 +27,12 @@ export default function RentItemList() {
         const res = await fetch(`${backendUrl}/api/rentitems/list`);
         const data = await res.json();
         if (data.success && Array.isArray(data.products)) {
-          setRentItemListData(data.products);
+          setRentItems(data.products);
         } else {
           console.error('Invalid response format:', data);
         }
       } catch (err) {
-        console.error('Error fetching rent items:', err);
+        console.error('Error fetching rent item data:', err);
       } finally {
         setLoading(false);
       }
@@ -47,19 +40,8 @@ export default function RentItemList() {
     fetchRentItems();
   }, []);
 
-  const applyFilters = () => {
-    const filtered = rentItemListData.filter(item => {
-      return (
-        (location === '' || item.location?.toLowerCase().includes(location.toLowerCase())) &&
-        (priceRange === '' || parseFloat(item.price) <= parseFloat(priceRange)) &&
-        (category === '' || item.category?.toLowerCase() === category.toLowerCase())
-      );
-    });
-    setRentItemListData(filtered);
-  };
-
   const handlePress = (id: string) => {
-    router.push(`/RentItemDetail/${id}`); // Navigate to RentItemDetail page
+    router.push(`/RentalItemDetail/${id}`);
   };
 
   return (
@@ -76,58 +58,41 @@ export default function RentItemList() {
         <Ionicons name="notifications-outline" size={28} color="black" onPress={() => {}} />
       </View>
 
-      {/* Filters */}
-      <View style={styles.filterContainer}>
-        <Text style={styles.filterTitle}>Filter Options</Text>
-        <TextInput
-          placeholder="Location"
-          value={location}
-          onChangeText={setLocation}
-          style={styles.input}
-        />
-        <TextInput
-          placeholder="Max Price (Rs.)"
-          value={priceRange}
-          onChangeText={setPriceRange}
-          keyboardType="numeric"
-          style={styles.input}
-        />
-        <View style={styles.pickerContainer}>
-          <Picker selectedValue={category} onValueChange={(val) => setCategory(val)}>
-            <Picker.Item label="Select Category" value="" />
-            <Picker.Item label="Electronics" value="electronics" />
-            <Picker.Item label="Furniture" value="furniture" />
-            <Picker.Item label="Vehicles" value="vehicles" />
-            <Picker.Item label="Other" value="other" />
-          </Picker>
-        </View>
-        <TouchableOpacity style={styles.filterButton} onPress={applyFilters}>
-          <Text style={styles.filterButtonText}>Apply Filters</Text>
-        </TouchableOpacity>
-      </View>
-
       {/* List */}
       {loading ? (
         <ActivityIndicator size="large" color="#FFA726" style={styles.loader} />
       ) : (
         <ScrollView contentContainerStyle={styles.list}>
-          {rentItemListData.length > 0 ? (
-            rentItemListData.map(item => (
-              <TouchableOpacity key={item._id} style={styles.card} onPress={() => handlePress(item._id)}>
+          <Text style={styles.pageTitle}>Rental Items</Text>
+          <Text style={styles.pageSubtitle}>Tap an item for details</Text>
+          {rentItems.length > 0 ? (
+            rentItems.map((item) => (
+              <TouchableOpacity
+                key={item._id}
+                style={styles.card}
+                onPress={() => handlePress(item._id)}
+              >
                 <Image
                   source={item.image?.[0] ? { uri: item.image[0] } : defaultImage}
                   style={styles.cardImage}
                   resizeMode="cover"
                 />
                 <View style={styles.cardContent}>
-                  <Text style={styles.cardTitle}>{item.name}</Text>
-                  <Text style={styles.cardText}>{item.location}</Text>
-                  <Text style={styles.cardText}>Rs {item.price}</Text>
+                  <Text style={styles.cardTitle}>{item.name || 'Item Name'}</Text>
+                  <Text style={styles.cardText}>
+                    Contact: {item.contact || 'Not available'}
+                  </Text>
+                  <Text style={styles.cardText}>
+                    Location: {item.location || 'Not available'}
+                  </Text>
+                  <Text style={styles.cardText}>
+                    Price: Rs {item.price || 'N/A'}
+                  </Text>
                 </View>
               </TouchableOpacity>
             ))
           ) : (
-            <Text style={styles.emptyText}>No rent items found.</Text>
+            <Text style={styles.emptyText}>No rental items available.</Text>
           )}
         </ScrollView>
       )}
@@ -150,44 +115,21 @@ const styles = StyleSheet.create({
   logo: { width: 80, height: 80 },
   headerTitle: { fontSize: 30, fontWeight: 'bold', marginTop: 8 },
   headerTitleHighlight: { color: '#FFF' },
-  filterContainer: {
-    backgroundColor: '#FFF3E0',
-    borderRadius: 16,
-    padding: 16,
-    margin: 16,
-  },
-  filterTitle: { fontSize: 16, fontWeight: 'bold', marginBottom: 10 },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 10,
-  },
-  pickerContainer: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 10,
-    marginBottom: 10,
-  },
-  filterButton: {
-    backgroundColor: '#FFA726',
-    borderRadius: 10,
-    paddingVertical: 10,
-    alignItems: 'center',
-  },
-  filterButtonText: { color: '#fff', fontWeight: 'bold' },
   loader: { marginTop: 20 },
   list: { padding: 16 },
+  pageTitle: { fontSize: 24, fontWeight: 'bold', marginBottom: 5 },
+  pageSubtitle: { fontSize: 16, color: '#FFA500', marginBottom: 20 },
   card: {
     backgroundColor: '#FFF3E0',
     borderRadius: 12,
     marginBottom: 16,
     overflow: 'hidden',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  cardImage: { width: '100%', height: 180 },
-  cardContent: { padding: 12 },
-  cardTitle: { fontSize: 16, fontWeight: 'bold' },
+  cardImage: { width: 100, height: 100 },
+  cardContent: { flex: 1, padding: 12 },
+  cardTitle: { fontSize: 18, fontWeight: 'bold' },
   cardText: { color: '#555', marginTop: 4 },
   emptyText: { textAlign: 'center', color: 'gray', marginTop: 20 },
 });
