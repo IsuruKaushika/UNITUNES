@@ -116,7 +116,7 @@ const Navbar = ({ setShowLogin = () => {} }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+    <div className="h-1w bg-gradient-to-br from-gray-50 to-blue-50">
       {/* Mobile menu backdrop */}
       {mobileMenuOpen && (
         <div 
@@ -484,36 +484,15 @@ const Navbar = ({ setShowLogin = () => {} }) => {
       <div className="pt-20">
         <div className="max-w-4xl mx-auto px-4 py-20">
           <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-6">
-              Enhanced University Navbar
-            </h1>
-            <p className="text-xl text-gray-600 mb-8">
-              Try searching for "boarding", "taxi", "food" or "books" to see the live search results!
-            </p>
+   
+     
             
-            {/* Feature highlights */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg">
-                <h3 className="text-xl font-semibold text-gray-800 mb-3">🔍 Smart Search</h3>
-                <p className="text-gray-600">Real-time search with backend integration</p>
-              </div>
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg">
-                <h3 className="text-xl font-semibold text-gray-800 mb-3">🔔 Notifications</h3>
-                <p className="text-gray-600">Stay updated with real-time alerts</p>
-              </div>
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg">
-                <h3 className="text-xl font-semibold text-gray-800 mb-3">➕ Quick Actions</h3>
-                <p className="text-gray-600">Add services with one click</p>
-              </div>
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg">
-                <h3 className="text-xl font-semibual text-gray-800 mb-3">📱 Responsive</h3>
-                <p className="text-gray-600">Perfect experience on all devices</p>
-              </div>
+           
             </div>
           </div>
         </div>
       </div>
-    </div>
+  
   );
 };
 
