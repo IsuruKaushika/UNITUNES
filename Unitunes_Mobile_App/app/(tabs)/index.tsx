@@ -9,23 +9,48 @@ import {
   StyleSheet,
   SafeAreaView,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+const backendUrl = "https://unitunes-backend.vercel.app"; // your backend URL
+
 const HomePage = () => {
   const navigation = useNavigation();
   const [loggedIn, setLoggedIn] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [ads, setAds] = useState<string[]>([]);
+  const [loadingAds, setLoadingAds] = useState(true);
 
-  // ✅ Read login flag from AsyncStorage
+  // ✅ Check login status from AsyncStorage
   useEffect(() => {
     const checkLogin = async () => {
       const status = await AsyncStorage.getItem("loggedIn");
       setLoggedIn(status === "true");
     };
     checkLogin();
+  }, []);
+
+  // ✅ Fetch ads from backend
+  useEffect(() => {
+    const fetchAds = async () => {
+      try {
+        const response = await fetch(`${backendUrl}/api/ads`);
+        const data = await response.json();
+        if (data && Array.isArray(data.ads)) {
+          setAds(data.ads); // assuming backend returns { ads: [url1, url2, ...] }
+        } else {
+          console.warn("Ads data invalid:", data);
+        }
+      } catch (err) {
+        console.error("Error fetching ads:", err);
+      } finally {
+        setLoadingAds(false);
+      }
+    };
+    fetchAds();
   }, []);
 
   const features = [
@@ -96,11 +121,15 @@ const HomePage = () => {
           <View style={styles.sectionTitleContainer}>
             <Text style={styles.sectionTitle}>Ads</Text>
           </View>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <Image source={require("../../assets/images/A1.jpeg")} style={styles.adImage} />
-            <Image source={require("../../assets/images/A2.jpeg")} style={styles.adImage} />
-            <Image source={require("../../assets/images/A3.jpeg")} style={styles.adImage} />
-          </ScrollView>
+          {loadingAds ? (
+            <ActivityIndicator size="large" color="#ff9500" />
+          ) : (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {ads.map((url, index) => (
+                <Image key={index} source={{ uri: url }} style={styles.adImage} />
+              ))}
+            </ScrollView>
+          )}
         </View>
 
         {/* Features Section */}
