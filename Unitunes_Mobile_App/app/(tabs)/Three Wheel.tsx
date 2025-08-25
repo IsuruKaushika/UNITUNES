@@ -1,3 +1,5 @@
+// app/(tabs)/TaxiList.tsx
+
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -8,12 +10,12 @@ import {
   TextInput,
   StyleSheet,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
 const backendUrl = 'https://unitunes-backend.vercel.app';
-
 const defaultImage = require('../../assets/images/default-taxi.png');
 
 export default function TaxiList() {
@@ -51,13 +53,23 @@ export default function TaxiList() {
 
   const applyFilters = () => {
     const filtered = taxiListData.filter(item => {
-      return (
-        (location === '' || (item.location && item.location.toLowerCase().includes(location.toLowerCase()))) &&
-        (vehicleType === '' || (item.vehicleType && item.vehicleType.toLowerCase().includes(vehicleType.toLowerCase()))) &&
-        (priceRange === '' || (item.price && parseFloat(item.price) <= parseFloat(priceRange)))
-      );
+      const matchLocation =
+        location === '' || (item.location ? item.location.toLowerCase().includes(location.toLowerCase()) : false);
+
+      const matchVehicle =
+        vehicleType === '' || (item.vehicleType ? item.vehicleType.toLowerCase().includes(vehicleType.toLowerCase()) : false);
+
+      const matchPrice =
+        priceRange === '' || (item.price ? parseFloat(item.price) <= parseFloat(priceRange) : false);
+
+      return matchLocation && matchVehicle && matchPrice;
     });
+
     setFilteredTaxiListData(filtered);
+
+    if (filtered.length === 0) {
+      Alert.alert('No Results', 'No taxis found matching the filters.');
+    }
   };
 
   const handlePress = (id: string) => {
@@ -66,7 +78,7 @@ export default function TaxiList() {
 
   return (
     <View style={styles.container}>
-      {/* ✅ Updated Header Style */}
+      {/* Header */}
       <View style={styles.header}>
         <Ionicons name="menu" size={28} color="black" onPress={() => {}} />
         <View style={styles.titleWrapper}>
