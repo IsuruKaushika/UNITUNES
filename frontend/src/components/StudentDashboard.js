@@ -65,10 +65,10 @@ function HomePage() {
       {/* Services Section */}
       <section id="services" className="py-24 bg-gradient-to-b from-white to-orange-50 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
         <div className="text-center mb-6 relative z-10">
-          <h2 className="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-600 via-orange-500 to-orange-700 mb-4">
+          <h2 className="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white-600 via-white-500 to-orange-700 mb-4">
             Our Services
           </h2>
-          <p className="text-gray-600 text-lg font-medium">Everything you need for campus life</p>
+          <p className="text-white text-lg font-medium">Everything you need for campus life</p>
         </div>
 
         {/* Transparent Map Background */}
