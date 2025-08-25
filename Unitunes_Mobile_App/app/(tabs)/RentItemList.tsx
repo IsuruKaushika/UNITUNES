@@ -24,7 +24,7 @@ export default function RentalItemList() {
   useEffect(() => {
     async function fetchRentItems() {
       try {
-        const res = await fetch(`${backendUrl}/api/rentitems/list`);
+        const res = await fetch(`${backendUrl}/api/renting/list`);
         const data = await res.json();
         if (data.success && Array.isArray(data.products)) {
           setRentItems(data.products);
