@@ -61,16 +61,31 @@ const FilterBar = ({ onFilterChange, activeFilters }) => {
     { label: "A-Z", value: "name_asc" }
   ];
 
+  const handlePriceChange = (value) => {
+    console.log('Price filter changed:', value);
+    onFilterChange({ ...activeFilters, price: value });
+  };
+
+  const handleSortChange = (value) => {
+    console.log('Sort changed:', value);
+    onFilterChange({ ...activeFilters, sort: value });
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Price Filter */}
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-3">Price Range</label>
+          <label className="block text-sm font-semibold text-gray-700 mb-3">
+            Price Range
+            <span className="ml-2 text-xs bg-yellow-100 text-black px-2 py-1 rounded-full">
+              {activeFilters.price === 'all' ? 'All' : priceRanges.find(r => r.value === activeFilters.price)?.label}
+            </span>
+          </label>
           <select
             value={activeFilters.price}
-            onChange={(e) => onFilterChange({ ...activeFilters, price: e.target.value })}
-            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-yellow-100 focus:border-yellow-300 transition-all duration-300"
+            onChange={(e) => handlePriceChange(e.target.value)}
+            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-yellow-100 focus:border-yellow-300 transition-all duration-300 cursor-pointer text-black"
           >
             {priceRanges.map((range) => (
               <option key={range.value} value={range.value}>
@@ -82,11 +97,16 @@ const FilterBar = ({ onFilterChange, activeFilters }) => {
 
         {/* Sort Filter */}
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-3">Sort By</label>
+          <label className="block text-sm font-semibold text-gray-700 mb-3">
+            Sort By
+            <span className="ml-2 text-xs bg-blue-100 text-black px-2 py-1 rounded-full">
+              {sortOptions.find(s => s.value === activeFilters.sort)?.label}
+            </span>
+          </label>
           <select
             value={activeFilters.sort}
-            onChange={(e) => onFilterChange({ ...activeFilters, sort: e.target.value })}
-            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-yellow-100 focus:border-yellow-300 transition-all duration-300"
+            onChange={(e) => handleSortChange(e.target.value)}
+            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-yellow-100 focus:border-yellow-300 transition-all duration-300 cursor-pointer text-black"
           >
             {sortOptions.map((option) => (
               <option key={option.value} value={option.value}>
@@ -94,6 +114,19 @@ const FilterBar = ({ onFilterChange, activeFilters }) => {
               </option>
             ))}
           </select>
+        </div>
+
+        {/* Clear Filters Button */}
+        <div className="flex items-end">
+          <button
+            onClick={() => onFilterChange({ price: 'all', sort: 'newest', showFavoritesOnly: false })}
+            className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-3 rounded-xl font-medium transition-all duration-300 flex items-center justify-center gap-2"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Clear Filters
+          </button>
         </div>
       </div>
     </div>
