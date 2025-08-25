@@ -1,60 +1,100 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  ActivityIndicator,
+  Linking,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-const BakeryScreen = () => {
-  // Placeholder data for bakery items
-  const bakeryItems = [
-    { id: '1', name: 'Milk', image: require('../../assets/images/GroceryGoods.png'), contact: '074-0234567' },
-    { id: '2', name: 'Rice', image: require('../../assets/images/GroceryGoods.png'), contact: '074-0234567' },
-    { id: '3', name: 'Vegitables', image: require('../../assets/images/GroceryGoods.png'), contact: '074-0234567' },
-    { id: '4', name: 'Fruits', image: require('../../assets/images/GroceryGoods.png'), contact: '074-0234567' },
-  ];
+const backendUrl = 'https://unitunes-backend.vercel.app';
+const defaultImage = require('../../assets/images/GroceryGoods.png');
+
+export default function ShopsList() {
+  const [shops, setShops] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchShops() {
+      try {
+        const res = await fetch(`${backendUrl}/api/shop/list`);
+        const data = await res.json();
+        if (data.success && Array.isArray(data.products)) {
+          setShops(data.products);
+        } else {
+          console.error('Invalid response format:', data);
+        }
+      } catch (err) {
+        console.error('Error fetching shop data:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchShops();
+  }, []);
+
+  const handleWhatsApp = (phone: string) => {
+    const formattedNumber = phone.replace(/\D/g, ''); // remove non-numeric characters
+    const url = `https://wa.me/${formattedNumber}`;
+    Linking.openURL(url).catch((err) => console.error('Error opening WhatsApp:', err));
+  };
 
   return (
-    
     <View style={styles.container}>
+      {/* Header */}
       <View style={styles.headerContainer}>
         <TouchableOpacity style={styles.iconButton}>
-          {/* Replace with an actual icon from your library */}
-          <Text style={styles.headerIcon}>≡</Text>
+          <Ionicons name="menu" size={28} color="#000" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>UNITUNES</Text>
         <TouchableOpacity style={styles.iconButton}>
-          {/* Replace with an actual icon (e.g. a notification or menu icon) */}
-          <Text style={styles.headerIcon}>⋮</Text>
+          <Ionicons name="notifications-outline" size={28} color="#000" />
         </TouchableOpacity>
       </View>
 
-
-
-      <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Bakery</Text>
-        <Text style={styles.subtitle}>Delivery service</Text>
-        {bakeryItems.map((item) => (
-          <View key={item.id} style={styles.item}>
-            <Image source={item.image} style={styles.itemImage} />
-            <View style={styles.itemDetails}>
-              <Text style={styles.itemName}>S.U Senanayake</Text>
-              <Text style={styles.itemContact}>{item.contact}</Text>
-            </View>
-            <TouchableOpacity style={styles.contactButton}>
-              <Text style={styles.buttonText}>Contact via WhatsApp</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
-      </ScrollView>
+      {/* Content */}
+      {loading ? (
+        <ActivityIndicator size="large" color="#FFA726" style={styles.loader} />
+      ) : (
+        <ScrollView contentContainerStyle={styles.content}>
+          <Text style={styles.title}>Shops & Delivery Services</Text>
+          <Text style={styles.subtitle}>Contact shop owners via WhatsApp</Text>
+          {shops.length > 0 ? (
+            shops.map((item) => (
+              <View key={item._id} style={styles.item}>
+                <Image
+                  source={item.image?.[0] ? { uri: item.image[0] } : defaultImage}
+                  style={styles.itemImage}
+                />
+                <View style={styles.itemDetails}>
+                  <Text style={styles.itemName}>{item.shopName || 'Shop Name'}</Text>
+                  <Text style={styles.itemContact}>{item.contact || 'No contact available'}</Text>
+                </View>
+                {item.contact && (
+                  <TouchableOpacity
+                    style={styles.contactButton}
+                    onPress={() => handleWhatsApp(item.contact)}
+                  >
+                    <Text style={styles.buttonText}>WhatsApp</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            ))
+          ) : (
+            <Text style={styles.emptyText}>No shops available.</Text>
+          )}
+        </ScrollView>
+      )}
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFF',
-    paddingBottom: 10,
-    
-  },
+  container: { flex: 1, backgroundColor: '#FFF', paddingBottom: 10 },
   headerContainer: {
     height: 150,
     backgroundColor: '#FFA733',
@@ -63,34 +103,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
   },
-  iconButton: {
-    padding: 8,
-  },
-  headerIcon: {
-    fontSize: 30,
-    color: '#000',
-  },
+  iconButton: { padding: 8 },
   headerTitle: {
     fontSize: 40,
     fontWeight: 'bold',
     color: '#000',
     paddingTop: 80,
   },
-  
-  content: {
-    padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    alignItems: 'center',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#FFA500',
-    marginBottom: 20,
-  },
+  content: { padding: 20 },
+  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 10 },
+  subtitle: { fontSize: 16, color: '#FFA500', marginBottom: 20 },
   item: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -100,31 +122,16 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
   },
-  itemImage: {
-    width: 80,
-    height: 80,
-    marginRight: 15,
-  },
-  itemDetails: {
-    flex: 1,
-  },
-  itemName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  itemContact: {
-    fontSize: 16,
-    color: '#555',
-  },
+  itemImage: { width: 80, height: 80, marginRight: 15, borderRadius: 8 },
+  itemDetails: { flex: 1 },
+  itemName: { fontSize: 18, fontWeight: 'bold' },
+  itemContact: { fontSize: 16, color: '#555' },
   contactButton: {
-    backgroundColor: '#FFA500',
+    backgroundColor: '#25D366', // WhatsApp green
     padding: 10,
     borderRadius: 5,
   },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-  },
+  buttonText: { color: '#fff', fontSize: 16 },
+  loader: { marginTop: 20 },
+  emptyText: { textAlign: 'center', color: 'gray', marginTop: 20 },
 });
-
-export default BakeryScreen;
