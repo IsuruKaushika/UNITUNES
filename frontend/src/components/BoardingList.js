@@ -167,10 +167,21 @@ const BoardingList = () => {
 
     // Apply price filter
     if (filters.price !== 'all') {
-      const [min, max] = filters.price.split('-').map(p => p === '+' ? Infinity : parseInt(p));
       filtered = filtered.filter(boarding => {
-        const price = parseInt(boarding.price);
-        return max ? price >= min && price <= max : price >= min;
+        const price = parseInt(boarding.price) || 0;
+        
+        switch (filters.price) {
+          case '0-10000':
+            return price <= 10000;
+          case '10000-25000':
+            return price > 10000 && price <= 25000;
+          case '25000-50000':
+            return price > 25000 && price <= 50000;
+          case '50000+':
+            return price > 50000;
+          default:
+            return true;
+        }
       });
     }
 
@@ -178,13 +189,19 @@ const BoardingList = () => {
     filtered.sort((a, b) => {
       switch (filters.sort) {
         case 'price_asc':
-          return parseInt(a.price) - parseInt(b.price);
+          return (parseInt(a.price) || 0) - (parseInt(b.price) || 0);
         case 'price_desc':
-          return parseInt(b.price) - parseInt(a.price);
+          return (parseInt(b.price) || 0) - (parseInt(a.price) || 0);
         case 'name_asc':
-          return a.Title.localeCompare(b.Title);
+          return (a.Title || '').localeCompare(b.Title || '');
+        case 'newest':
         default:
-          return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+          // If no createdAt field, use _id or array order as fallback
+          if (a.createdAt && b.createdAt) {
+            return new Date(b.createdAt) - new Date(a.createdAt);
+          }
+          // Fallback to maintaining original array order for newest
+          return boardingList.indexOf(b) - boardingList.indexOf(a);
       }
     });
 
