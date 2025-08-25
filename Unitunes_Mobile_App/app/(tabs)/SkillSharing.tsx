@@ -39,7 +39,7 @@ export default function SkillShareList() {
   }, []);
 
   const handlePress = (id: string) => {
-    router.push(`/SkillShareID/${id}`);
+    router.push(`/SkillsID/${id}`);
   };
 
   return (
