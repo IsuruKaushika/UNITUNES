@@ -99,10 +99,13 @@ const StudentLogin = () => {
           <Text style={styles.registerText}>Register here</Text>
         </TouchableOpacity>
 
+        {/*
         <View style={styles.googleContainer}>
           <Ionicons name="logo-google" size={20} color="#fff" />
           <Text style={styles.googleText}> or continue with</Text>
         </View>
+        */}
+        
       </View>
     </ImageBackground>
   );
