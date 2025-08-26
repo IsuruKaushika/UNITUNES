@@ -29,32 +29,48 @@ function RentItemDetails() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [relatedItems, setRelatedItems] = useState([]);
+  const [relatedLoading, setRelatedLoading] = useState(false);
   
   // Get item based on current URL parameter
   const item = productList.find((product) => product.id === parseInt(id));
 
   useEffect(() => {
-    // Reset loading state when ID changes
-    setLoading(true);
-    // Reset related items
-    setRelatedItems([]);
-    
-    // Simulate loading
-    const timer = setTimeout(() => {
-      setLoading(false);
-      const currentItem = productList.find((product) => product.id === parseInt(id));
-      if (currentItem) {
-        // Get related items (excluding current item)
-        const related = productList
-          .filter(p => p.id !== currentItem.id)
-          .sort(() => Math.random() - 0.5)
-          .slice(0, 4);
-        setRelatedItems(related);
-      }
-    }, 500);
+    const fetchItemDetails = () => {
+      setLoading(true);
+      
+      // Simulate API call loading
+      const timer = setTimeout(() => {
+        setLoading(false);
+        if (item) {
+          // Fetch related items after main item loads
+          fetchRelatedItems(item);
+        }
+      }, 500);
 
-    return () => clearTimeout(timer);
-  }, [id]); // Only depend on 'id' so it re-runs whenever URL parameter changes
+      return () => clearTimeout(timer);
+    };
+
+    fetchItemDetails();
+  }, [id]); // Re-run when ID changes
+
+  // Enhanced function to fetch related items
+  const fetchRelatedItems = (currentItem) => {
+    setRelatedLoading(true);
+    
+    try {
+      // Get related items (excluding current item)
+      let related = productList
+        .filter(p => p.id !== currentItem.id)
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 4);
+      
+      setRelatedItems(related);
+    } catch (error) {
+      console.error("Error fetching related items:", error);
+    } finally {
+      setRelatedLoading(false);
+    }
+  };
 
   const handleRelatedItemClick = (itemId) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
