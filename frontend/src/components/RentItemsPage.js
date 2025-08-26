@@ -104,7 +104,7 @@ const CategoriesNav = ({ activeCategory, onCategoryChange }) => {
     <div className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4">
         {/* Main Categories */}
-        <div className="flex items-center space-x-1 py-3 overflow-x-auto scrollbar-hide">
+        <div className="flex items-center space-x-1 py-3 overflow-x-auto">
           {categories.map((category) => (
             <div
               key={category.id}
@@ -171,7 +171,7 @@ const FloatingActionButton = ({ onClick }) => (
   <div className="fixed bottom-6 right-6 z-50">
     <button
       onClick={onClick}
-      className="bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-800 p-4 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-110 transition-all duration-300 group animate-bounce hover:animate-none"
+      className="bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-800 p-4 rounded-full shadow-2xl hover:shadow-lg transform hover:scale-110 transition-all duration-300 group animate-bounce hover:animate-none"
     >
       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -269,14 +269,9 @@ const FilterBar = ({ onFilterChange, activeFilters }) => {
   );
 };
 
-// Favorites functionality
+// Favorites functionality - Using state instead of localStorage
 const useFavorites = () => {
   const [favorites, setFavorites] = useState([]);
-
-  useEffect(() => {
-    const savedFavorites = JSON.parse(localStorage.getItem('rentItemFavorites') || '[]');
-    setFavorites(savedFavorites);
-  }, []);
 
   const toggleFavorite = (id) => {
     const updatedFavorites = favorites.includes(id)
@@ -284,7 +279,6 @@ const useFavorites = () => {
       : [...favorites, id];
     
     setFavorites(updatedFavorites);
-    localStorage.setItem('rentItemFavorites', JSON.stringify(updatedFavorites));
   };
 
   return { favorites, toggleFavorite };
@@ -488,7 +482,7 @@ function RentItemsPage() {
           </div>
         ) : filteredItems.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-            {filteredItems.map((item, index) => (
+            {filteredItems.map((item) => (
               <div
                 key={item.id}
                 onClick={() => handleItemClick(item.id)}
@@ -501,8 +495,6 @@ function RentItemsPage() {
                     alt={item.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
-                  
-
 
                   {/* Favorite Button */}
                   <button
@@ -522,8 +514,8 @@ function RentItemsPage() {
 
                 {/* Content */}
                 <div className="p-3">
-                  <h3 className="text-sm font-medium text-gray-800 line-clamp-2 mb-1 group-hover:text-orange-600 transition-colors">
-                    {item.name}
+                  <h3 className="text-sm font-medium text-gray-800 mb-1 group-hover:text-orange-600 transition-colors overflow-hidden">
+                    <span className="line-clamp-2">{item.name}</span>
                   </h3>
                   
                   {/* Rating */}
@@ -542,10 +534,10 @@ function RentItemsPage() {
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <span className="text-orange-500 font-bold text-sm">
-                        Rs {parseInt(item.pricePerDay).toLocaleString()}
+                        Rs {parseInt(item.pricePerDay || 0).toLocaleString()}
                       </span>
                       <span className="text-xs text-gray-400 line-through">
-                        Rs {Math.round(parseInt(item.pricePerDay) * 1.2).toLocaleString()}
+                        Rs {Math.round((parseInt(item.pricePerDay || 0)) * 1.2).toLocaleString()}
                       </span>
                     </div>
                     <div className="text-xs text-gray-500">per day</div>
