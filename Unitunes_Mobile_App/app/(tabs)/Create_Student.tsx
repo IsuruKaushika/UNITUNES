@@ -1,46 +1,179 @@
-import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
+import React, { useState, useMemo } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ImageBackground,
+  Alert,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 
-const CreateProfessionalAccount = () => {
+type RootStackParamList = {
+  StudentLogin: undefined;
+  Create_Student: undefined;
+  index: undefined;
+};
+
+const backendUrl = 'https://unitunes-backend.vercel.app';
+const registerEndpoint = `${backendUrl}/api/user/sturegister`;
+
+const CreateProfessionalAccount: React.FC = () => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  const [fullName, setFullName] = useState('');
+  const [registerNumber, setRegisterNumber] = useState('');
+  const [goodName, setGoodName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+
+  const passwordStrengthText = useMemo(() => {
+    const hasMinLength = password.length >= 8;
+    const hasUpper = /[A-Z]/.test(password);
+    const hasLower = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSpecial = /[^A-Za-z0-9]/.test(password);
+    const score = [hasMinLength, hasUpper, hasLower, hasNumber, hasSpecial].filter(Boolean).length;
+
+    if (!password) return '--';
+    if (score <= 2) return '-- Weak';
+    if (score === 3 || score === 4) return '-- Medium';
+    return '-- Strong';
+  }, [password]);
+
+  const validate = () => {
+    if (!fullName.trim()) {
+      Alert.alert('Validation', 'Please enter your full name');
+      return false;
+    }
+    if (!registerNumber.trim()) {
+      Alert.alert('Validation', 'Please enter your register number');
+      return false;
+    }
+    // Example format: EG/xxxx/xxxx (case-insensitive)
+    const regNoOk = /^EG\/\d{4}\/\d{4}$/i.test(registerNumber.trim());
+    if (!regNoOk) {
+      Alert.alert('Validation', 'Register Number must be like EG/1234/5678');
+      return false;
+    }
+    if (!goodName.trim()) {
+      Alert.alert('Validation', 'Please enter your good name');
+      return false;
+    }
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+    if (!emailOk) {
+      Alert.alert('Validation', 'Please enter a valid email address');
+      return false;
+    }
+    if (password.length < 8) {
+      Alert.alert('Validation', 'Password must be at least 8 characters');
+      return false;
+    }
+    return true;
+  };
+
+  const handleSignUp = async () => {
+    if (submitting) return;
+    if (!validate()) return;
+
+    try {
+      setSubmitting(true);
+
+      const payload = {
+        // Adjust keys to match your backend if needed
+        fullName: fullName.trim(),
+        regNo: registerNumber.trim().toUpperCase(),
+        goodName: goodName.trim(),
+        email: email.trim().toLowerCase(),
+        password,
+      };
+
+      const res = await fetch(registerEndpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+      console.log('Student Register response:', data);
+
+      if (res.ok && (data.success ?? true)) {
+        Alert.alert('Account Created', 'Your account has been created successfully.', [
+          { text: 'OK', onPress: () => navigation.navigate('StudentLogin') },
+        ]);
+      } else {
+        Alert.alert('Registration Failed', data.message || 'Unable to create account');
+      }
+    } catch (error) {
+      console.error('Register error:', error);
+      Alert.alert('Error', 'Unable to connect to the server');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <ImageBackground
-      source={require('../../assets/images/Logg_Back.png')} // Replace with city map background image
+      source={require('../../assets/images/Logg_Back.png')}
       style={styles.background}
       resizeMode="cover"
     >
       <View style={styles.container}>
         <Text style={styles.title}>Create Student Account</Text>
+
         <TextInput
           style={styles.input}
           placeholder="Full Name"
           placeholderTextColor="#ccc"
+          value={fullName}
+          onChangeText={setFullName}
+          autoCapitalize="words"
         />
+
         <TextInput
           style={styles.input}
           placeholder="Register Number (EG/xxxx/xxxx)"
           placeholderTextColor="#ccc"
+          value={registerNumber}
+          onChangeText={(t) => setRegisterNumber(t.toUpperCase())}
+          autoCapitalize="characters"
         />
+
         <TextInput
           style={styles.input}
           placeholder="Good Name"
           placeholderTextColor="#ccc"
+          value={goodName}
+          onChangeText={setGoodName}
+          autoCapitalize="words"
         />
+
         <TextInput
           style={styles.input}
           placeholder="Email Address"
           placeholderTextColor="#ccc"
           keyboardType="email-address"
+          autoCapitalize="none"
+          value={email}
+          onChangeText={(t) => setEmail(t)}
         />
+
         <TextInput
           style={styles.input}
           placeholder="Password"
           placeholderTextColor="#ccc"
           secureTextEntry
+          value={password}
+          onChangeText={setPassword}
         />
-        <Text style={styles.passwordStrength}>-- Strong</Text>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Sign up</Text>
+
+        <Text style={styles.passwordStrength}>{passwordStrengthText}</Text>
+
+        <TouchableOpacity style={styles.button} onPress={handleSignUp} disabled={submitting}>
+          <Text style={styles.buttonText}>{submitting ? 'Signing up...' : 'Sign up'}</Text>
         </TouchableOpacity>
       </View>
     </ImageBackground>
@@ -58,7 +191,7 @@ const styles = StyleSheet.create({
     paddingTop: 195,
     alignItems: 'center',
     padding: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)', // Semi-transparent overlay
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
   },
   title: {
     fontSize: 28,
@@ -92,6 +225,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
+    opacity: 1,
   },
   buttonText: {
     color: '#fff',
