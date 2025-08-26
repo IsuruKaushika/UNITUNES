@@ -2,28 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import productList from "./ProductList";
 
-// Custom Logo Component
-const CustomLogo = ({ onClick, className = "" }) => (
-  <div 
-    onClick={onClick}
-    className={`cursor-pointer hover:scale-110 transition-transform duration-300 ${className}`}
-  >
-    <div className="bg-gradient-to-br from-yellow-400 via-orange-400 to-red-400 rounded-2xl p-3 shadow-lg">
-      <div className="flex items-center gap-2">
-        <div className="relative">
-          <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-          </svg>
-          <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
-        </div>
-        <div className="text-white font-bold text-lg">
-          UniTunes
-        </div>
-      </div>
-    </div>
-  </div>
-);
-
 function RentItemDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -34,26 +12,6 @@ function RentItemDetails() {
   // Get item based on current URL parameter
   const item = productList.find((product) => product.id === parseInt(id));
 
-  useEffect(() => {
-    const fetchItemDetails = () => {
-      setLoading(true);
-      
-      // Simulate API call loading
-      const timer = setTimeout(() => {
-        setLoading(false);
-        if (item) {
-          // Fetch related items after main item loads
-          fetchRelatedItems(item);
-        }
-      }, 500);
-
-      return () => clearTimeout(timer);
-    };
-
-    fetchItemDetails();
-  }, [id]); // Re-run when ID changes
-
-  // Enhanced function to fetch related items
   const fetchRelatedItems = (currentItem) => {
     setRelatedLoading(true);
     
@@ -77,23 +35,24 @@ function RentItemDetails() {
     navigate(`/rent-details/${itemId}`);
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center">
-        <div className="flex flex-col items-center">
-          <div className="relative">
-            <div className="w-16 h-16 border-4 border-yellow-200 border-t-yellow-500 rounded-full animate-spin"></div>
-          </div>
-          <p className="text-xl text-gray-600 mt-6 font-medium">
-            Loading item details...
-          </p>
-          <p className="text-sm text-gray-500 mt-2">
-            Please wait while we fetch the information
-          </p>
-        </div>
-      </div>
-    );
-  }
+  useEffect(() => {
+    const fetchItemDetails = () => {
+      setLoading(true);
+      
+      // Simulate API call loading
+      const timer = setTimeout(() => {
+        setLoading(false);
+        if (item) {
+          // Fetch related items after main item loads
+          fetchRelatedItems(item);
+        }
+      }, 500);
+
+      return () => clearTimeout(timer);
+    };
+
+    fetchItemDetails();
+  }, [id]); 
 
   if (!item) {
     return (
@@ -116,6 +75,24 @@ function RentItemDetails() {
           >
             Go Back
           </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center">
+        <div className="flex flex-col items-center">
+          <div className="relative">
+            <div className="w-16 h-16 border-4 border-yellow-200 border-t-yellow-500 rounded-full animate-spin"></div>
+          </div>
+          <p className="text-xl text-gray-600 mt-6 font-medium">
+            Loading item details...
+          </p>
+          <p className="text-sm text-gray-500 mt-2">
+            Please wait while we fetch the information
+          </p>
         </div>
       </div>
     );
@@ -456,5 +433,27 @@ function RentItemDetails() {
     </div>
   );
 }
+
+// Custom Logo Component
+const CustomLogo = ({ onClick, className = "" }) => (
+  <div 
+    onClick={onClick}
+    className={`cursor-pointer hover:scale-110 transition-transform duration-300 ${className}`}
+  >
+    <div className="bg-gradient-to-br from-yellow-400 via-orange-400 to-red-400 rounded-2xl p-3 shadow-lg">
+      <div className="flex items-center gap-2">
+        <div className="relative">
+          <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+          </svg>
+          <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
+        </div>
+        <div className="text-white font-bold text-lg">
+          UniTunes
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 export default RentItemDetails;

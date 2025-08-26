@@ -99,10 +99,13 @@ const AdminLogin = () => {
           <Text style={styles.registerText}>Register here</Text>
         </TouchableOpacity>
 
+        {/*
         <View style={styles.googleContainer}>
           <Ionicons name="logo-google" size={20} color="#fff" />
           <Text style={styles.googleText}> or continue with</Text>
         </View>
+        */}
+
       </View>
     </ImageBackground>
   );
@@ -112,7 +115,8 @@ const styles = StyleSheet.create({
   background: { flex: 1, width: '100%', height: '100%' },
   container: {
     flex: 1,
-    paddingTop: 300,
+    paddingTop: 200,
+    paddingBottom: 90,
     alignItems: 'center',
     padding: 20,
     backgroundColor: 'rgba(0,0,0,0.4)',

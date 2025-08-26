@@ -25,7 +25,6 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="myapp"/>
-        <data android:scheme="com.thivanka2001.unitunes_mobile_app_v1"/>
         <data android:scheme="com.thivanka2001.Unitunes_Mobile_App"/>
       </intent-filter>
     </activity>

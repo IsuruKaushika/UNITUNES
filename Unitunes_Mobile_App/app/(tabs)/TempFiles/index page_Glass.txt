@@ -22,18 +22,18 @@ const backendUrl = "https://unitunes-backend.vercel.app";
 const ACCENT = "#ff9500";
 const isAndroid = Platform.OS === "android";
 
-// Background gradients
-const BG_COOL = ["#0f1121", "#151a2f", "#101626"]; // logged out (cool liquid glass mood)
-const BG_WARM = ["#FFF7ED", "#FFE8CC", "#FED4A5"]; // logged in (soft orange, no red/brown)
+// Gradients for both auth states
+const BG_COOL = ["#0f1121", "#151a2f", "#101626"]; // logged out
+const BG_WARM = ["#2b1400", "#4a1e00", "#7a2e00"]; // logged in (orange theme)
 
 // Accent blobs
 const BLOBS_COOL = {
-  top: ["rgba(255,149,0,0.25)", "rgba(255,149,0,0)"],
-  bottom: ["rgba(74,144,226,0.18)", "rgba(74,144,226,0)"],
+  top: ["rgba(255,149,0,0.25)", "rgba(255,149,0,0)"], // subtle orange glow
+  bottom: ["rgba(74,144,226,0.18)", "rgba(74,144,226,0)"], // cool blue
 };
 const BLOBS_WARM = {
-  top: ["rgba(255,149,0,0.32)", "rgba(255,149,0,0)"],
-  bottom: ["rgba(255,200,120,0.22)", "rgba(255,200,120,0)"],
+  top: ["rgba(255,149,0,0.40)", "rgba(255,149,0,0)"], // stronger orange glow
+  bottom: ["rgba(255,191,0,0.28)", "rgba(255,191,0,0)"], // warm yellow
 };
 
 const HomePage = () => {
@@ -50,7 +50,6 @@ const HomePage = () => {
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   const stringToColor = (str: string) => {
-    // Deterministic pastel-ish color
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       hash = str.charCodeAt(i) + ((hash << 5) - hash);
@@ -185,27 +184,22 @@ const HomePage = () => {
   // Theme bindings based on auth state
   const bgGradient = loggedIn ? BG_WARM : BG_COOL;
   const blobs = loggedIn ? BLOBS_WARM : BLOBS_COOL;
-  const blurTintHeader = loggedIn ? "light" : "dark";
-  const blurTintCard = loggedIn ? "light" : "dark";
-  const headerIconColor = loggedIn ? ACCENT : "#ffffff";
-  const searchIconColor = loggedIn ? "#ffb766" : "#aab2c8";
-  const placeholderColor = loggedIn ? "#d88407" : "#aab2c8"; // warm orange hint, no red/brown
-  const textOnCards = loggedIn ? "#2a2a2a" : "#eef1f7";
-  const borderAccent = loggedIn ? "rgba(255,149,0,0.35)" : "rgba(255,255,255,0.24)";
-  const cardBorderAccent = loggedIn ? "rgba(255,149,0,0.22)" : "rgba(255,255,255,0.16)";
-  const chipBg = loggedIn ? "rgba(255,149,0,0.18)" : "rgba(255,255,255,0.06)";
-  const chipText = loggedIn ? "#2a2a2a" : "#f3f5fb";
+  const headerIconColor = loggedIn ? ACCENT : "#fff";
+  const searchIconColor = loggedIn ? "#ffbf66" : "#aab2c8";
+  const placeholderColor = loggedIn ? "#ffdcb3" : "#aab2c8";
+  const borderAccent = loggedIn ? "rgba(240, 123, 76, 0.89)" : "rgba(255,255,255,0.24)";
+  const cardBorderAccent = loggedIn ? "rgba(255, 149, 0, 0.76)" : "rgba(255,255,255,0.16)";
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      {/* Background */}
+      {/* Gradient background */}
       <LinearGradient
         colors={bgGradient}
         start={{ x: 0.1, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={StyleSheet.absoluteFillObject}
       />
-      {/* Accent blobs */}
+      {/* Accent glow blobs */}
       <LinearGradient
         colors={blobs.top}
         start={{ x: 0.2, y: 0.1 }}
@@ -228,10 +222,8 @@ const HomePage = () => {
             onPress={() => setShowUserMenu(false)}
           />
           <View style={[styles.userMenu, { borderColor: borderAccent }]}>
-            <BlurView intensity={60} tint={blurTintCard as any} style={StyleSheet.absoluteFillObject} />
-            <Text style={[styles.userMenuTitle, { color: textOnCards }]}>
-              {userName || userEmail || "Signed in"}
-            </Text>
+            <BlurView intensity={60} tint="dark" style={StyleSheet.absoluteFillObject} />
+            <Text style={styles.userMenuTitle}>{userName || userEmail || "Signed in"}</Text>
             <TouchableOpacity style={styles.userMenuItem} onPress={handleLogout}>
               <Ionicons name="log-out-outline" size={20} color="#d00" style={{ marginRight: 8 }} />
               <Text style={styles.userMenuItemText}>Logout</Text>
@@ -241,18 +233,9 @@ const HomePage = () => {
       )}
 
       <ScrollView contentContainerStyle={styles.container}>
-        {/* Header - liquid glass for both states, orange accent when logged in */}
+        {/* Header - liquid glass */}
         <View style={[styles.headerGlass, { borderColor: borderAccent }]}>
-          <BlurView intensity={60} tint={blurTintHeader as any} style={StyleSheet.absoluteFillObject} />
-          {/* soft orange gradient overlay only when logged in */}
-          {loggedIn && (
-            <LinearGradient
-              colors={["rgba(255,149,0,0.12)", "rgba(255,149,0,0.08)"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={StyleSheet.absoluteFillObject}
-            />
-          )}
+          <BlurView intensity={60} tint="dark" style={StyleSheet.absoluteFillObject} />
           <View style={styles.headerContent}>
             <Ionicons name="menu" size={28} color={headerIconColor} />
 
@@ -261,7 +244,7 @@ const HomePage = () => {
               <Ionicons name="search" size={20} color={searchIconColor} style={styles.searchIcon} onPress={handleSearch} />
               <TextInput
                 placeholder="Search"
-                style={[styles.textInput, { color: textOnCards }]}
+                style={styles.textInput}
                 placeholderTextColor={placeholderColor}
                 value={searchQuery}
                 onChangeText={setSearchQuery}
@@ -285,7 +268,10 @@ const HomePage = () => {
                 </View>
               </TouchableOpacity>
             ) : (
-              <TouchableOpacity onPress={() => navigation.navigate("Login-Main1")} style={styles.loginIconHighlight}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Login-Main1")}
+                style={styles.loginIconHighlight}
+              >
                 <View style={styles.avatarGlassSmall}>
                   <BlurView intensity={60} tint="light" style={StyleSheet.absoluteFillObject} />
                   <Ionicons name="person" size={28} color={ACCENT} style={styles.loginIconGlow} />
@@ -295,33 +281,23 @@ const HomePage = () => {
           </View>
         </View>
 
-        {/* Logo - glass card (orange accented when logged in) */}
+        {/* Logo - liquid glass card */}
         <View style={[styles.logoCard, { borderColor: cardBorderAccent }]}>
-          <BlurView intensity={50} tint={blurTintCard as any} style={StyleSheet.absoluteFillObject} />
-          {loggedIn && (
-            <LinearGradient
-              colors={["rgba(255,149,0,0.10)", "rgba(255,149,0,0.06)"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={StyleSheet.absoluteFillObject}
-            />
-          )}
-          <Image
-            source={require("../../assets/images/Logo.jpg")}
-            style={styles.logo}
-            resizeMode="contain"
-          />
+          <BlurView intensity={50} tint="light" style={StyleSheet.absoluteFillObject} />
+          <Image source={require("../../assets/images/Logo.jpg")} style={styles.logo} resizeMode="contain" />
         </View>
 
         {/* Ads Section */}
         <View style={styles.section}>
-          <View style={[styles.sectionTitlePill, { borderColor: borderAccent, backgroundColor: chipBg }]}>
-            <BlurView intensity={40} tint="light" style={StyleSheet.absoluteFillObject} />
-            <Text style={[styles.sectionTitle, { color: chipText }]}>Ads</Text>
+          <View style={styles.sectionHeader}>
+            <View style={[styles.sectionTitlePill, { borderColor: borderAccent }]}>
+              <BlurView intensity={40} tint="light" style={StyleSheet.absoluteFillObject} />
+              <Text style={styles.sectionTitle}>Ads</Text>
+            </View>
           </View>
 
           <View style={[styles.adsGlass, { borderColor: cardBorderAccent }]}>
-            <BlurView intensity={50} tint={blurTintCard as any} style={StyleSheet.absoluteFillObject} />
+            <BlurView intensity={50} tint="dark" style={StyleSheet.absoluteFillObject} />
             {loadingAds ? (
               <ActivityIndicator size="large" color={ACCENT} />
             ) : (
@@ -339,9 +315,11 @@ const HomePage = () => {
 
         {/* Features Section */}
         <View style={styles.section}>
-          <View style={[styles.sectionTitlePill, { borderColor: borderAccent, backgroundColor: chipBg }]}>
-            <BlurView intensity={40} tint="light" style={StyleSheet.absoluteFillObject} />
-            <Text style={[styles.sectionTitle, { color: chipText }]}>Features</Text>
+          <View style={styles.sectionHeader}>
+            <View style={[styles.sectionTitlePill, { borderColor: borderAccent }]}>
+              <BlurView intensity={40} tint="light" style={StyleSheet.absoluteFillObject} />
+              <Text style={styles.sectionTitle}>Features</Text>
+            </View>
           </View>
 
           <View style={styles.featuresGrid}>
@@ -356,19 +334,9 @@ const HomePage = () => {
               >
                 <View style={[styles.featureGlass, { borderColor: cardBorderAccent }]}>
                   <BlurView intensity={50} tint="light" style={StyleSheet.absoluteFillObject} />
-                  {loggedIn && (
-                    <LinearGradient
-                      colors={["rgba(255,149,0,0.10)", "rgba(255,149,0,0.06)"]}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 1 }}
-                      style={StyleSheet.absoluteFillObject}
-                    />
-                  )}
                   <Image source={feature.icon} style={styles.featureIcon} />
                 </View>
-                <Text style={[styles.featureText, { color: loggedIn ? "#333" : "#e8ecf7" }]}>
-                  {feature.name}
-                </Text>
+                <Text style={styles.featureText}>{feature.name}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -383,7 +351,7 @@ const styles = StyleSheet.create({
 
   container: {
     flexGrow: 1,
-    paddingBottom: 90,
+    paddingBottom: 70,
     paddingTop: 20,
   },
 
@@ -408,8 +376,8 @@ const styles = StyleSheet.create({
   // Header - glass wrapper
   headerGlass: {
     marginHorizontal: 14,
-    marginTop: 18,
-    borderRadius: 220,
+    marginTop: 8,
+    borderRadius: 22,
     overflow: "hidden",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.18)",
@@ -442,49 +410,40 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   searchIcon: { marginRight: 8 },
-  textInput: { flex: 1, height: 36, fontSize: 16 },
+  textInput: { flex: 1, height: 36, fontSize: 16, color: "#eef1f7" },
 
   // Logo - glass card
   logoCard: {
     alignItems: "center",
-    justifyContent: "center",
     marginTop: 14,
     marginHorizontal: 14,
     borderRadius: 28,
     overflow: "hidden",
     borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.16)",
     backgroundColor: "rgba(255,255,255,0.06)",
     shadowColor: "#000",
     shadowOpacity: 0.25,
     shadowRadius: 20,
     shadowOffset: { width: 0, height: 10 },
     ...(isAndroid ? { elevation: 8 } : {}),
-    paddingVertical: 35,
   },
-  // Ensures logo fits without cropping for both states
-  logo: {
-    borderBottomRightRadius: 40,
-    borderBottomLeftRadius: 40,
-    borderTopRightRadius: 40,
-    borderTopLeftRadius: 40,
-    width: "80%",
-    height: 300,
-    alignSelf: "center",
-  },
+  logo: { width: "100%", height: 320 },
 
   // Section title
   section: { marginTop: 18, paddingHorizontal: 16 },
+  sectionHeader: { marginBottom: 10 },
   sectionTitlePill: {
     alignSelf: "flex-start",
     borderRadius: 14,
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
     backgroundColor: "rgba(255,255,255,0.06)",
     overflow: "hidden",
-    marginBottom: 10,
   },
-  sectionTitle: { fontSize: 16, fontWeight: "700", letterSpacing: 0.3 },
+  sectionTitle: { fontSize: 16, fontWeight: "700", color: "#f3f5fb", letterSpacing: 0.3 },
 
   // Ads glass row
   adsGlass: {
@@ -532,8 +491,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 6 },
     ...(isAndroid ? { elevation: 3 } : {}),
   },
-  featureIcon: { width: 64, height: 64, borderRadius: 8 },
-  featureText: { fontSize: 13, fontWeight: "600", textAlign: "center", marginTop: 8 },
+  featureIcon: { width: 64, height: 64, borderRadius: 12 },
+  featureText: { fontSize: 13, fontWeight: "600", textAlign: "center", color: "#e8ecf7", marginTop: 8 },
 
   // Avatar and user menu
   avatarButton: { paddingHorizontal: 2 },
@@ -614,6 +573,7 @@ const styles = StyleSheet.create({
   },
   userMenuTitle: {
     fontSize: 14,
+    color: "#eef1f7",
     marginBottom: 8,
     fontWeight: "600",
   },
@@ -624,7 +584,7 @@ const styles = StyleSheet.create({
   },
   userMenuItemText: {
     fontSize: 16,
-    color: "#d00",
+    color: "rgba(231, 135, 71, 0.95)",
     fontWeight: "600",
   },
 });
