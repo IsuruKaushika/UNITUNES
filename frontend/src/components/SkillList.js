@@ -80,7 +80,7 @@ const CustomLogo = ({ onClick, className = "" }) => (
           <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
         </div>
         <div className="text-white font-bold text-lg">
-          SkillHub
+          UniTunes
         </div>
       </div>
     </div>
@@ -542,7 +542,7 @@ const SkillList = () => {
       <div className="mt-20 py-8 bg-white/80 backdrop-blur-sm border-t border-gray-100">
         <div className="container mx-auto px-4 text-center">
           <p className="text-gray-500 text-sm">
-            © 2025 SkillHub. Connect with talented individuals and share your expertise.
+            © 2025 UniTunes. Connect with talented individuals and share your expertise.
           </p>
         </div>
       </div>
