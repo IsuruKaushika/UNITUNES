@@ -383,7 +383,7 @@ const styles = StyleSheet.create({
 
   container: {
     flexGrow: 1,
-    paddingBottom: 70,
+    paddingBottom: 90,
     paddingTop: 20,
   },
 
