@@ -1,69 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
-// Enhanced skill data
-const skillData = [
-  {
-    id: 1,
-    name: "Kasun Perera",
-    skill: "Graphic Design",
-    image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&h=300&fit=crop",
-    type: "Creative",
-    criteria: "Photoshop, Illustrator",
-    specialization: "Logo & Branding",
-    phone: "0771234567",
-    payment: "Paid",
-    price: "Rs 2,000/hour",
-    rating: 4.8,
-    experience: "3 Years",
-    location: "Colombo"
-  },
-  {
-    id: 2,
-    name: "Nimali Silva",
-    skill: "Tutoring",
-    image: "https://images.unsplash.com/photo-1544717297-fa95b6ee9643?w=400&h=300&fit=crop",
-    type: "Education",
-    criteria: "Mathematics, Physics",
-    specialization: "A/L Tutoring",
-    phone: "0719876543",
-    payment: "Free",
-    price: "Free",
-    rating: 4.9,
-    experience: "2 Years",
-    location: "Kandy"
-  },
-  {
-    id: 3,
-    name: "Tharindu Jayasena",
-    skill: "Video Editing",
-    image: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=400&h=300&fit=crop",
-    type: "Multimedia",
-    criteria: "Adobe Premiere, After Effects",
-    specialization: "Short Films",
-    phone: "0751122334",
-    payment: "Paid",
-    price: "Rs 1,500/hour",
-    rating: 4.7,
-    experience: "4 Years",
-    location: "Galle"
-  },
-  {
-    id: 4,
-    name: "Priya Fernando",
-    skill: "Web Development",
-    image: "https://images.unsplash.com/photo-1494790108755-2616c15a9e3e?w=400&h=300&fit=crop",
-    type: "Technology",
-    criteria: "React, Node.js, MongoDB",
-    specialization: "Full Stack Development",
-    phone: "0761234567",
-    payment: "Paid",
-    price: "Rs 3,000/hour",
-    rating: 4.6,
-    experience: "5 Years",
-    location: "Colombo"
-  }
-];
+import axios from "axios";
 
 // Custom Logo Component
 const CustomLogo = ({ onClick, className = "" }) => (
@@ -91,19 +28,138 @@ const SkillList = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState('all');
+  const [skills, setSkills] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Backend API base URL - adjust this to match your backend URL
+  const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000/api';
+
+  // Fetch skills from backend
+  const fetchSkills = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const response = await axios.get(`${API_BASE_URL}/skill/active`);
+      
+      if (response.data.success) {
+        setSkills(response.data.skills);
+      } else {
+        setError('Failed to fetch skills');
+      }
+    } catch (err) {
+      console.error('Error fetching skills:', err);
+      setError('Failed to connect to the server. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Transform backend data to match frontend expectations
+  const transformSkillData = (skill) => {
+    return {
+      id: skill._id,
+      name: skill.studentName,
+      skill: skill.skillType,
+      image: skill.images && skill.images.length > 0 
+        ? skill.images[0] 
+        : "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=300&fit=crop", // Default image
+      type: getSkillCategory(skill.skillType),
+      criteria: skill.moreDetails,
+      specialization: skill.moreDetails,
+      phone: skill.contact,
+      payment: skill.price > 0 ? "Paid" : "Free",
+      price: skill.price > 0 ? `Rs ${skill.price.toLocaleString()}/hour` : "Free",
+      rating: 4.5, // You can add rating field to your backend model later
+      experience: skill.experience || "Beginner",
+      location: skill.location || "Not specified",
+      moreDetails: skill.moreDetails,
+      allImages: skill.images || []
+    };
+  };
+
+  // Map skill types to categories
+  const getSkillCategory = (skillType) => {
+    const categoryMap = {
+      'Programming': 'Technology',
+      'Design': 'Creative',
+      'Music': 'Creative',
+      'Sports': 'Physical',
+      'Cooking': 'Lifestyle',
+      'Language': 'Education',
+      'Academic': 'Education',
+      'Art': 'Creative',
+      'Photography': 'Creative',
+      'Other': 'Other'
+    };
+    return categoryMap[skillType] || 'Other';
+  };
+
+  // Get unique categories from skills
+  const getUniqueCategories = () => {
+    const categories = skills.map(skill => getSkillCategory(skill.skillType));
+    return [...new Set(categories)];
+  };
 
   // Filter skills based on search and type
-  const filteredSkills = skillData.filter(skill => {
-    const matchesSearch = skill.skill.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         skill.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         skill.location.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesType = filterType === 'all' || skill.type === filterType;
-    return matchesSearch && matchesType;
-  });
+  const filteredSkills = skills
+    .map(transformSkillData)
+    .filter(skill => {
+      const matchesSearch = 
+        skill.skill.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        skill.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        skill.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        skill.criteria.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      const matchesType = filterType === 'all' || skill.type === filterType;
+      return matchesSearch && matchesType;
+    });
 
   const handleSkillClick = (skill) => {
     navigate(`/skill-details/${skill.id}`, { state: skill });
   };
+
+  // Fetch skills on component mount
+  useEffect(() => {
+    fetchSkills();
+  }, []);
+
+  // Loading component
+  if (loading) {
+    return (
+      <div className="relative min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500 mb-4"></div>
+          <h3 className="text-xl font-semibold text-gray-700">Loading skills...</h3>
+          <p className="text-gray-500 mt-2">Please wait while we fetch the latest skills</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error component
+  if (error) {
+    return (
+      <div className="relative min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto px-4">
+          <div className="inline-flex items-center justify-center w-24 h-24 bg-red-100 rounded-full mb-6">
+            <svg className="w-12 h-12 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+          </div>
+          <h3 className="text-2xl font-bold text-gray-800 mb-3">Oops! Something went wrong</h3>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <button
+            onClick={fetchSkills}
+            className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50">
@@ -159,12 +215,24 @@ const SkillList = () => {
               className="px-6 py-4 bg-white border border-gray-200 rounded-2xl shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-300 transition-all duration-300"
             >
               <option value="all">All Categories</option>
-              <option value="Creative">Creative</option>
-              <option value="Education">Education</option>
-              <option value="Multimedia">Multimedia</option>
-              <option value="Technology">Technology</option>
+              {getUniqueCategories().map(category => (
+                <option key={category} value={category}>{category}</option>
+              ))}
             </select>
           </div>
+        </div>
+
+        {/* Refresh Button */}
+        <div className="text-center mb-8">
+          <button
+            onClick={fetchSkills}
+            className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-md border border-gray-200 text-gray-700 font-medium hover:shadow-lg transition-all duration-300"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Refresh
+          </button>
         </div>
 
         {/* Results Count */}
@@ -188,6 +256,9 @@ const SkillList = () => {
                   src={skill.image}
                   alt={skill.skill}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  onError={(e) => {
+                    e.target.src = "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=300&fit=crop";
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 
@@ -202,13 +273,13 @@ const SkillList = () => {
                   </div>
                 </div>
 
-                {/* Rating Badge */}
+                {/* Experience Badge */}
                 <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full">
                   <div className="flex items-center gap-1">
-                    <svg className="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 text-orange-400" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                     </svg>
-                    <span className="text-sm font-semibold text-gray-800">{skill.rating}</span>
+                    <span className="text-sm font-semibold text-gray-800">{skill.experience}</span>
                   </div>
                 </div>
               </div>
@@ -240,7 +311,7 @@ const SkillList = () => {
         </div>
 
         {/* No Results */}
-        {filteredSkills.length === 0 && (
+        {filteredSkills.length === 0 && !loading && (
           <div className="text-center py-20">
             <div className="inline-flex items-center justify-center w-24 h-24 bg-gray-100 rounded-full mb-6">
               <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -249,7 +320,10 @@ const SkillList = () => {
             </div>
             <h3 className="text-2xl font-bold text-gray-800 mb-3">No Skills Found</h3>
             <p className="text-gray-600 mb-6">
-              Try adjusting your search or filter criteria
+              {skills.length === 0 
+                ? "No skills have been added yet. Be the first to share your expertise!"
+                : "Try adjusting your search or filter criteria"
+              }
             </p>
             <button
               onClick={() => {
