@@ -463,6 +463,10 @@ const styles = StyleSheet.create({
   },
   // Ensures logo fits without cropping for both states
   logo: {
+    borderBottomRightRadius: 40,
+    borderBottomLeftRadius: 40,
+    borderTopRightRadius: 40,
+    borderTopLeftRadius: 40,
     width: "80%",
     height: 300,
     alignSelf: "center",
