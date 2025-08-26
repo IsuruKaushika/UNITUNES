@@ -206,13 +206,13 @@ const FilterBar = ({ onFilterChange, activeFilters }) => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Price Filter */}
         <div>
-          <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">
+          <label className="block text-xs font-medium text-black mb-2 uppercase tracking-wide">
             Price Range
           </label>
           <select
             value={activeFilters.price}
             onChange={(e) => onFilterChange({ ...activeFilters, price: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white text-black"
           >
             {priceRanges.map((range) => (
               <option key={range.value} value={range.value}>
@@ -224,13 +224,13 @@ const FilterBar = ({ onFilterChange, activeFilters }) => {
 
         {/* Sort Filter */}
         <div>
-          <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">
+          <label className="block text-xs font-medium text-black mb-2 uppercase tracking-wide">
             Sort By
           </label>
           <select
             value={activeFilters.sort}
             onChange={(e) => onFilterChange({ ...activeFilters, sort: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white text-black"
           >
             {sortOptions.map((option) => (
               <option key={option.value} value={option.value}>
@@ -242,11 +242,11 @@ const FilterBar = ({ onFilterChange, activeFilters }) => {
 
         {/* Location Filter */}
         <div>
-          <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">
+          <label className="block text-xs font-medium text-black mb-2 uppercase tracking-wide">
             Location
           </label>
           <select
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white text-black"
           >
             <option>All Locations</option>
             <option>On Campus</option>
@@ -502,10 +502,7 @@ function RentItemsPage() {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   
-                  {/* Discount Badge */}
-                  <div className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded">
-                    20% OFF
-                  </div>
+
 
                   {/* Favorite Button */}
                   <button
