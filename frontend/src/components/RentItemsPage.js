@@ -6,15 +6,15 @@ import productList from "./ProductList";
 const CustomLogo = ({ onClick, className = "" }) => (
   <div 
     onClick={onClick}
-    className={`cursor-pointer hover:scale-110 transition-transform duration-300 ${className}`}
+    className={`cursor-pointer hover:scale-105 transition-transform duration-300 ${className}`}
   >
-    <div className="bg-gradient-to-br from-yellow-400 via-orange-400 to-red-400 rounded-2xl p-3 shadow-lg">
+    <div className="bg-gradient-to-br from-yellow-400 via-orange-400 to-red-400 rounded-xl p-2 shadow-md">
       <div className="flex items-center gap-2">
         <div className="relative">
-          <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+          <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
             <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
           </svg>
-          <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
+          <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-green-400 rounded-full border border-white animate-pulse"></div>
         </div>
         <div className="text-white font-bold text-lg">
           UniTunes
@@ -23,6 +23,148 @@ const CustomLogo = ({ onClick, className = "" }) => (
     </div>
   </div>
 );
+
+// Categories Navigation Component
+const CategoriesNav = ({ activeCategory, onCategoryChange }) => {
+  const categories = [
+    { 
+      id: 'all', 
+      name: 'All Items', 
+      icon: '🏪',
+      color: 'from-gray-500 to-gray-600'
+    },
+    { 
+      id: 'electronics', 
+      name: 'Electronics', 
+      icon: '💻',
+      color: 'from-blue-500 to-blue-600',
+      subCategories: ['Laptops', 'Phones', 'Tablets', 'Cameras', 'Gaming']
+    },
+    { 
+      id: 'sports', 
+      name: 'Sports', 
+      icon: '⚽',
+      color: 'from-green-500 to-green-600',
+      subCategories: ['Football', 'Cricket', 'Basketball', 'Tennis', 'Fitness']
+    },
+    { 
+      id: 'clothes', 
+      name: 'Clothing', 
+      icon: '👕',
+      color: 'from-purple-500 to-purple-600',
+      subCategories: ['Formal', 'Casual', 'Party Wear', 'Traditional', 'Accessories']
+    },
+    { 
+      id: 'watches', 
+      name: 'Watches', 
+      icon: '⌚',
+      color: 'from-yellow-500 to-yellow-600',
+      subCategories: ['Smart Watch', 'Analog', 'Digital', 'Luxury', 'Sports']
+    },
+    { 
+      id: 'books', 
+      name: 'Books', 
+      icon: '📚',
+      color: 'from-indigo-500 to-indigo-600',
+      subCategories: ['Textbooks', 'Novels', 'Reference', 'Study Guides', 'Magazines']
+    },
+    { 
+      id: 'vehicles', 
+      name: 'Vehicles', 
+      icon: '🏍️',
+      color: 'from-red-500 to-red-600',
+      subCategories: ['Bicycles', 'Motorcycles', 'Scooters', 'Cars', 'Parts']
+    },
+    { 
+      id: 'musical', 
+      name: 'Musical', 
+      icon: '🎸',
+      color: 'from-pink-500 to-pink-600',
+      subCategories: ['Guitars', 'Keyboards', 'Drums', 'Audio Equipment', 'Accessories']
+    },
+    { 
+      id: 'furniture', 
+      name: 'Furniture', 
+      icon: '🪑',
+      color: 'from-orange-500 to-orange-600',
+      subCategories: ['Study Table', 'Chairs', 'Storage', 'Bed', 'Decoration']
+    },
+    { 
+      id: 'tools', 
+      name: 'Tools', 
+      icon: '🔧',
+      color: 'from-cyan-500 to-cyan-600',
+      subCategories: ['Study Tools', 'Lab Equipment', 'Art Supplies', 'Tech Tools', 'General']
+    }
+  ];
+
+  const [showDropdown, setShowDropdown] = useState(null);
+
+  return (
+    <div className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
+      <div className="container mx-auto px-4">
+        {/* Main Categories */}
+        <div className="flex items-center space-x-1 py-3 overflow-x-auto scrollbar-hide">
+          {categories.map((category) => (
+            <div
+              key={category.id}
+              className="relative"
+              onMouseEnter={() => setShowDropdown(category.id)}
+              onMouseLeave={() => setShowDropdown(null)}
+            >
+              <button
+                onClick={() => onCategoryChange(category.id)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 whitespace-nowrap ${
+                  activeCategory === category.id
+                    ? `bg-gradient-to-r ${category.color} text-white shadow-md`
+                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800'
+                }`}
+              >
+                <span className="text-lg">{category.icon}</span>
+                <span className="text-sm font-semibold">{category.name}</span>
+                {category.subCategories && (
+                  <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                )}
+              </button>
+
+              {/* Dropdown Menu */}
+              {category.subCategories && showDropdown === category.id && (
+                <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-xl py-2 min-w-48 z-60">
+                  {category.subCategories.map((subCategory) => (
+                    <button
+                      key={subCategory}
+                      onClick={() => onCategoryChange(category.id, subCategory)}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-200"
+                    >
+                      {subCategory}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Category Description Banner */}
+        {activeCategory !== 'all' && (
+          <div className="py-2 border-t border-gray-100">
+            <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg px-4 py-2">
+              <p className="text-sm text-gray-700">
+                <span className="font-semibold">
+                  {categories.find(cat => cat.id === activeCategory)?.icon} 
+                  {categories.find(cat => cat.id === activeCategory)?.name}
+                </span>
+                <span className="ml-2">- Perfect for university students</span>
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 // Floating Action Button Component
 const FloatingActionButton = ({ onClick }) => (
@@ -41,7 +183,7 @@ const FloatingActionButton = ({ onClick }) => (
   </div>
 );
 
-// Filter Component
+// Filter Component - Daraz Style
 const FilterBar = ({ onFilterChange, activeFilters }) => {
   const priceRanges = [
     { label: "All Prices", value: "all" },
@@ -52,35 +194,25 @@ const FilterBar = ({ onFilterChange, activeFilters }) => {
   ];
 
   const sortOptions = [
-    { label: "Newest First", value: "newest" },
+    { label: "Relevance", value: "relevance" },
     { label: "Price: Low to High", value: "price_asc" },
     { label: "Price: High to Low", value: "price_desc" },
-    { label: "A-Z", value: "name_asc" }
+    { label: "Newest First", value: "newest" },
+    { label: "Most Popular", value: "popular" }
   ];
 
-  const handlePriceChange = (value) => {
-    onFilterChange({ ...activeFilters, price: value });
-  };
-
-  const handleSortChange = (value) => {
-    onFilterChange({ ...activeFilters, sort: value });
-  };
-
   return (
-    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="bg-white border border-gray-200 rounded-lg p-4 mb-6 shadow-sm">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Price Filter */}
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-3">
+          <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">
             Price Range
-            <span className="ml-2 text-xs bg-yellow-100 text-black px-2 py-1 rounded-full">
-              {activeFilters.price === 'all' ? 'All' : priceRanges.find(r => r.value === activeFilters.price)?.label}
-            </span>
           </label>
           <select
             value={activeFilters.price}
-            onChange={(e) => handlePriceChange(e.target.value)}
-            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-yellow-100 focus:border-yellow-300 transition-all duration-300 cursor-pointer text-black"
+            onChange={(e) => onFilterChange({ ...activeFilters, price: e.target.value })}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white"
           >
             {priceRanges.map((range) => (
               <option key={range.value} value={range.value}>
@@ -92,16 +224,13 @@ const FilterBar = ({ onFilterChange, activeFilters }) => {
 
         {/* Sort Filter */}
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-3">
+          <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">
             Sort By
-            <span className="ml-2 text-xs bg-blue-100 text-black px-2 py-1 rounded-full">
-              {sortOptions.find(s => s.value === activeFilters.sort)?.label}
-            </span>
           </label>
           <select
             value={activeFilters.sort}
-            onChange={(e) => handleSortChange(e.target.value)}
-            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-yellow-100 focus:border-yellow-300 transition-all duration-300 cursor-pointer text-black"
+            onChange={(e) => onFilterChange({ ...activeFilters, sort: e.target.value })}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white"
           >
             {sortOptions.map((option) => (
               <option key={option.value} value={option.value}>
@@ -111,16 +240,28 @@ const FilterBar = ({ onFilterChange, activeFilters }) => {
           </select>
         </div>
 
-        {/* Clear Filters Button */}
+        {/* Location Filter */}
+        <div>
+          <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">
+            Location
+          </label>
+          <select
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white"
+          >
+            <option>All Locations</option>
+            <option>On Campus</option>
+            <option>Near Campus</option>
+            <option>City Center</option>
+          </select>
+        </div>
+
+        {/* Clear Filters */}
         <div className="flex items-end">
           <button
-            onClick={() => onFilterChange({ price: 'all', sort: 'newest', showFavoritesOnly: false })}
-            className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-3 rounded-xl font-medium transition-all duration-300 flex items-center justify-center gap-2"
+            onClick={() => onFilterChange({ price: 'all', sort: 'relevance', category: 'all' })}
+            className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-md font-medium transition-colors duration-200 text-sm"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-            Clear Filters
+            Clear All
           </button>
         </div>
       </div>
@@ -155,9 +296,8 @@ function RentItemsPage() {
   const [filteredItems, setFilteredItems] = useState(productList);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchLoading, setSearchLoading] = useState(false);
-  const [viewMode, setViewMode] = useState('grid');
-  const [filters, setFilters] = useState({ price: 'all', sort: 'newest' });
+  const [activeCategory, setActiveCategory] = useState('all');
+  const [filters, setFilters] = useState({ price: 'all', sort: 'relevance', category: 'all' });
   const { favorites, toggleFavorite } = useFavorites();
 
   // Apply filters and sorting
@@ -169,6 +309,13 @@ function RentItemsPage() {
       filtered = filtered.filter(item =>
         item.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.description?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Apply category filter
+    if (activeCategory !== 'all') {
+      filtered = filtered.filter(item => 
+        item.category?.toLowerCase() === activeCategory.toLowerCase()
       );
     }
 
@@ -199,27 +346,22 @@ function RentItemsPage() {
           return (parseInt(a.pricePerDay) || 0) - (parseInt(b.pricePerDay) || 0);
         case 'price_desc':
           return (parseInt(b.pricePerDay) || 0) - (parseInt(a.pricePerDay) || 0);
-        case 'name_asc':
-          return (a.name || '').localeCompare(b.name || '');
         case 'newest':
-        default:
-          // Maintain original array order for newest
           return itemList.indexOf(b) - itemList.indexOf(a);
+        case 'popular':
+          return (b.popularity || 0) - (a.popularity || 0);
+        case 'relevance':
+        default:
+          return 0;
       }
     });
 
     setFilteredItems(filtered);
-  }, [itemList, searchQuery, filters]);
+  }, [itemList, searchQuery, activeCategory, filters]);
 
-  // Search functionality
-  const handleSearch = async (query) => {
-    setSearchQuery(query);
-    setSearchLoading(true);
-    
-    // Simulate search delay
-    setTimeout(() => {
-      setSearchLoading(false);
-    }, 500);
+  const handleCategoryChange = (categoryId, subCategory = null) => {
+    setActiveCategory(categoryId);
+    setFilters({...filters, category: categoryId});
   };
 
   const handleItemClick = (id) => {
@@ -231,297 +373,227 @@ function RentItemsPage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
-      {/* Animated Background Elements */}
-      <div className="absolute top-20 left-10 w-32 h-32 bg-yellow-200 rounded-full opacity-20 animate-pulse"></div>
-      <div className="absolute bottom-32 right-16 w-40 h-40 bg-orange-200 rounded-full opacity-20 animate-pulse delay-1000"></div>
-      <div className="absolute top-1/2 right-1/4 w-24 h-24 bg-blue-200 rounded-full opacity-20 animate-pulse delay-500"></div>
-
-      {/* Header Section */}
-      <div className="relative bg-white/80 backdrop-blur-sm shadow-lg border-b border-gray-100 sticky top-0 z-40">
-        <div className="container mx-auto px-4 py-6">
+    <div className="min-h-screen bg-gray-50">
+      {/* Top Header */}
+      <div className="bg-white shadow-sm border-b border-gray-200">
+        <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             {/* Back Button */}
             <button
               onClick={() => navigate(-1)}
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-gray-800 to-gray-700 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl hover:from-yellow-500 hover:to-yellow-400 hover:text-gray-900 transition-all duration-300 transform hover:-translate-y-0.5 font-medium"
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
-              Back
+              <span className="text-sm font-medium">Back</span>
             </button>
 
-            {/* Custom Logo */}
+            {/* Logo */}
             <CustomLogo onClick={() => navigate("/")} />
+
+            {/* User Actions */}
+            <div className="flex items-center gap-4">
+              <button className="text-gray-600 hover:text-gray-800 transition-colors">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+              </button>
+              <button className="text-gray-600 hover:text-gray-800 transition-colors">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          {/* Search Bar */}
+          <div className="mt-4">
+            <div className="relative max-w-2xl mx-auto">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search for items, brands and more..."
+                className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-gray-700"
+              />
+              <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-orange-500 transition-colors">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
+      {/* Categories Navigation */}
+      <CategoriesNav 
+        activeCategory={activeCategory}
+        onCategoryChange={handleCategoryChange}
+      />
+
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-12">
-        {/* Title Section */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full mb-6 shadow-lg animate-bounce">
-            <span className="text-3xl">🎒</span>
+      <div className="container mx-auto px-4 py-6">
+        {/* Breadcrumb */}
+        <nav className="flex items-center space-x-2 text-sm text-gray-500 mb-4">
+          <span>UniTunes</span>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+          <span>Rental Items</span>
+          {activeCategory !== 'all' && (
+            <>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+              <span className="text-gray-700 font-medium capitalize">{activeCategory}</span>
+            </>
+          )}
+        </nav>
+
+        {/* Filter Bar */}
+        <FilterBar onFilterChange={setFilters} activeFilters={filters} />
+
+        {/* Results Header */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="text-gray-600">
+            <span className="text-sm">
+              {filteredItems.length} item{filteredItems.length !== 1 ? 's' : ''} found
+              {searchQuery && <span> for "{searchQuery}"</span>}
+            </span>
           </div>
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-gray-600 bg-clip-text text-transparent mb-4">
-            Premium Rental Items
-          </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            Discover quality items available for rent at affordable daily rates
-          </p>
-          <div className="w-24 h-1 bg-gradient-to-r from-yellow-400 to-orange-400 mx-auto mt-6 rounded-full"></div>
-        </div>
-
-        {/* Search Bar with View Toggle */}
-        <div className="max-w-4xl mx-auto mb-8">
-          <div className="flex flex-col md:flex-row gap-4">
-            {/* Search Input */}
-            <div className="flex-1 relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </div>
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => handleSearch(e.target.value)}
-                placeholder="Search by item name or description..."
-                className="w-full pl-12 pr-4 py-4 bg-white border border-gray-200 rounded-2xl shadow-lg focus:outline-none focus:ring-4 focus:ring-yellow-100 focus:border-yellow-300 transition-all duration-300 text-gray-700 placeholder-gray-400"
-              />
-              {searchLoading && (
-                <div className="absolute inset-y-0 right-0 pr-4 flex items-center">
-                  <div className="w-5 h-5 border-2 border-yellow-200 border-t-yellow-500 rounded-full animate-spin"></div>
-                </div>
-              )}
-            </div>
-
-            {/* View Mode Toggle */}
-            <div className="flex bg-white border border-gray-200 rounded-2xl shadow-lg overflow-hidden">
-              <button
-                onClick={() => setViewMode('grid')}
-                className={`px-6 py-4 transition-all duration-300 ${
-                  viewMode === 'grid'
-                    ? 'bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-800'
-                    : 'text-gray-600 hover:bg-gray-50'
-                }`}
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <span>View:</span>
+              <button className="p-1 border border-orange-500 text-orange-500 rounded">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                 </svg>
               </button>
-              <button
-                onClick={() => setViewMode('list')}
-                className={`px-6 py-4 transition-all duration-300 ${
-                  viewMode === 'list'
-                    ? 'bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-800'
-                    : 'text-gray-600 hover:bg-gray-50'
-                }`}
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <button className="p-1 border border-gray-300 text-gray-500 rounded hover:border-orange-500 hover:text-orange-500">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
                 </svg>
               </button>
             </div>
           </div>
-          
-          {/* Search Results Info */}
-          {searchQuery && (
-            <div className="mt-4 text-center">
-              <span className="inline-block bg-white px-4 py-2 rounded-full shadow-md border border-gray-200 text-gray-600 text-sm">
-                {searchLoading ? 'Searching...' : `${filteredItems.length} result${filteredItems.length !== 1 ? 's' : ''} for "${searchQuery}"`}
-              </span>
-            </div>
-          )}
         </div>
 
-        {/* Filter Bar */}
-        <FilterBar onFilterChange={setFilters} activeFilters={filters} />
-
-        {/* Content */}
+        {/* Items Grid */}
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-20">
-            <div className="relative">
-              <div className="w-16 h-16 border-4 border-yellow-200 border-t-yellow-500 rounded-full animate-spin"></div>
-              <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-orange-300 rounded-full animate-spin animate-reverse"></div>
-            </div>
-            <p className="text-xl text-gray-600 mt-6 font-medium animate-pulse">
-              Loading premium items...
-            </p>
-            <p className="text-sm text-gray-500 mt-2">
-              Please wait while we fetch the latest listings
-            </p>
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
           </div>
         ) : filteredItems.length > 0 ? (
-          <>
-            {/* Results Count */}
-            <div className="mb-8 flex justify-between items-center">
-              <span className="inline-block bg-white px-6 py-3 rounded-full shadow-md border border-gray-200 text-gray-700 font-medium">
-                {filteredItems.length} item{filteredItems.length !== 1 ? 's' : ''} available
-              </span>
-              
-              {/* Favorites Filter */}
-              <button
-                onClick={() => setFilters({...filters, showFavoritesOnly: !filters.showFavoritesOnly})}
-                className={`px-4 py-2 rounded-full font-medium transition-all duration-300 ${
-                  filters.showFavoritesOnly
-                    ? 'bg-red-100 text-red-600 shadow-md'
-                    : 'bg-white text-gray-600 shadow-md hover:shadow-lg'
-                }`}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            {filteredItems.map((item, index) => (
+              <div
+                key={item.id}
+                onClick={() => handleItemClick(item.id)}
+                className="bg-white border border-gray-200 rounded-lg hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden group hover:border-orange-300"
               >
-                ❤️ Favorites ({favorites.length})
-              </button>
-            </div>
-
-            {/* Item Cards Grid/List */}
-            <div className={`max-w-7xl mx-auto ${
-              viewMode === 'grid'
-                ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8'
-                : 'space-y-6'
-            }`}>
-              {filteredItems
-                .filter(item => !filters.showFavoritesOnly || favorites.includes(item.id))
-                .map((item, index) => (
-                <div
-                  key={item.id}
-                  onClick={() => handleItemClick(item.id)}
-                  className={`group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 cursor-pointer overflow-hidden border border-gray-100 hover:border-yellow-200 ${
-                    viewMode === 'list' ? 'flex items-center p-6 space-x-6' : ''
-                  }`}
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  {/* Image Container */}
-                  <div className={`relative overflow-hidden ${
-                    viewMode === 'list' ? 'w-48 h-32 flex-shrink-0' : 'h-56'
-                  }`}>
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    
-                    {/* Floating Badges */}
-                    <div className="absolute top-4 right-4 flex gap-2">
-                      <div className="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-semibold text-gray-800 shadow-lg">
-                        Available
-                      </div>
-                    </div>
-
-                    {/* Favorite Button */}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleFavorite(item.id);
-                      }}
-                      className={`absolute top-4 left-4 p-2 rounded-full shadow-lg transition-all duration-300 ${
-                        favorites.includes(item.id)
-                          ? 'bg-red-100 text-red-500'
-                          : 'bg-white/90 text-gray-400 hover:text-red-500'
-                      }`}
-                    >
-                      <svg className="w-5 h-5" fill={favorites.includes(item.id) ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                      </svg>
-                    </button>
+                {/* Image Container */}
+                <div className="relative aspect-square overflow-hidden">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  
+                  {/* Discount Badge */}
+                  <div className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded">
+                    20% OFF
                   </div>
 
-                  {/* Content */}
-                  <div className={`${viewMode === 'list' ? 'flex-1' : 'p-6'}`}>
-                    <h3 className="text-xl font-bold text-gray-800 mb-3 line-clamp-1 group-hover:text-yellow-600 transition-colors duration-300">
-                      {item.name}
-                    </h3>
-                    
-                    <p className="text-gray-600 text-sm line-clamp-2 leading-relaxed mb-4">
-                      {item.description}
-                    </p>
+                  {/* Favorite Button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFavorite(item.id);
+                    }}
+                    className={`absolute top-2 right-2 p-1.5 rounded-full bg-white shadow-md transition-colors ${
+                      favorites.includes(item.id) ? 'text-red-500' : 'text-gray-400 hover:text-red-500'
+                    }`}
+                  >
+                    <svg className="w-4 h-4" fill={favorites.includes(item.id) ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                  </button>
+                </div>
 
-                    {/* Item Features */}
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Quality</span>
-                      <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Daily</span>
-                      <span className="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">Flexible</span>
+                {/* Content */}
+                <div className="p-3">
+                  <h3 className="text-sm font-medium text-gray-800 line-clamp-2 mb-1 group-hover:text-orange-600 transition-colors">
+                    {item.name}
+                  </h3>
+                  
+                  {/* Rating */}
+                  <div className="flex items-center gap-1 mb-2">
+                    <div className="flex items-center">
+                      {[1,2,3,4,5].map((star) => (
+                        <svg key={star} className="w-3 h-3 text-yellow-400 fill-current" viewBox="0 0 24 24">
+                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                      ))}
                     </div>
+                    <span className="text-xs text-gray-500">(234)</span>
+                  </div>
 
-                    {/* Price Section */}
-                    <div className={`flex items-center justify-between pt-4 border-t border-gray-100 ${
-                      viewMode === 'list' ? 'mt-0' : ''
-                    }`}>
-                      <div>
-                        <span className="text-2xl font-bold text-gray-800">
-                          Rs {parseInt(item.pricePerDay).toLocaleString()}
-                        </span>
-                        <span className="text-gray-500 text-sm ml-1">/ day</span>
-                      </div>
-                      
-                      {/* Action Buttons */}
-                      <div className="flex gap-2">
-                        <button className="bg-gray-100 hover:bg-gray-200 text-gray-600 p-2 rounded-lg transition-colors duration-300">
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
-                          </svg>
-                        </button>
-                        <button className="bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-800 px-4 py-2 rounded-xl font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300 text-sm">
-                          View Details
-                        </button>
-                      </div>
+                  {/* Price */}
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-orange-500 font-bold text-sm">
+                        Rs {parseInt(item.pricePerDay).toLocaleString()}
+                      </span>
+                      <span className="text-xs text-gray-400 line-through">
+                        Rs {Math.round(parseInt(item.pricePerDay) * 1.2).toLocaleString()}
+                      </span>
                     </div>
+                    <div className="text-xs text-gray-500">per day</div>
+                  </div>
+
+                  {/* Location */}
+                  <div className="text-xs text-gray-500 mt-2 flex items-center gap-1">
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    </svg>
+                    <span>Near Campus</span>
                   </div>
                 </div>
-              ))}
-            </div>
-          </>
+              </div>
+            ))}
+          </div>
         ) : (
           <div className="text-center py-20">
-            <div className="inline-flex items-center justify-center w-24 h-24 bg-gray-100 rounded-full mb-6 animate-pulse">
+            <div className="w-24 h-24 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-6">
               <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
-            <h3 className="text-2xl font-bold text-gray-800 mb-3">
-              {searchQuery ? 'No Results Found' : 'No Items Available'}
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">
+              No items found
             </h3>
-            <p className="text-gray-600 mb-6 max-w-md mx-auto">
-              {searchQuery 
-                ? `We couldn't find any items matching "${searchQuery}". Try searching with different keywords.`
-                : "We couldn't find any rental items at the moment. Please check back later or try refreshing the page."
-              }
+            <p className="text-gray-600 mb-6">
+              Try adjusting your search or filter criteria
             </p>
-            {searchQuery ? (
-              <button
-                onClick={() => {
-                  setSearchQuery("");
-                  setFilters({...filters, showFavoritesOnly: false});
-                }}
-                className="bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-800 px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-              >
-                Clear Search
-              </button>
-            ) : (
-              <button
-                onClick={() => window.location.reload()}
-                className="bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-800 px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-              >
-                Refresh Page
-              </button>
-            )}
+            <button
+              onClick={() => {
+                setSearchQuery("");
+                setActiveCategory('all');
+                setFilters({ price: 'all', sort: 'relevance', category: 'all' });
+              }}
+              className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition-colors"
+            >
+              Clear All Filters
+            </button>
           </div>
         )}
       </div>
 
       {/* Floating Action Button */}
       <FloatingActionButton onClick={handleAddItem} />
-
-      {/* Footer */}
-      <div className="mt-20 py-8 bg-white/80 backdrop-blur-sm border-t border-gray-100">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-gray-500 text-sm">
-            © 2025 UniTunes. Find quality rental items at affordable rates.
-          </p>
-        </div>
-      </div>
     </div>
   );
 }
