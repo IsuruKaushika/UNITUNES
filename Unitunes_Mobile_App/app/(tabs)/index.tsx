@@ -18,7 +18,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 
-const backendUrl = "https://unitunes-backend.vercel.app";
+const backendUrl = 'https://unitunes-backend.vercel.app';
 const ACCENT = "#ff9500";
 const isAndroid = Platform.OS === "android";
 
