@@ -1,200 +1,208 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import axios from "axios";
-import { assets } from "../assets/assets";
+import { toast } from "react-toastify";
 
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
 
 const AddMedicalCenter = ({ token }) => {
-  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    name: "",
+    address: "",
+    contact: "",
+    doctorName: "",
+    description: "",
+    availableTime: "",
+    specialties: [],
+    image: [],
+    date: Date.now(), // store current timestamp by default
+  });
 
-  const [image, setImage] = useState(null);
-  const [centerName, setCenterName] = useState("");
-  const [address, setAddress] = useState("");
-  const [contactNumber, setContactNumber] = useState("");
-  const [description, setDescription] = useState("");
-  const [doctorName, setDoctorName] = useState("");
-  const [availableTime, setAvailableTime] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [specialtyInput, setSpecialtyInput] = useState("");
+  const [imageInput, setImageInput] = useState("");
 
-  const onSubmitHandler = async (e) => {
+  // Handle input change
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  // Add specialty
+  const addSpecialty = () => {
+    if (specialtyInput.trim() !== "") {
+      setFormData({
+        ...formData,
+        specialties: [...formData.specialties, specialtyInput.trim()],
+      });
+      setSpecialtyInput("");
+    }
+  };
+
+  // Add image
+  const addImage = () => {
+    if (imageInput.trim() !== "") {
+      setFormData({
+        ...formData,
+        image: [...formData.image, imageInput.trim()],
+      });
+      setImageInput("");
+    }
+  };
+
+  // Submit form
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
-
     try {
-      const formData = new FormData();
-      formData.append("name", centerName);
-      formData.append("address", address);
-      formData.append("contact", contactNumber);
-      formData.append("description", description);
-      formData.append("doctorName", doctorName);
-      formData.append("availableTime", availableTime);
-      if (image) formData.append("image", image);
-
-      const response = await axios.post(
-        `${backendUrl}/api/medicare/add`,
+      await axios.post(
+        `${backendUrl}/api/medical/add`,
         formData,
         {
-          headers: {
-            token,
-            "Content-Type": "multipart/form-data",
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
-
-      if (response.data.success) {
-        toast.success(response.data.message);
-        // Reset fields
-        setCenterName("");
-        setAddress("");
-        setContactNumber("");
-        setDescription("");
-        setDoctorName("");
-        setAvailableTime("");
-        setImage(null);
-      } else {
-        toast.error(response.data.message || "Failed to add medical center");
-      }
-    } catch (error) {
-      console.error("Error adding medical center:", error);
-      const errorMessage =
-        error.response?.data?.message ||
-        error.response?.data?.error ||
-        error.message ||
-        "Something went wrong!";
-      toast.error(errorMessage);
-    } finally {
-      setIsSubmitting(false);
+      toast.success("Medical center added successfully!");
+      setFormData({
+        name: "",
+        address: "",
+        contact: "",
+        doctorName: "",
+        description: "",
+        availableTime: "",
+        specialties: [],
+        image: [],
+        date: Date.now(),
+      });
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Error adding medical center");
     }
   };
 
   return (
-    <form
-      onSubmit={onSubmitHandler}
-      className="p-6 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 min-h-screen"
-    >
-      <div className="max-w-3xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="bg-white/80 p-6 rounded-xl shadow-xl border border-gray-200">
-          <h1 className="text-2xl font-bold text-gray-800">🏥 Add New Medical Center</h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Provide accurate information to help students find medical services.
-          </p>
-        </div>
+    <div className="p-6 max-w-2xl mx-auto bg-white shadow rounded-xl">
+      <h2 className="text-2xl font-bold mb-4">Add Medical Center</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <input
+          type="text"
+          name="name"
+          placeholder="Medical Center Name"
+          value={formData.name}
+          onChange={handleChange}
+          className="w-full p-2 border rounded"
+          required
+        />
+        <input
+          type="text"
+          name="address"
+          placeholder="Address"
+          value={formData.address}
+          onChange={handleChange}
+          className="w-full p-2 border rounded"
+          required
+        />
+        <input
+          type="text"
+          name="contact"
+          placeholder="Contact"
+          value={formData.contact}
+          onChange={handleChange}
+          className="w-full p-2 border rounded"
+          required
+        />
+        <input
+          type="text"
+          name="doctorName"
+          placeholder="Doctor Name"
+          value={formData.doctorName}
+          onChange={handleChange}
+          className="w-full p-2 border rounded"
+          required
+        />
+        <textarea
+          name="description"
+          placeholder="Description"
+          value={formData.description}
+          onChange={handleChange}
+          className="w-full p-2 border rounded"
+        />
+        <input
+          type="text"
+          name="availableTime"
+          placeholder="Available Time (e.g., 9 AM - 5 PM)"
+          value={formData.availableTime}
+          onChange={handleChange}
+          className="w-full p-2 border rounded"
+        />
 
-        {/* Image Upload */}
-        <div className="bg-white/80 p-6 rounded-xl shadow-md border border-gray-200">
-          <p className="mb-4 font-semibold text-gray-700">📸 Upload Image</p>
-          <label htmlFor="image">
-            <div className="w-full h-40 bg-gray-100 border border-gray-300 rounded-xl flex items-center justify-center overflow-hidden cursor-pointer">
-              <img
-                src={image ? URL.createObjectURL(image) : assets.upload_area}
-                className="w-full h-full object-cover"
-                alt="Upload"
-              />
-            </div>
+        {/* Specialties */}
+        <div>
+          <label className="font-semibold">Specialties</label>
+          <div className="flex gap-2 mt-1">
             <input
-              type="file"
-              id="image"
-              hidden
-              accept="image/*"
-              onChange={(e) => setImage(e.target.files[0])}
+              type="text"
+              value={specialtyInput}
+              onChange={(e) => setSpecialtyInput(e.target.value)}
+              placeholder="Add Specialty"
+              className="flex-1 p-2 border rounded"
             />
-          </label>
+            <button
+              type="button"
+              onClick={addSpecialty}
+              className="px-4 py-2 bg-blue-600 text-white rounded"
+            >
+              Add
+            </button>
+          </div>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {formData.specialties.map((sp, idx) => (
+              <span
+                key={idx}
+                className="px-2 py-1 bg-gray-200 rounded"
+              >
+                {sp}
+              </span>
+            ))}
+          </div>
         </div>
 
-        {/* Basic Info */}
-        <div className="bg-white/80 p-6 rounded-xl shadow-md border border-gray-200 grid gap-4">
-          <InputField
-            label="Medical Center Name"
-            value={centerName}
-            setValue={setCenterName}
-            required
-          />
-          <InputField
-            label="Doctor's Name"
-            value={doctorName}
-            setValue={setDoctorName}
-          />
-          <InputField
-            label="Contact Number"
-            value={contactNumber}
-            setValue={setContactNumber}
-            type="tel"
-            required
-          />
-          <TextArea label="Address" value={address} setValue={setAddress} required />
+        {/* Images */}
+        <div>
+          <label className="font-semibold">Images (URLs)</label>
+          <div className="flex gap-2 mt-1">
+            <input
+              type="text"
+              value={imageInput}
+              onChange={(e) => setImageInput(e.target.value)}
+              placeholder="Image URL"
+              className="flex-1 p-2 border rounded"
+            />
+            <button
+              type="button"
+              onClick={addImage}
+              className="px-4 py-2 bg-green-600 text-white rounded"
+            >
+              Add
+            </button>
+          </div>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {formData.image.map((img, idx) => (
+              <img
+                key={idx}
+                src={img}
+                alt="preview"
+                className="w-20 h-20 object-cover rounded border"
+              />
+            ))}
+          </div>
         </div>
 
-        {/* Available Time */}
-        <div className="bg-white/80 p-6 rounded-xl shadow-md border border-gray-200">
-          <TextArea
-            label="Available Time"
-            value={availableTime}
-            setValue={setAvailableTime}
-            placeholder="e.g., Mon-Fri: 9am - 5pm, Sat: 9am - 1pm"
-          />
-        </div>
-
-        {/* Description */}
-        <div className="bg-white/80 p-6 rounded-xl shadow-md border border-gray-200">
-          <TextArea
-            label="Services & Facilities"
-            value={description}
-            setValue={setDescription}
-            placeholder="Describe services, facilities, equipment..."
-          />
-        </div>
-
-        {/* Buttons */}
-        <div className="flex gap-4 justify-center">
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="px-6 py-3 bg-blue-600 text-white rounded-xl shadow-md hover:bg-blue-700 disabled:opacity-50"
-          >
-            {isSubmitting ? "Submitting..." : "Add Medical Center"}
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate("/medilist")}
-            className="px-6 py-3 bg-gray-700 text-white rounded-xl shadow-md hover:bg-gray-800"
-          >
-            View Medical Centers
-          </button>
-        </div>
-      </div>
-    </form>
+        <button
+          type="submit"
+          className="w-full py-2 bg-purple-600 text-white font-semibold rounded"
+        >
+          Submit
+        </button>
+      </form>
+    </div>
   );
 };
-
-// Reusable Input
-const InputField = ({ label, value, setValue, type = "text", required = false }) => (
-  <div className="w-full">
-    <label className="block text-sm font-semibold text-gray-700 mb-1">{label}</label>
-    <input
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
-      type={type}
-      required={required}
-      className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-300"
-    />
-  </div>
-);
-
-// Reusable TextArea
-const TextArea = ({ label, value, setValue, required = false, placeholder = "" }) => (
-  <div className="w-full">
-    <label className="block text-sm font-semibold text-gray-700 mb-1">{label}</label>
-    <textarea
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
-      required={required}
-      placeholder={placeholder}
-      className="w-full px-4 py-2 border border-gray-300 rounded-xl min-h-[100px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-300"
-    />
-  </div>
-);
 
 export default AddMedicalCenter;
