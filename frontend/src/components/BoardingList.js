@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 // backend URL
-const backendUrl = "https://unitunes-backend.vercel.app" || "http://localhost:4000";
+
+const backendUrl = import.meta.env.VITE_BACKEND_URL ;
 
 // Custom Logo Component
 const CustomLogo = ({ onClick, className = "" }) => (
