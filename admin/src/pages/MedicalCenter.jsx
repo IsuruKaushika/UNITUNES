@@ -1,223 +1,283 @@
 import React, { useState } from 'react';
-import { toast } from 'react-toastify';
+import { assets } from '../assets/assets';
 import axios from 'axios';
-import { backendUrl } from '../App';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 const AddMedicalCenter = ({ token }) => {
-  const [formData, setFormData] = useState({
-    name: '',
-    address: '',
-    contact: '',
-    doctorName: '',
-    description: '',
-    availableTime: '',
-    specialties: '',
-    image1: null,
-    image2: null,
-    image3: null,
-    image4: null,
-  });
-  const [isLoading, setIsLoading] = useState(false);
-  const [imagePreviews, setImagePreviews] = useState({
-    image1: null,
-    image2: null,
-    image3: null,
-    image4: null,
-  });
+  const navigate = useNavigate();
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  const [image1, setImage1] = useState(false);
+  const [image2, setImage2] = useState(false);
+  const [image3, setImage3] = useState(false);
+  const [image4, setImage4] = useState(false);
 
-  const handleImageChange = (e, imageField) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFormData((prev) => ({
-        ...prev,
-        [imageField]: file,
-      }));
+  const [name, setName] = useState('');
+  const [address, setAddress] = useState('');
+  const [contact, setContact] = useState('');
+  const [doctorName, setDoctorName] = useState('');
+  const [description, setDescription] = useState('');
+  const [availableTime, setAvailableTime] = useState('');
+  const [specialties, setSpecialties] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        setImagePreviews((prev) => ({
-          ...prev,
-          [imageField]: ev.target.result,
-        }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  const specialtyOptions = [
+    "General Medicine", "Cardiology", "Dermatology", "Orthopedics", 
+    "Pediatrics", "Gynecology", "Neurology", "Ophthalmology", 
+    "ENT", "Psychiatry", "Oncology", "Emergency Medicine"
+  ];
 
-  const resetForm = () => {
-    setFormData({
-      name: '',
-      address: '',
-      contact: '',
-      doctorName: '',
-      description: '',
-      availableTime: '',
-      specialties: '',
-      image1: null,
-      image2: null,
-      image3: null,
-      image4: null,
-    });
-    setImagePreviews({
-      image1: null,
-      image2: null,
-      image3: null,
-      image4: null,
-    });
-    document.querySelectorAll('input[type="file"]').forEach((input) => {
-      input.value = '';
-    });
-  };
-
-  const validateForm = () => {
-    const { name, address, contact, doctorName, availableTime } = formData;
-    if (!name.trim()) return toast.error('Medical center name is required');
-    if (!address.trim()) return toast.error('Address is required');
-    if (!contact.trim()) return toast.error('Contact number is required');
-    if (!doctorName.trim()) return toast.error('Doctor name is required');
-    if (!availableTime.trim()) return toast.error('Available time is required');
-
-    const contactRegex = /^[0-9+\-\s()]+$/;
-    if (!contactRegex.test(contact)) {
-      toast.error('Please enter a valid contact number');
-      return false;
-    }
-    if (!formData.image1 && !formData.image2 && !formData.image3 && !formData.image4) {
-      toast.error('Please upload at least one image');
-      return false;
-    }
-    return true;
+  const handleSpecialtySelect = (specialty) => {
+    setSpecialties((prev) =>
+      prev.includes(specialty)
+        ? prev.filter((item) => item !== specialty)
+        : [...prev, specialty]
+    );
   };
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
+    setIsSubmitting(true);
 
-    setIsLoading(true);
     try {
-      const submitData = new FormData();
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('address', address);
+      formData.append('contact', contact);
+      formData.append('doctorName', doctorName);
+      formData.append('description', description);
+      formData.append('availableTime', availableTime);
+      formData.append('specialties', JSON.stringify(specialties));
 
-      // text fields
-      submitData.append('name', formData.name);
-      submitData.append('address', formData.address);
-      submitData.append('contact', formData.contact);
-      submitData.append('doctorName', formData.doctorName);
-      submitData.append('description', formData.description);
-      submitData.append('availableTime', formData.availableTime);
+      image1 && formData.append('image1', image1);
+      image2 && formData.append('image2', image2);
+      image3 && formData.append('image3', image3);
+      image4 && formData.append('image4', image4);
 
-      // specialties as JSON string
-      if (formData.specialties) {
-        const specialtiesArray = formData.specialties
-          .split(',')
-          .map((s) => s.trim())
-          .filter((s) => s);
-        submitData.append('specialties', JSON.stringify(specialtiesArray));
-      }
-
-      // images
-      ['image1', 'image2', 'image3', 'image4'].forEach((imageField) => {
-        if (formData[imageField]) {
-          submitData.append(imageField, formData[imageField]);
-        }
+      const response = await axios.post(`${backendUrl}/api/medicalcenter/add`, formData, {
+        headers: { token },
       });
 
-      // add required date field
-      submitData.append('date', Date.now());
-
-      const response = await axios.post(
-        `${backendUrl}/api/medicare/add`,
-        submitData,
-        {
-          headers: {
-            token, // or Authorization: `Bearer ${token}`
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
-
       if (response.data.success) {
-        toast.success(response.data.message || 'Medical Center added successfully!');
-        resetForm();
+        toast.success(response.data.message);
+        // Reset all fields
+        setName('');
+        setAddress('');
+        setContact('');
+        setDoctorName('');
+        setDescription('');
+        setAvailableTime('');
+        setSpecialties([]);
+        setImage1(false);
+        setImage2(false);
+        setImage3(false);
+        setImage4(false);
       } else {
-        toast.error(response.data.message || 'Failed to add medical center');
+        toast.error(response.data.message);
       }
     } catch (error) {
-      console.error('Error adding medical center:', error);
-      toast.error(error.response?.data?.message || error.message || 'An error occurred');
+      console.error(error);
+      toast.error('Something went wrong!');
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-teal-50 py-8">
-      <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
-            <div className="bg-gradient-to-r from-green-600 to-teal-700 px-8 py-6">
-              <h1 className="text-3xl font-bold text-white text-center">Add New Medical Center</h1>
-              <p className="text-green-100 text-center mt-2">Fill in the details to register a new medical center</p>
-            </div>
+    <form onSubmit={onSubmitHandler} className='p-6 bg-gradient-to-br from-green-50 via-teal-50 to-blue-50 min-h-screen'>
+      <div className='max-w-4xl mx-auto space-y-6'>
 
-            <form onSubmit={onSubmitHandler} className="p-8 space-y-6">
-              {/* name, address, contact, doctorName, availableTime, specialties, description */}
-              {/* ... keep your existing input fields unchanged ... */}
+        {/* Header */}
+        <div className='bg-white/80 p-6 rounded-xl shadow-xl border border-gray-200'>
+          <h1 className='text-2xl font-bold text-gray-800 flex items-center gap-2'>
+            🏥 Add New Medical Center
+          </h1>
+          <p className='text-sm text-gray-500 mt-1'>Provide accurate information to help patients find your medical center.</p>
+        </div>
 
-              {/* images */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-4">Medical Center Images *</label>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {['image1', 'image2', 'image3', 'image4'].map((imageField, index) => (
-                    <div key={imageField} className="space-y-3">
-                      <label className="block text-xs text-gray-600 font-medium">
-                        Image {index + 1} {index === 0 ? '(Required)' : '(Optional)'}
-                      </label>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => handleImageChange(e, imageField)}
-                        required={index === 0}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 file:mr-3 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 transition duration-200"
-                      />
-                      {imagePreviews[imageField] && (
-                        <div className="mt-3">
-                          <img
-                            src={imagePreviews[imageField]}
-                            alt={`Medical center preview ${index + 1}`}
-                            className="w-full h-32 object-cover rounded-lg border border-gray-300"
-                          />
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
+        {/* Images Upload */}
+        <div className='bg-white/80 p-6 rounded-xl shadow-md border border-gray-200'>
+          <p className='mb-4 font-semibold text-gray-700 flex items-center gap-2'>📸 Upload Images</p>
+          <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
+            <label htmlFor="image1">
+              <div className='w-full h-28 bg-gray-100 border border-gray-300 rounded-xl flex items-center justify-center overflow-hidden'>
+                <img
+                  src={image1 ? URL.createObjectURL(image1) : assets.upload_area}
+                  className='w-full h-full object-cover'
+                  alt="Upload 1"
+                />
               </div>
-
-              <button
-                type="submit"
-                disabled={isLoading}
-                className={`w-full py-4 px-6 rounded-lg font-semibold text-white transition duration-300 ${
-                  isLoading
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-green-600 to-teal-700 hover:from-green-700 hover:to-teal-800 transform hover:scale-[1.02] active:scale-[0.98]'
-                }`}
-              >
-                {isLoading ? 'Adding Medical Center...' : 'Add Medical Center'}
-              </button>
-            </form>
+              <input
+                type='file'
+                id="image1"
+                hidden
+                accept='image/*'
+                onChange={(e) => setImage1(e.target.files[0])}
+              />
+            </label>
+            
+            <label htmlFor="image2">
+              <div className='w-full h-28 bg-gray-100 border border-gray-300 rounded-xl flex items-center justify-center overflow-hidden'>
+                <img
+                  src={image2 ? URL.createObjectURL(image2) : assets.upload_area}
+                  className='w-full h-full object-cover'
+                  alt="Upload 2"
+                />
+              </div>
+              <input
+                type='file'
+                id="image2"
+                hidden
+                accept='image/*'
+                onChange={(e) => setImage2(e.target.files[0])}
+              />
+            </label>
+            
+            <label htmlFor="image3">
+              <div className='w-full h-28 bg-gray-100 border border-gray-300 rounded-xl flex items-center justify-center overflow-hidden'>
+                <img
+                  src={image3 ? URL.createObjectURL(image3) : assets.upload_area}
+                  className='w-full h-full object-cover'
+                  alt="Upload 3"
+                />
+              </div>
+              <input
+                type='file'
+                id="image3"
+                hidden
+                accept='image/*'
+                onChange={(e) => setImage3(e.target.files[0])}
+              />
+            </label>
+            
+            <label htmlFor="image4">
+              <div className='w-full h-28 bg-gray-100 border border-gray-300 rounded-xl flex items-center justify-center overflow-hidden'>
+                <img
+                  src={image4 ? URL.createObjectURL(image4) : assets.upload_area}
+                  className='w-full h-full object-cover'
+                  alt="Upload 4"
+                />
+              </div>
+              <input
+                type='file'
+                id="image4"
+                hidden
+                accept='image/*'
+                onChange={(e) => setImage4(e.target.files[0])}
+              />
+            </label>
           </div>
         </div>
+
+        {/* Basic Info */}
+        <div className='bg-white/80 p-6 rounded-xl shadow-md border border-gray-200 grid gap-4'>
+          <InputField label="Medical Center Name" value={name} setValue={setName} required />
+          <InputField label="Doctor's Name" value={doctorName} setValue={setDoctorName} required />
+          <InputField label="Contact Number" value={contact} setValue={setContact} type='tel' required />
+          <TextArea label="Address" value={address} setValue={setAddress} required />
+        </div>
+
+        {/* Operating Hours */}
+        <div className='bg-white/80 p-6 rounded-xl shadow-md border border-gray-200'>
+          <InputField 
+            label="Available Time" 
+            value={availableTime} 
+            setValue={setAvailableTime} 
+            placeholder="e.g., Mon-Fri: 8:00 AM - 6:00 PM, Sat: 8:00 AM - 2:00 PM"
+            required 
+          />
+        </div>
+
+        {/* Specialties */}
+        <div className='bg-white/80 p-6 rounded-xl shadow-md border border-gray-200'>
+          <p className='font-semibold mb-2'>Medical Specialties</p>
+          <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3'>
+            {specialtyOptions.map((specialty) => (
+              <button
+                key={specialty}
+                type='button'
+                onClick={() => handleSpecialtySelect(specialty)}
+                className={`px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
+                  specialties.includes(specialty)
+                    ? 'bg-green-600 text-white shadow-md'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                {specialty}
+              </button>
+            ))}
+          </div>
+          {specialties.length > 0 && (
+            <div className='mt-3 p-2 bg-green-50 rounded-lg'>
+              <p className='text-sm text-green-700'>
+                Selected: {specialties.join(', ')}
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Description */}
+        <div className='bg-white/80 p-6 rounded-xl shadow-md border border-gray-200'>
+          <TextArea
+            label="Description"
+            value={description}
+            setValue={setDescription}
+            placeholder='Describe the medical center, facilities, equipment, etc.'
+            required
+          />
+        </div>
+
+        {/* Buttons */}
+        <div className='flex gap-4 justify-center'>
+          <button
+            type='submit'
+            disabled={isSubmitting}
+            className='px-6 py-3 bg-green-600 text-white rounded-xl shadow-md hover:bg-green-700 disabled:opacity-50 transition-colors'
+          >
+            {isSubmitting ? 'Submitting...' : 'Add Medical Center'}
+          </button>
+          <button
+            type='button'
+            onClick={() => navigate('/medicalcenterlist')}
+            className='px-6 py-3 bg-gray-700 text-white rounded-xl shadow-md hover:bg-gray-800 transition-colors'
+          >
+            View Medical Centers
+          </button>
+        </div>
       </div>
-    </div>
+    </form>
   );
 };
+
+// Reusable Input
+const InputField = ({ label, value, setValue, type = 'text', required = false, placeholder = '' }) => (
+  <div className='w-full'>
+    <label className='block text-sm font-semibold text-gray-700 mb-1'>{label}</label>
+    <input
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      type={type}
+      required={required}
+      placeholder={placeholder}
+      className='w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-300'
+    />
+  </div>
+);
+
+// Reusable TextArea
+const TextArea = ({ label, value, setValue, required = false, placeholder = '' }) => (
+  <div className='w-full'>
+    <label className='block text-sm font-semibold text-gray-700 mb-1'>{label}</label>
+    <textarea
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      required={required}
+      placeholder={placeholder}
+      className='w-full px-4 py-2 border border-gray-300 rounded-xl min-h-[100px] focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-300'
+    />
+  </div>
+);
 
 export default AddMedicalCenter;
