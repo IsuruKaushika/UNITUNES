@@ -254,10 +254,36 @@ function CreateStudentAccount() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #fef7ef 0%, #ffffff 50%, #fef3e8 100%)',
+      position: 'relative',
       padding: '40px 20px',
-      position: 'relative'
     }}>
+      {/* Blurred Background Image */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundImage: 'url(/images/map.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed',
+        filter: 'blur(8px)',
+        zIndex: -2
+      }}></div>
+      
+      {/* Background Overlay (without blur) */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(251, 191, 36, 0.15)',
+        zIndex: -1
+      }}></div>
+      
       {/* Animated Background Elements */}
       <div style={{
         position: 'absolute',
@@ -265,9 +291,10 @@ function CreateStudentAccount() {
         left: '40px',
         width: '128px',
         height: '128px',
-        background: 'rgba(254, 215, 138, 0.2)',
+        background: 'rgba(255, 255, 255, 0.1)',
         borderRadius: '50%',
-        animation: 'pulse 2s infinite'
+        animation: 'pulse 2s infinite',
+        zIndex: 1
       }}></div>
       <div style={{
         position: 'absolute',
@@ -275,21 +302,22 @@ function CreateStudentAccount() {
         right: '64px',
         width: '160px',
         height: '160px',
-        background: 'rgba(251, 191, 36, 0.2)',
+        background: 'rgba(255, 255, 255, 0.08)',
         borderRadius: '50%',
-        animation: 'pulse 2s infinite 1s'
+        animation: 'pulse 2s infinite 1s',
+        zIndex: 1
       }}></div>
 
       <div style={{
         maxWidth: '480px',
         margin: '0 auto',
         background: 'rgba(255, 255, 255, 0.95)',
-        backdropFilter: 'blur(10px)',
         padding: '40px',
         borderRadius: '24px',
         boxShadow: '0 25px 50px rgba(0, 0, 0, 0.1)',
         border: '1px solid rgba(255, 255, 255, 0.2)',
-        position: 'relative'
+        position: 'relative',
+        zIndex: 2
       }}>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '40px' }}>
