@@ -32,7 +32,7 @@ const AdminLogin = () => {
     }
 
     try {
-      const response = await fetch(`${backendUrl}/api/admin/login`, {
+      const response = await fetch(`${backendUrl}/api/user/admin`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -49,7 +49,7 @@ const AdminLogin = () => {
         Alert.alert('Login Successful!', 'Welcome Admin!', [
           {
             text: 'OK',
-            onPress: () => navigation.navigate('Dashboard'),
+            onPress: () => navigation.navigate('index'),
           },
         ]);
       } else {
