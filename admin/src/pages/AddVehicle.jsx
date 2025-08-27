@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
 // Use environment variable with fallback to localhost
-const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000';
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 const AddVehicle = ({ token }) => {
   const navigate = useNavigate();
