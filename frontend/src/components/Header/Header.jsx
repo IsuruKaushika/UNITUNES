@@ -9,7 +9,7 @@ function Header() {
         
         <h2>UniTunes - Smart Solutions for Smarter Undergraduators!</h2>
        
-        <button>View Menu</button>
+        <button> Menu</button>
       </dev>
     </div>
   )

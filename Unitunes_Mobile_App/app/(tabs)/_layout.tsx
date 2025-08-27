@@ -75,76 +75,10 @@ export default function Layout() {
         <Stack.Screen name="explore" />
         {/* Your other screens */}
       </Stack>
-
-      <View style={styles.ribbon}>
-        <TouchableOpacity
-          onPress={onBack}
-          disabled={history.length <= 1}
-          style={[styles.button, history.length <= 1 && styles.disabled]}
-        >
-          <Ionicons
-            name="arrow-back"
-            size={24}
-            color={history.length > 1 ? '#FFF' : '#AAA'}
-          />
-          <Text style={[styles.buttonText, history.length <= 1 && styles.disabledText]}>
-            Back
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={onHome} style={styles.button}>
-          <Ionicons name="home" size={24} color="#FFF" />
-          <Text style={styles.buttonText}>Home</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={onForward}
-          disabled={future.length === 0}
-          style={[styles.button, future.length === 0 && styles.disabled]}
-        >
-          <Ionicons
-            name="arrow-forward"
-            size={24}
-            color={future.length > 0 ? '#FFF' : '#AAA'}
-          />
-          <Text style={[styles.buttonText, future.length === 0 && styles.disabledText]}>
-            Forward
-          </Text>
-        </TouchableOpacity>
-      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
-  ribbon: {
-    height: 48,
-    backgroundColor: '#000',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    paddingBottom: Platform.OS === 'ios' ? 10 : 0,
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 0,
-    elevation: 6,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-  },
-  button: {
-    alignItems: 'center',
-  },
-  disabled: {
-    opacity: 0.5,
-  },
-  buttonText: {
-    color: '#FFF',
-    fontSize: 9,
-    marginTop: 1,
-  },
-  disabledText: {
-    color: '#AAA',
-  },
 });

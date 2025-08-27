@@ -65,9 +65,12 @@ const SkillDetails = () => {
           </p>
 
           {/* Contact Button */}
-          <button className="bg-yellow-500 text-black px-6 py-3 rounded-lg shadow-md hover:bg-yellow-600 transition font-semibold">
+          <a
+            href={`tel:${phone}`}
+            className="bg-yellow-500 text-black px-6 py-3 rounded-lg shadow-md hover:bg-yellow-600 transition font-semibold inline-block"
+          >
             📞 Contact
-          </button>
+          </a>
         </div>
       </div>
     </div>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 
-const backendUrl = 'http://192.168.86.81:4000'; // change this to your backend IP
+const backendUrl = 'https://unitunes-backend.vercel.app'; // change this to your backend IP
 
 export default function MedicalCenterList() {
   const navigation = useNavigation();

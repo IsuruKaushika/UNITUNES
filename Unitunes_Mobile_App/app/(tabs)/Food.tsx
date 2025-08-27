@@ -75,6 +75,7 @@ const HomeScreen: React.FC = () => {
   );
 };
 
+
 export default HomeScreen;
 
 const styles = StyleSheet.create({

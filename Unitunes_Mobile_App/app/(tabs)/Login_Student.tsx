@@ -1,4 +1,3 @@
-// StudentLogin.tsx
 import React, { useState } from 'react';
 import {
   View,
@@ -11,14 +10,15 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Replace this with your root stack param list
 type RootStackParamList = {
   StudentLogin: undefined;
   Create_Student: undefined;
-  BoardingList: undefined;
-  // ...other screens
+  index: undefined; // Homepage after login
 };
+
+const backendUrl = 'https://unitunes-backend.vercel.app';
 
 const StudentLogin = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -32,25 +32,32 @@ const StudentLogin = () => {
     }
 
     try {
-      const response = await fetch('https://unitunes-backend.vercel.app/', {
+      const response = await fetch(`${backendUrl}/api/user/stulogin`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
-      console.log('Login response:', data);
+      console.log('Student Login response:', data);
 
       if (response.ok && data.success) {
-        Alert.alert('Success', 'Logged in!');
-        // ← Navigate to the BoardingList screen
-        navigation.navigate('index');
+        // ✅ Save login flag
+        await AsyncStorage.setItem('loggedIn', 'true');
+        await AsyncStorage.setItem('userRole', 'student');
+
+        Alert.alert('Login Successful!', 'Welcome back!', [
+          {
+            text: 'OK',
+            onPress: () => navigation.navigate('index'),
+          },
+        ]);
       } else {
-        Alert.alert('Login Failed', data.message || 'Invalid credentials');
+        Alert.alert('Login Failed', data.message || 'Invalid email or password');
       }
     } catch (err) {
       console.error('Fetch error:', err);
-      Alert.alert('Error', 'Unable to connect to server');
+      Alert.alert('Error', 'Unable to connect to the server');
     }
   };
 
@@ -68,6 +75,7 @@ const StudentLogin = () => {
           placeholder="Email"
           placeholderTextColor="#ccc"
           keyboardType="email-address"
+          autoCapitalize="none"
           value={email}
           onChangeText={setEmail}
         />
@@ -91,10 +99,13 @@ const StudentLogin = () => {
           <Text style={styles.registerText}>Register here</Text>
         </TouchableOpacity>
 
+        {/*
         <View style={styles.googleContainer}>
           <Ionicons name="logo-google" size={20} color="#fff" />
           <Text style={styles.googleText}> or continue with</Text>
         </View>
+        */}
+        
       </View>
     </ImageBackground>
   );
@@ -104,7 +115,8 @@ const styles = StyleSheet.create({
   background: { flex: 1, width: '100%', height: '100%' },
   container: {
     flex: 1,
-    paddingTop: 300,
+    paddingTop: 200,
+    paddingBottom: 90,
     alignItems: 'center',
     padding: 20,
     backgroundColor: 'rgba(0,0,0,0.4)',
