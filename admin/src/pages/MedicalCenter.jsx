@@ -154,7 +154,7 @@ const AddMedicalCenter = ({ token }) => {
       });
 
       const response = await axios.post(
-        `${backendUrl}/api/medicalcenter/add`, 
+        `${backendUrl}/api/medicare/add`, 
         submitData,
         { 
           headers: { 
