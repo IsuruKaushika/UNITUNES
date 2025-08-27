@@ -112,7 +112,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchAds = async () => {
       try {
-        const response = await fetch(`${backendUrl}/api/ad/list`);
+        const response = await fetch(`${backendUrl}/api/ad/list`); 
         const data = await response.json();
         if (data && Array.isArray(data.ads)) {
           setAds(data.ads);
