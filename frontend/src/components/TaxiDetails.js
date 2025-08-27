@@ -4,7 +4,8 @@ import axios from "axios";
 import logo from "../assets/logo.png";
 
 
-const backendUrl = import.meta.env.VITE_BACKEND_URL ;
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
 
 // Custom Logo Component
 const CustomLogo = ({ onClick, className = "" }) => (

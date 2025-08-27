@@ -3,7 +3,8 @@ import axios from "axios";
 import "./Styles/CreateAccount.css";
 
 import { Link } from "react-router-dom";
-const backendUrl = process.env.VITE_BACKEND_URL;
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
 
 
 function CreateProviderAccount() {

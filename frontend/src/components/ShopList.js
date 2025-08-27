@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const backendUrl = process.env.VITE_BACKEND_URL;
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
 
 // Custom Logo Component
 const CustomLogo = ({ onClick, className = "" }) => (

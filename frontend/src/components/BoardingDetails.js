@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const backendUrl = import.meta.env.VITE_BACKEND_URL ;
-// Custom Logo Component
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
 const CustomLogo = ({ onClick, className = "" }) => (
   <div 
     onClick={onClick}
