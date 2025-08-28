@@ -8,7 +8,6 @@ const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 const UserBoardingAdd = () => {
   const navigate = useNavigate();
-  const userId = localStorage.getItem("userId"); // logged-in user id
 
   const [formData, setFormData] = useState({
     Title: "",
@@ -17,7 +16,7 @@ const UserBoardingAdd = () => {
     description: "",
     Rooms: 1,
     bathRooms: 1,
-    price: "",
+    price: 0,
     gender: [],
   });
 
@@ -27,7 +26,10 @@ const UserBoardingAdd = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "Rooms" || name === "bathRooms" || name === "price" ? Number(value) : value,
+      [name]:
+        name === "Rooms" || name === "bathRooms" || name === "price"
+          ? Number(value)
+          : value,
     }));
   };
 
@@ -42,13 +44,16 @@ const UserBoardingAdd = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!userId) {
-      toast.error("User not logged in!");
+
+    const userId = localStorage.getItem("userId");
+    if (!userId || userId === "undefined") {
+      toast.error("You must be logged in to add a boarding");
+      setTimeout(() => navigate("/student-login"), 1500);
       return;
     }
 
     const fd = new FormData();
-    fd.append("owner", userId); // backend expects owner
+    fd.append("owner", userId);
     fd.append("Title", formData.Title);
     fd.append("address", formData.address);
     fd.append("contact", formData.contact);
@@ -57,8 +62,7 @@ const UserBoardingAdd = () => {
     fd.append("bathRooms", formData.bathRooms);
     fd.append("price", formData.price);
     fd.append("gender", JSON.stringify(formData.gender));
-
-    images.forEach((img) => fd.append("images", img)); // append all images as 'images'
+    images.forEach((img) => fd.append("images", img));
 
     try {
       const res = await axios.post(`${backendUrl}/api/user-boarding/add`, fd);
