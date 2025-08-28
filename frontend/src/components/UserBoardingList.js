@@ -1,58 +1,39 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { toast } from 'react-toastify';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 const UserBoardingList = () => {
-  const [boardings, setBoardings] = useState([]);
   const userId = localStorage.getItem("userId");
+  const [boardings, setBoardings] = useState([]);
 
   useEffect(() => {
     const fetchBoardings = async () => {
-      try {
-        const res = await axios.get(`${backendUrl}/api/user-boarding/list/${userId}`);
-        if (res.data.success) {
-          setBoardings(res.data.boardings);
-        }
-      } catch (err) {
-        console.error(err);
+      const res = await axios.get(`${backendUrl}/api/user-boarding/list/${userId}`);
+      if(res.data.success){
+        setBoardings(res.data.boardings);
       }
     };
     fetchBoardings();
   }, [userId]);
 
-  const handleDelete = async (id) => {
-    try {
-      const res = await axios.delete(`${backendUrl}/api/user-boarding/delete/${id}`);
-      if (res.data.success) {
-        toast.success("Boarding deleted");
-        setBoardings(boardings.filter(b => b._id !== id));
-      }
-    } catch (err) {
-      toast.error("Delete failed");
-    }
-  };
-
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <h2 className="text-2xl font-bold mb-4">My Boardings</h2>
-      {boardings.length === 0 ? (
-        <p>No boardings added yet</p>
-      ) : (
-        <ul className="space-y-4">
-          {boardings.map(b => (
-            <li key={b._id} className="p-4 border rounded flex justify-between items-center">
-              <div>
-                <h3 className="font-bold">{b.Title}</h3>
-                <p>{b.address}</p>
-                <p>Rs {b.price}</p>
-              </div>
-              <button onClick={() => handleDelete(b._id)} className="bg-red-500 px-3 py-1 rounded text-white">Delete</button>
-            </li>
-          ))}
-        </ul>
-      )}
+      {boardings.length === 0 && <p>No boardings yet</p>}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {boardings.map(b => (
+          <div key={b._id} className="border rounded p-4 shadow">
+            <h3 className="font-bold">{b.Title}</h3>
+            <p>{b.address}</p>
+            <p>Price: {b.price}</p>
+            <p>Rooms: {b.Rooms} | Bathrooms: {b.bathRooms}</p>
+            <div className="flex gap-2">
+              {b.image.map((img, i) => <img key={i} src={img} alt="boarding" className="w-16 h-16 object-cover" />)}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
