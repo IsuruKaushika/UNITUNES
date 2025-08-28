@@ -71,7 +71,7 @@ export default function AddBoardings() {
       fd.append('bathRooms', bathRooms);
       fd.append('gender', gender);
 
-      const res = await fetch(`${backendUrl}/api/boarding/list`, {
+      const res = await fetch(`${backendUrl}/api/boarding/add`, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
