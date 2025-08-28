@@ -1,55 +1,52 @@
-import UserBoarding from "../models/UserBoarding.js";
+import UserBoardingModel from "../models/UserBoardingModel.js";
+import mongoose from "mongoose";
 
-// Add a new boarding by user
+// Add Boarding
 export const addUserBoarding = async (req, res) => {
   try {
-    const { Title, address, contact, description, Rooms, bathRooms, price, gender, userId } = req.body;
+    const { Title, price, Rooms, bathRooms, gender, address, description, contact } = req.body;
+    const images = req.files ? Object.values(req.files).flat().map(file => file.path) : [];
 
-    const images = [];
-    ["image1", "image2", "image3", "image4"].forEach((key) => {
-      if (req.files[key]) images.push(req.files[key][0].filename);
-    });
-
-    const newBoarding = new UserBoarding({
+    const boarding = new UserBoardingModel({
       Title,
-      address,
-      contact,
-      description,
+      owner: req.body.userId, // make sure you send userId from frontend
+      price,
+      image: images,
       Rooms,
       bathRooms,
-      price,
       gender: JSON.parse(gender),
-      userId,
-      images,
+      date: Date.now(),
+      address,
+      description,
+      contact,
     });
 
-    await newBoarding.save();
-    res.json({ success: true, message: "Boarding added", boarding: newBoarding });
+    await boarding.save();
+    res.status(201).json({ success: true, boarding });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: "Server error" });
+    res.status(500).json({ success: false, message: "Failed to add boarding" });
   }
 };
 
-// Get all boardings of a specific user
+// List Boardings for User
 export const listUserBoardings = async (req, res) => {
   try {
     const { userId } = req.params;
-    const boardings = await UserBoarding.find({ userId });
-    res.json({ success: true, boardings });
+    const boardings = await UserBoardingModel.find({ owner: userId });
+    res.status(200).json({ success: true, boardings });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: "Server error" });
+    res.status(500).json({ success: false, message: "Failed to fetch boardings" });
   }
 };
 
-// Delete one boarding by ID
+// Delete Boarding
 export const deleteUserBoarding = async (req, res) => {
   try {
-    await UserBoarding.findByIdAndDelete(req.params.id);
-    res.json({ success: true, message: "Boarding deleted" });
+    const { id } = req.params;
+    await UserBoardingModel.findByIdAndDelete(id);
+    res.status(200).json({ success: true, message: "Boarding deleted" });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: "Server error" });
+    res.status(500).json({ success: false, message: "Failed to delete boarding" });
   }
 };
