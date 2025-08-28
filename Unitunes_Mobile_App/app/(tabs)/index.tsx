@@ -18,7 +18,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 
-const backendUrl = "https://unitunes-backend.vercel.app";
+const backendUrl = 'https://unitunes-backend.vercel.app';
 const ACCENT = "#ff9500";
 const isAndroid = Platform.OS === "android";
 
@@ -137,8 +137,24 @@ const HomePage = () => {
     { name: "Skill Sharing", icon: require("../../assets/images/Skill Sharing.jpg"), route: "SkillSharing" },
   ];
 
-  // Search handling
+  const promptLoginForSearch = () => {
+    Alert.alert(
+      "Login Required",
+      "Please sign in to use search.",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Sign In", onPress: () => navigation.navigate("Login-Main1") },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  // Search handling (gated by login)
   const handleSearch = () => {
+    if (!loggedIn) {
+      promptLoginForSearch();
+      return;
+    }
     const query = searchQuery.toLowerCase();
     if (query.includes("boarding")) navigation.navigate("BoardingList");
     else if (query.includes("travel") || query.includes("taxi") || query.includes("three wheel"))
@@ -258,15 +274,29 @@ const HomePage = () => {
 
             <View style={[styles.searchGlass, { borderColor: borderAccent }]}>
               <BlurView intensity={60} tint="light" style={StyleSheet.absoluteFillObject} />
-              <Ionicons name="search" size={20} color={searchIconColor} style={styles.searchIcon} onPress={handleSearch} />
+              <Ionicons
+                name="search"
+                size={20}
+                color={searchIconColor}
+                style={styles.searchIcon}
+                onPress={handleSearch}
+              />
               <TextInput
-                placeholder="Search"
+                placeholder={loggedIn ? "Search" : "Sign in to search"}
                 style={[styles.textInput, { color: textOnCards }]}
                 placeholderTextColor={placeholderColor}
                 value={searchQuery}
                 onChangeText={setSearchQuery}
                 onSubmitEditing={handleSearch}
+                editable={loggedIn}
               />
+              {!loggedIn && (
+                <TouchableOpacity
+                  style={StyleSheet.absoluteFillObject}
+                  activeOpacity={1}
+                  onPress={promptLoginForSearch}
+                />
+              )}
             </View>
 
             {/* Login Icon / User Avatar */}
