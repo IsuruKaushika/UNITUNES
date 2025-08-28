@@ -1,260 +1,150 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   SafeAreaView,
   View,
   Text,
-  TextInput,
-  Image,
   TouchableOpacity,
+  Image,
   StyleSheet,
-  ScrollView,
-  StatusBar,
   Dimensions,
+  FlatList,
 } from 'react-native';
+import { useNavigation } from "@react-navigation/native";
 
-const ShoppingApp = () => {
-  const [selectedCategory, setSelectedCategory] = useState('All');
+// Screen width to help with responsive design
+const { width, height } = Dimensions.get('window');
 
-  const categories = ['All', 'Fashion', 'Sports', 'Electronics', 'Travel'];
+// Sample category data (each with an icon and corresponding screen name)
+const CATEGORIES = [
+  { id: '1', label: 'Add a Boarding House', icon: require('../../assets/images/boardingicon.png'), screen: 'AddBoardings' },
+  { id: '2', label: 'Add a Taxi', icon: require('../../assets/images/Three wheel.png'), screen: 'AddBoardings' },
+  { id: '3', label: 'Add a Skill', icon: require('../../assets/images/Van.png'), screen: 'Van' },
+  { id: '4', label: 'Add somthing to Rent', icon: require('../../assets/images/Car.png'), screen: 'Car' },
+  { id: '5', label: 'Add a Ad', icon: require('../../assets/images/Bus.png'), screen: 'Bus' },
+];
 
-  const products = [
-    { id: 1, name: 'Blazer', image: require('../../assets/images/Blazer.png') },
-    { id: 2, name: 'Brown Shoe', image: require('../../assets/images/BShoe.png') },
-    { id: 3, name: 'Linen trouser', image: require('../../assets/images/LTrouser.png') },
-    { id: 4, name: 'Ladies Shoe', image: require('../../assets/images/LShoe.png') },
-    { id: 5, name: 'Frock', image: require('../../assets/images/Frock.png') },
-    { id: 6, name: 'Deck shoe', image: require('../../assets/images/DeckShoe.png') },
-    { id: 7, name: 'Frock', image: require('../../assets/images/Frock2.png') },
-    { id: 8, name: 'Watch', image: require('../../assets/images/Watch.png') },
-    { id: 9, name: 'Sunglass', image: require('../../assets/images/Sunglass.png') },
-    { id: 10, name: 'Watch', image: require('../../assets/images/LWatch.png') },
-    { id: 11, name: 'Sandies', image: require('../../assets/images/Sandles.png') },
-    { id: 12, name: 'Shirts', image: require('../../assets/images/Shirt.png') },
-  ];
+const HomeScreen: React.FC = () => {
+  const navigation = useNavigation();
+
+  const renderCategoryItem = ({ item }: { item: any }) => (
+    <TouchableOpacity 
+      style={styles.categoryItem} 
+      onPress={() => (navigation.navigate as (route: string) => void)(item.screen)}
+    >
+      <View style={styles.categoryLeft}>
+        <Image source={item.icon} style={styles.categoryIcon} />
+        <Text style={styles.categoryLabel}>{item.label}</Text>
+      </View>
+    </TouchableOpacity>
+  );
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
-
       {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.menuButton}>
-          <View style={styles.menuBar}></View>
-          <View style={styles.menuBar}></View>
-          <View style={styles.menuBar}></View>
+      <View style={styles.headerContainer}>
+        <TouchableOpacity style={styles.iconButton}>
+          <Text style={styles.headerIcon}>≡</Text>
         </TouchableOpacity>
+        <Text style={styles.headerTitle}>UNITUNES</Text>
+        <TouchableOpacity style={styles.iconButton}>
+          <Text style={styles.headerIcon}>⋮</Text>
+        </TouchableOpacity>
+      </View>
 
-        <View style={styles.searchBar}>
+      {/* Main content */}
+      <View style={styles.contentContainer}>
+        <FlatList
+          data={CATEGORIES}
+          keyExtractor={(item) => item.id}
+          renderItem={renderCategoryItem}
+          contentContainerStyle={{ paddingVertical: 20 }}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
+
+      {/* Location / map icon at bottom center */}
+      <View style={styles.mapIconContainer}>
+        <TouchableOpacity>
           <Image
-            source={{ uri: 'https://cdn-icons-png.flaticon.com/512/54/54481.png' }}
-            style={styles.searchIcon}
+            source={require('../../assets/images/Map-icon.png')}
+            style={styles.mapIcon}
           />
-          <TextInput placeholder="Search" style={styles.searchInput} placeholderTextColor="#999" />
-        </View>
-
-        <TouchableOpacity style={styles.profileButton}>
-          <View style={styles.profileIcon}>
-            <Text style={styles.profileInitial}></Text>
-          </View>
         </TouchableOpacity>
       </View>
-
-      {/* Categories */}
-      <View style={styles.categoriesContainer}>
-        <Text style={styles.categoryHeading}>Categories</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesScrollView}>
-          {categories.map((category, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[styles.categoryButton, selectedCategory === category && styles.categoryButtonSelected]}
-              onPress={() => setSelectedCategory(category)}
-            >
-              <Text
-                style={[styles.categoryText, selectedCategory === category && styles.categoryTextSelected]}
-              >
-                {category}
-              </Text>
-              {selectedCategory === category && <View style={styles.categoryIndicator} />}
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
-
-      {/* Banner */}
-      <View style={styles.bannerContainer}>
-        <Image source={require('../../assets/images/A2.jpeg')} style={styles.bannerImage} resizeMode="cover" />
-      </View>
-
-      {/* Product Grid */}
-      <ScrollView style={styles.productsContainer} showsVerticalScrollIndicator={false}>
-        <View style={styles.productsGrid}>
-          {products.map((product) => (
-            <TouchableOpacity key={product.id} style={styles.productItem}>
-              <View style={styles.productImageContainer}>
-                <Image source={product.image} style={styles.productImage} resizeMode="cover" />
-              </View>
-              <Text style={styles.productName}>{product.name}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </ScrollView>
     </SafeAreaView>
   );
 };
 
-const { width } = Dimensions.get('window');
-const itemWidth = (width - 48) / 3;
+export default HomeScreen;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: '#FFA500',
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
-    paddingTop: 50,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-  },
-  menuButton: {
-    width: 24,
-    height: 24,
-    justifyContent: 'space-around',
-    marginRight: 12,
-  },
-  menuBar: {
-    width: 24,
-    height: 2,
-    backgroundColor: 'black',
-  },
-  searchBar: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    paddingHorizontal: 12,
-    height: 40,
-  },
-  searchIcon: {
-    width: 16,
-    height: 16,
-    marginRight: 8,
-  },
-  searchInput: {
-    flex: 1,
-    height: 40,
-    fontSize: 14,
-    color: '#333',
-  },
-  profileButton: {
-    marginLeft: 12,
-  },
-  profileIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#333',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  profileInitial: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  categoriesContainer: {
-    paddingTop: 10,
-    paddingHorizontal: 16,
-    backgroundColor: '#FFA500',
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-  },
-  categoryHeading: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 12,
-    color: '#000000',
-  },
-  categoriesScrollView: {
+    backgroundColor: '#FFF',
     paddingBottom: 10,
   },
-  categoryButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    marginRight: 8,
-    borderRadius: 20,
-    backgroundColor: '#FFC04D',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  categoryButtonSelected: {
-    backgroundColor: '#FFFFFF',
-  },
-  categoryText: {
-    fontSize: 14,
-    color: '#000000',
-  },
-  categoryTextSelected: {
-    fontWeight: 'bold',
-    color: '#000000',
-  },
-  categoryIndicator: {
-    position: 'absolute',
-    bottom: 0,
-    height: 3,
-    width: '70%',
-    backgroundColor: '#000000',
-    borderRadius: 3,
-  },
-  bannerContainer: {
+  headerContainer: {
     height: 150,
-    marginTop: 16,
-    marginHorizontal: 16,
-    borderRadius: 8,
-    overflow: 'hidden',
+    backgroundColor: '#FFA733',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
   },
-  bannerImage: {
-    width: '100%',
-    height: '100%',
+  iconButton: {
+    padding: 8,
   },
-  productsContainer: {
+  headerIcon: {
+    fontSize: 30,
+    color: '#000',
+  },
+  headerTitle: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    color: '#000',
+    paddingTop: 80,
+  },
+  contentContainer: {
     flex: 1,
     paddingHorizontal: 16,
-    marginTop: 16,
   },
-  productsGrid: {
+  categoryItem: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    backgroundColor: '#FFA733',
+    alignItems: 'center',
     justifyContent: 'space-between',
+    padding: 16,
+    marginVertical: 6,
+    borderRadius: 22,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
-  productItem: {
-    width: itemWidth,
-    marginBottom: 16,
+  categoryLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  productImageContainer: {
-    width: '100%',
-    aspectRatio: 1,
-    borderRadius: 8,
-    overflow: 'hidden',
-    marginBottom: 8,
+  categoryIcon: {
+    width: 30,
+    height: 30,
+    marginRight: 10,
+    resizeMode: 'contain',
   },
-  productImage: {
-    width: '100%',
-    height: '100%',
+  categoryLabel: {
+    fontSize: 16,
+    color: '#333',
+    fontWeight: '600',
   },
-  productName: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#000000',
+  mapIconContainer: {
+    position: 'absolute',
+    bottom: 20,
+    alignSelf: 'center',
+  },
+  mapIcon: {
+    width: 250,
+    height: 250,
+    resizeMode: 'contain',
   },
 });
-
-export default ShoppingApp;
