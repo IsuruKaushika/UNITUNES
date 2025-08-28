@@ -8,7 +8,7 @@ const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 const UserBoardingAdd = () => {
   const navigate = useNavigate();
-  const userId = localStorage.getItem("userId"); // ✅ assume you store userId when login
+  const userId = localStorage.getItem("userId"); // get logged-in user id
 
   const [formData, setFormData] = useState({
     Title: "",
@@ -66,7 +66,7 @@ const UserBoardingAdd = () => {
   };
 
   return (
-    <div className="p-6 max-w-2xl mx-auto bg-white rounded-lg shadow">
+    <div className="p-6 max-w-2xl mx-auto bg-white rounded-lg shadow mt-10">
       <h2 className="text-2xl font-bold mb-4">Add Your Boarding</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
@@ -110,7 +110,7 @@ const UserBoardingAdd = () => {
           required
         />
 
-        {/* Gender Selection Example */}
+        {/* Gender Selection */}
         <div className="flex gap-4">
           {["Male", "Female", "Any"].map((g) => (
             <label key={g} className="flex items-center gap-2">
@@ -129,17 +129,18 @@ const UserBoardingAdd = () => {
           type="file"
           multiple
           onChange={(e) => setImages([...e.target.files])}
+          className="border p-1 rounded"
         />
 
         <button
           type="submit"
-          className="bg-yellow-500 px-4 py-2 rounded text-white"
+          className="bg-yellow-500 px-4 py-2 rounded text-white hover:bg-yellow-600"
         >
           Submit
         </button>
       </form>
 
-      {/* Toast container (must be inside JSX) */}
+      {/* Toast container */}
       <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
