@@ -17,7 +17,7 @@ const { width, height } = Dimensions.get('window');
 // Sample category data (each with an icon and corresponding screen name)
 const CATEGORIES = [
   { id: '1', label: 'Add a Boarding House', icon: require('../../assets/images/boardingicon.png'), screen: 'AddBoardings' },
-  { id: '2', label: 'Add a Taxi', icon: require('../../assets/images/Three wheel.png'), screen: 'AddBoardings' },
+  { id: '2', label: 'Add a Taxi', icon: require('../../assets/images/Three wheel.png'), screen: 'AddTaxi' },
   { id: '3', label: 'Add a Skill', icon: require('../../assets/images/Van.png'), screen: 'Van' },
   { id: '4', label: 'Add somthing to Rent', icon: require('../../assets/images/Car.png'), screen: 'Car' },
   { id: '5', label: 'Add a Ad', icon: require('../../assets/images/Bus.png'), screen: 'Bus' },
