@@ -1,5 +1,5 @@
-// app/(tabs)/AddBoardings.tsx
-// Note: No image picker modules are used. Photos are optional and this screen submits without photos.
+// app/(tabs)/AddTaxi.tsx
+// Note: Photos are optional and this screen submits without photos.
 
 import React, { useState } from 'react';
 import {
@@ -18,34 +18,27 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
 const backendUrl = 'https://unitunes-backend.vercel.app';
-const defaultImage = require('../../assets/images/Bording_2.png');
+const defaultImage = require('../../assets/images/default-taxi.png');
 
-export default function AddBoardings() {
+export default function AddTaxi() {
   const router = useRouter();
 
-  // Form fields (all required except photos)
-  const [Title, setTitle] = useState('');
-  const [owner, setOwner] = useState('');
-  const [address, setAddress] = useState('');
+  // Form fields (all required except photos and description)
+  const [driverName, setDriverName] = useState('');
+  const [vehicleType, setVehicleType] = useState('');
+  const [location, setLocation] = useState('');
+  const [price, setPrice] = useState(''); // Rs. per km
   const [contact, setContact] = useState('');
   const [description, setDescription] = useState('');
-  const [price, setPrice] = useState('');
-  const [Rooms, setRooms] = useState('');
-  const [bathRooms, setBathRooms] = useState('');
-  const [gender, setGender] = useState('');
 
   const [submitting, setSubmitting] = useState(false);
 
   const validate = () => {
-    if (!Title.trim()) return 'Title is required.';
-    if (!address.trim()) return 'Address is required.';
-    if (!price.trim() || isNaN(Number(price))) return 'Valid price is required.';
-    if (!Rooms.trim() || isNaN(Number(Rooms))) return 'Valid Rooms count is required.';
-    if (!bathRooms.trim() || isNaN(Number(bathRooms))) return 'Valid Bathrooms count is required.';
-    if (!owner.trim()) return 'Owner name is required.';
+    if (!driverName.trim()) return 'Driver name is required.';
+    if (!vehicleType.trim()) return 'Vehicle type is required.';
+    if (!location.trim()) return 'Location is required.';
+    if (!price.trim() || isNaN(Number(price))) return 'Valid price (per km) is required.';
     if (!contact.trim()) return 'Contact number is required.';
-    if (!gender.trim()) return 'Gender is required.';
-    if (!description.trim()) return 'Description is required.';
     return '';
   };
 
@@ -59,19 +52,16 @@ export default function AddBoardings() {
     try {
       setSubmitting(true);
 
-      // Send as multipart/form-data (even without photos) so backend (multer) reads text fields from req.body
+      // Send as multipart/form-data (even without photos) so backend (multer) reads fields from req.body
       const fd = new FormData();
-      fd.append('Title', Title);
-      fd.append('owner', owner);
-      fd.append('address', address);
-      fd.append('contact', contact);
-      fd.append('description', description);
+      fd.append('driverName', driverName);
+      fd.append('vehicleType', vehicleType);
+      fd.append('location', location);
       fd.append('price', price);
-      fd.append('Rooms', Rooms);
-      fd.append('bathRooms', bathRooms);
-      fd.append('gender', gender);
+      fd.append('contact', contact);
+      if (description.trim()) fd.append('description', description);
 
-      const res = await fetch(`${backendUrl}/api/boarding/add`, {
+      const res = await fetch(`${backendUrl}/api/taxi/add`, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -82,21 +72,18 @@ export default function AddBoardings() {
 
       const data = await res.json();
       if (data?.success) {
-        Alert.alert('Success', 'Boarding Added Successfully', [
-          { text: 'OK', onPress: () => router.replace('/(tabs)/BoardingList') },
+        Alert.alert('Success', 'Taxi added successfully', [
+          { text: 'OK', onPress: () => router.replace('/(tabs)/TaxiList') },
         ]);
         // Reset form
-        setTitle('');
-        setOwner('');
-        setAddress('');
+        setDriverName('');
+        setVehicleType('');
+        setLocation('');
+        setPrice('');
         setContact('');
         setDescription('');
-        setPrice('');
-        setRooms('');
-        setBathRooms('');
-        setGender('');
       } else {
-        Alert.alert('Error', data?.message || 'Failed to add boarding.');
+        Alert.alert('Error', data?.message || 'Failed to add taxi.');
       }
     } catch (e) {
       console.log('Submit error', e);
@@ -108,7 +95,7 @@ export default function AddBoardings() {
 
   return (
     <View style={styles.container}>
-      {/* Header (similar to BoardingList) */}
+      {/* Header */}
       <View style={styles.header}>
         <Ionicons name="chevron-back" size={28} color="black" onPress={() => router.back()} />
         <View style={styles.titleWrapper}>
@@ -121,62 +108,40 @@ export default function AddBoardings() {
       </View>
 
       <ScrollView contentContainerStyle={{ paddingBottom: 24 }}>
-        {/* Form container */}
         <View style={styles.formContainer}>
-          <Text style={styles.formTitle}>Add Boarding</Text>
+          <Text style={styles.formTitle}>Add Taxi</Text>
 
           <TextInput
-            placeholder="Title"
-            value={Title}
-            onChangeText={setTitle}
+            placeholder="Driver name"
+            value={driverName}
+            onChangeText={setDriverName}
             style={styles.input}
           />
-
-          <TextInput
-            placeholder="Address"
-            value={address}
-            onChangeText={setAddress}
-            style={styles.input}
-          />
-
-          <TextInput
-            placeholder="Price (Rs. per month)"
-            value={price}
-            onChangeText={setPrice}
-            keyboardType="numeric"
-            style={styles.input}
-          />
-
-          <View style={styles.row}>
-            <TextInput
-              placeholder="Rooms"
-              value={Rooms}
-              onChangeText={setRooms}
-              keyboardType="numeric"
-              style={[styles.input, styles.half, { marginRight: 4 }]}
-            />
-            <TextInput
-              placeholder="Bathrooms"
-              value={bathRooms}
-              onChangeText={setBathRooms}
-              keyboardType="numeric"
-              style={[styles.input, styles.half, { marginLeft: 4 }]}
-            />
-          </View>
 
           <View style={styles.pickerContainer}>
-            <Picker selectedValue={gender} onValueChange={val => setGender(val)}>
-              <Picker.Item label="Select Gender" value="" />
-              <Picker.Item label="Male" value="male" />
-              <Picker.Item label="Female" value="female" />
-              <Picker.Item label="Any" value="any" />
+            <Picker selectedValue={vehicleType} onValueChange={(val) => setVehicleType(val)}>
+              <Picker.Item label="Select Vehicle Type" value="" />
+              <Picker.Item label="Car" value="car" />
+              <Picker.Item label="Van" value="van" />
+              <Picker.Item label="SUV" value="suv" />
+              <Picker.Item label="Tuk" value="tuk" />
+              <Picker.Item label="Bike" value="bike" />
+              <Picker.Item label="Bus" value="bus" />
             </Picker>
           </View>
 
           <TextInput
-            placeholder="Owner name"
-            value={owner}
-            onChangeText={setOwner}
+            placeholder="Location"
+            value={location}
+            onChangeText={setLocation}
+            style={styles.input}
+          />
+
+          <TextInput
+            placeholder="Price per km (Rs.)"
+            value={price}
+            onChangeText={setPrice}
+            keyboardType="numeric"
             style={styles.input}
           />
 
@@ -189,7 +154,7 @@ export default function AddBoardings() {
           />
 
           <TextInput
-            placeholder="Description"
+            placeholder="Description (optional)"
             value={description}
             onChangeText={setDescription}
             style={[styles.input, styles.textArea]}
@@ -209,31 +174,30 @@ export default function AddBoardings() {
             {submitting ? (
               <ActivityIndicator color="#fff" />
             ) : (
-              <Text style={styles.submitText}>Submit Boarding</Text>
+              <Text style={styles.submitText}>Submit Taxi</Text>
             )}
           </TouchableOpacity>
 
-          {/* Preview card (matches list look) */}
+          {/* Preview card (matches TaxiList look) */}
           <View style={styles.previewCard}>
             <Image source={defaultImage} style={styles.previewImage} resizeMode="cover" />
             <View style={styles.cardContent}>
-              <Text style={styles.cardTitle}>{Title || 'Title preview'}</Text>
-              <Text style={styles.cardText}>{address || 'Address preview'}</Text>
+              <Text style={styles.cardTitle}>{driverName || 'Driver name preview'}</Text>
               <Text style={styles.cardText}>
-                {price ? `Rs ${price} / month` : 'Price preview'}
+                Vehicle: {vehicleType ? vehicleType.toUpperCase() : 'N/A'}
               </Text>
-              <Text style={styles.cardText}>Gender: {gender || 'N/A'}</Text>
+              <Text style={styles.cardText}>Location: {location || 'N/A'}</Text>
               <Text style={styles.cardText}>
-                Rooms: {Rooms || 'N/A'} | Bathrooms: {bathRooms || 'N/A'}
+                {price ? `Rs ${price} / km` : 'Price preview'}
               </Text>
             </View>
           </View>
 
           <TouchableOpacity
             style={styles.secondaryButton}
-            onPress={() => router.replace('/(tabs)/BoardingList')}
+            onPress={() => router.replace('/(tabs)/TaxiList')}
           >
-            <Text style={styles.secondaryText}>View Boarding List</Text>
+            <Text style={styles.secondaryText}>View Taxi List</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -279,8 +243,6 @@ const styles = StyleSheet.create({
     minHeight: 90,
     textAlignVertical: 'top',
   },
-  row: { flexDirection: 'row' },
-  half: { flex: 1 },
 
   pickerContainer: {
     borderWidth: 1,
@@ -314,7 +276,7 @@ const styles = StyleSheet.create({
   },
   submitText: { color: '#fff', fontWeight: 'bold' },
 
-  // Preview card (similar to list card)
+  // Preview card (similar to TaxiList card)
   previewCard: {
     backgroundColor: '#FFF3E0',
     borderRadius: 12,

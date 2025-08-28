@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import axios from 'axios';
 import { assets } from '../assets/assets';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
-const backendUrl = import.meta.env.VITE_BACKEND_URL ;
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 const AddMedicalCenter = ({ token }) => {
   const navigate = useNavigate();
@@ -14,20 +14,26 @@ const AddMedicalCenter = ({ token }) => {
   const [image3, setImage3] = useState(false);
   const [image4, setImage4] = useState(false);
 
-  const [centerName, setCenterName] = useState('');
+  const [name, setName] = useState('');
   const [address, setAddress] = useState('');
-  const [contactNumber, setContactNumber] = useState('');
-  const [description, setDescription] = useState('');
+  const [contact, setContact] = useState('');
   const [doctorName, setDoctorName] = useState('');
+  const [description, setDescription] = useState('');
   const [availableTime, setAvailableTime] = useState('');
   const [specialties, setSpecialties] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSpecialtySelect = (label) => {
+  const specialtyOptions = [
+    "General Medicine", "Cardiology", "Dermatology", "Orthopedics", 
+    "Pediatrics", "Gynecology", "Neurology", "Ophthalmology", 
+    "ENT", "Psychiatry", "Oncology", "Emergency Medicine"
+  ];
+
+  const handleSpecialtySelect = (specialty) => {
     setSpecialties((prev) =>
-      prev.includes(label)
-        ? prev.filter((item) => item !== label)
-        : [...prev, label]
+      prev.includes(specialty)
+        ? prev.filter((item) => item !== specialty)
+        : [...prev, specialty]
     );
   };
 
@@ -37,47 +43,31 @@ const AddMedicalCenter = ({ token }) => {
 
     try {
       const formData = new FormData();
-      
-      // Add all fields exactly like the boarding component
-      formData.append('name', centerName);
+      formData.append('name', name);
       formData.append('address', address);
-      formData.append('contact', contactNumber);
-      formData.append('description', description);
+      formData.append('contact', contact);
       formData.append('doctorName', doctorName);
+      formData.append('description', description);
       formData.append('availableTime', availableTime);
-      
-      // Only append specialties if it has values
-      if (specialties && specialties.length > 0) {
-        formData.append('specialties', JSON.stringify(specialties));
-      }
+      formData.append('specialties', JSON.stringify(specialties));
 
-      // Add images only if they exist
-      if (image1) formData.append('image1', image1);
-      if (image2) formData.append('image2', image2);
-      if (image3) formData.append('image3', image3);
-      if (image4) formData.append('image4', image4);
-
-      // Debug: Log what we're sending
-      console.log('Sending FormData:');
-      for (let [key, value] of formData.entries()) {
-        console.log(key, value instanceof File ? `File: ${value.name}` : value);
-      }
+      image1 && formData.append('image1', image1);
+      image2 && formData.append('image2', image2);
+      image3 && formData.append('image3', image3);
+      image4 && formData.append('image4', image4);
 
       const response = await axios.post(`${backendUrl}/api/medicare/add`, formData, {
-        headers: { 
-          token,
-          'Content-Type': 'multipart/form-data'
-        },
+        headers: { token },
       });
 
       if (response.data.success) {
         toast.success(response.data.message);
         // Reset all fields
-        setCenterName('');
+        setName('');
         setAddress('');
-        setContactNumber('');
-        setDescription('');
+        setContact('');
         setDoctorName('');
+        setDescription('');
         setAvailableTime('');
         setSpecialties([]);
         setImage1(false);
@@ -85,24 +75,18 @@ const AddMedicalCenter = ({ token }) => {
         setImage3(false);
         setImage4(false);
       } else {
-        toast.error(response.data.message || 'Failed to add medical center');
+        toast.error(response.data.message);
       }
     } catch (error) {
-      console.error('Full error:', error);
-      console.error('Error response:', error.response?.data);
-      
-      const errorMessage = error.response?.data?.message || 
-                          error.response?.data?.error || 
-                          error.message || 
-                          'Something went wrong!';
-      toast.error(errorMessage);
+      console.error(error);
+      toast.error('Something went wrong!');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <form onSubmit={onSubmitHandler} className='p-6 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 min-h-screen'>
+    <form onSubmit={onSubmitHandler} className='p-6 bg-gradient-to-br from-green-50 via-teal-50 to-blue-50 min-h-screen'>
       <div className='max-w-4xl mx-auto space-y-6'>
 
         {/* Header */}
@@ -110,7 +94,7 @@ const AddMedicalCenter = ({ token }) => {
           <h1 className='text-2xl font-bold text-gray-800 flex items-center gap-2'>
             🏥 Add New Medical Center
           </h1>
-          <p className='text-sm text-gray-500 mt-1'>Provide accurate information to help students find medical services.</p>
+          <p className='text-sm text-gray-500 mt-1'>Provide accurate information to help patients find your medical center.</p>
         </div>
 
         {/* Images Upload */}
@@ -189,51 +173,58 @@ const AddMedicalCenter = ({ token }) => {
 
         {/* Basic Info */}
         <div className='bg-white/80 p-6 rounded-xl shadow-md border border-gray-200 grid gap-4'>
-          <InputField label="Medical Center Name" value={centerName} setValue={setCenterName} required />
+          <InputField label="Medical Center Name" value={name} setValue={setName} required />
           <InputField label="Doctor's Name" value={doctorName} setValue={setDoctorName} required />
-          <InputField label="Contact Number" value={contactNumber} setValue={setContactNumber} type='tel' required />
+          <InputField label="Contact Number" value={contact} setValue={setContact} type='tel' required />
           <TextArea label="Address" value={address} setValue={setAddress} required />
         </div>
 
-        {/* Available Time */}
+        {/* Operating Hours */}
         <div className='bg-white/80 p-6 rounded-xl shadow-md border border-gray-200'>
-          <TextArea
-            label="Available Time"
-            value={availableTime}
-            setValue={setAvailableTime}
-            placeholder='e.g., Monday to Friday: 9:00 AM - 5:00 PM, Saturday: 9:00 AM - 1:00 PM'
-            required
+          <InputField 
+            label="Available Time" 
+            value={availableTime} 
+            setValue={setAvailableTime} 
+            placeholder="e.g., Mon-Fri: 8:00 AM - 6:00 PM, Sat: 8:00 AM - 2:00 PM"
+            required 
           />
         </div>
 
         {/* Specialties */}
         <div className='bg-white/80 p-6 rounded-xl shadow-md border border-gray-200'>
           <p className='font-semibold mb-2'>Medical Specialties</p>
-          <div className='flex flex-wrap gap-3'>
-            {["General Practice", "Pediatrics", "Cardiology", "Dermatology", "Orthopedics", "Gynecology", "Dentistry", "Eye Care", "Mental Health", "Emergency Care"].map((label) => (
+          <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3'>
+            {specialtyOptions.map((specialty) => (
               <button
-                key={label}
+                key={specialty}
                 type='button'
-                onClick={() => handleSpecialtySelect(label)}
-                className={`px-4 py-2 rounded-xl text-sm font-medium ${
-                  specialties.includes(label)
-                    ? 'bg-blue-600 text-white shadow-md'
+                onClick={() => handleSpecialtySelect(specialty)}
+                className={`px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
+                  specialties.includes(specialty)
+                    ? 'bg-green-600 text-white shadow-md'
                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
               >
-                {label}
+                {specialty}
               </button>
             ))}
           </div>
+          {specialties.length > 0 && (
+            <div className='mt-3 p-2 bg-green-50 rounded-lg'>
+              <p className='text-sm text-green-700'>
+                Selected: {specialties.join(', ')}
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Description */}
         <div className='bg-white/80 p-6 rounded-xl shadow-md border border-gray-200'>
           <TextArea
-            label="Services & Facilities"
+            label="Description"
             value={description}
             setValue={setDescription}
-            placeholder='Describe the medical services, facilities, equipment, and any special features...'
+            placeholder='Describe the medical center, facilities, equipment, etc.'
             required
           />
         </div>
@@ -243,14 +234,14 @@ const AddMedicalCenter = ({ token }) => {
           <button
             type='submit'
             disabled={isSubmitting}
-            className='px-6 py-3 bg-blue-600 text-white rounded-xl shadow-md hover:bg-blue-700 disabled:opacity-50'
+            className='px-6 py-3 bg-green-600 text-white rounded-xl shadow-md hover:bg-green-700 disabled:opacity-50 transition-colors'
           >
             {isSubmitting ? 'Submitting...' : 'Add Medical Center'}
           </button>
           <button
             type='button'
-            onClick={() => navigate('/medilist')}
-            className='px-6 py-3 bg-gray-700 text-white rounded-xl shadow-md hover:bg-gray-800'
+            onClick={() => navigate('/medicalcenterlist')}
+            className='px-6 py-3 bg-gray-700 text-white rounded-xl shadow-md hover:bg-gray-800 transition-colors'
           >
             View Medical Centers
           </button>
@@ -261,7 +252,7 @@ const AddMedicalCenter = ({ token }) => {
 };
 
 // Reusable Input
-const InputField = ({ label, value, setValue, type = 'text', required = false }) => (
+const InputField = ({ label, value, setValue, type = 'text', required = false, placeholder = '' }) => (
   <div className='w-full'>
     <label className='block text-sm font-semibold text-gray-700 mb-1'>{label}</label>
     <input
@@ -269,7 +260,8 @@ const InputField = ({ label, value, setValue, type = 'text', required = false })
       onChange={(e) => setValue(e.target.value)}
       type={type}
       required={required}
-      className='w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-300'
+      placeholder={placeholder}
+      className='w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-300'
     />
   </div>
 );
@@ -283,7 +275,7 @@ const TextArea = ({ label, value, setValue, required = false, placeholder = '' }
       onChange={(e) => setValue(e.target.value)}
       required={required}
       placeholder={placeholder}
-      className='w-full px-4 py-2 border border-gray-300 rounded-xl min-h-[100px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-300'
+      className='w-full px-4 py-2 border border-gray-300 rounded-xl min-h-[100px] focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-300'
     />
   </div>
 );

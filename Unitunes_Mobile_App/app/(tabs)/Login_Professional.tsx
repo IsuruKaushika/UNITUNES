@@ -16,6 +16,7 @@ type RootStackParamList = {
   AdminLogin: undefined;
   Create_Professional: undefined;
   Dashboard: undefined; // Admin homepage
+  index: undefined; // If you navigate to 'index' after login
 };
 
 const backendUrl = 'https://unitunes-backend.vercel.app';
@@ -24,6 +25,7 @@ const AdminLogin = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -32,7 +34,7 @@ const AdminLogin = () => {
     }
 
     try {
-      const response = await fetch(`${backendUrl}/api/admin/login`, {
+      const response = await fetch(`${backendUrl}/api/user/admin`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -49,7 +51,7 @@ const AdminLogin = () => {
         Alert.alert('Login Successful!', 'Welcome Admin!', [
           {
             text: 'OK',
-            onPress: () => navigation.navigate('Dashboard'),
+            onPress: () => navigation.navigate('index'), // or 'Dashboard' if that's your route
           },
         ]);
       } else {
@@ -80,14 +82,29 @@ const AdminLogin = () => {
           onChangeText={setEmail}
         />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          placeholderTextColor="#ccc"
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
-        />
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={styles.passwordInput}
+            placeholder="Password"
+            placeholderTextColor="#ccc"
+            secureTextEntry={!showPassword}
+            autoCapitalize="none"
+            value={password}
+            onChangeText={setPassword}
+          />
+          <TouchableOpacity
+            style={styles.eyeButton}
+            onPress={() => setShowPassword(prev => !prev)}
+            accessibilityRole="button"
+            accessibilityLabel={showPassword ? 'Hide password' : 'Show password'}
+          >
+            <Ionicons
+              name={showPassword ? 'eye-off' : 'eye'}
+              size={22}
+              color="#fff"
+            />
+          </TouchableOpacity>
+        </View>
 
         <Text style={styles.forgotPassword}>Forgot Password?</Text>
 
@@ -105,7 +122,6 @@ const AdminLogin = () => {
           <Text style={styles.googleText}> or continue with</Text>
         </View>
         */}
-
       </View>
     </ImageBackground>
   );
@@ -131,6 +147,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     color: '#fff',
     fontSize: 16,
+  },
+  passwordContainer: {
+    width: '80%',
+    height: 50,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    borderRadius: 10,
+    marginBottom: 15,
+    paddingHorizontal: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  passwordInput: {
+    flex: 1,
+    color: '#fff',
+    fontSize: 16,
+  },
+  eyeButton: {
+    padding: 6,
   },
   forgotPassword: {
     color: '#fff',

@@ -67,7 +67,7 @@ export default function RootLayout() {
       <TouchableOpacity
         activeOpacity={0.9}
         style={styles.addButton}
-        onPress={() => navigation.navigate('AddBoardings' as never)}
+        onPress={() => navigation.navigate('Add_Details' as never)}
       >
         <LinearGradient
           colors={['#F57373', '#F9A03F']}
