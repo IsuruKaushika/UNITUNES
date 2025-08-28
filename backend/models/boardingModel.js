@@ -13,8 +13,10 @@ const boardingSchema=new mongoose.Schema({
     description:{type:String,required:true},
     contact:{type:String,required:true},
    
+
 })
 
 const boardingModel =mongoose.models.boarding || mongoose.model('boarding',boardingSchema)
+
 
 export default boardingModel;
