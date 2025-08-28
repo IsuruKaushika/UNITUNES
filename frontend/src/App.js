@@ -26,10 +26,12 @@ import ShopDetails from "./components/ShopDetails";
 import SkillList from "./components/SkillList";
 import SkillDetails from "./components/SkillDetails";
 
-// ✅ New Imports for Rent Feature (Add this section only if missing)
+// ✅ New Imports
 import ProductList from "./components/ProductList";
 import RentItems from "./components/RentItems"; 
 import Testing from "./components/testing";
+import UserBoardingAdd from "./components/UserBoardingAdd";
+import UserBoardingList from "./components/UserBoardingList";
 
 function App() {
   return (
@@ -43,21 +45,35 @@ function App() {
         <Route path="/create-provider-account" element={<CreateProviderAccount />} />
         <Route path="/go-provider-dashboard" element={<ProviderDashboard />} />
         <Route path="/go-student-dashboard" element={<StudentDashboard />} />
+
+        {/* Boarding */}
         <Route path="/boarding-list" element={<BoardingList />} />
         <Route path="/boarding-details/:id" element={<BoardingDetails />} />
+        <Route path="/add-boarding" element={<UserBoardingAdd />} />   {/* ✅ Fixed */}
+        <Route path="/my-boardings" element={<UserBoardingList />} /> {/* ✅ */}
+
+        {/* Renting */}
         <Route path="/rent-items" element={<RentItemsPage />} />
-        {/* ✅ Updated path to match navigation */}
         <Route path="/rent-item/:id" element={<RentItemDetails />} />
+
+        {/* Taxi */}
         <Route path="/taxi-list" element={<TaxiList />} />
         <Route path="/taxi-details/:id" element={<TaxiDetails />} />
 
+        {/* Testing */}
         <Route path="/testing" element={<Testing />} />
+
+        {/* Medical */}
         <Route path="/medi-select" element={<MediSelect />} />
         <Route path="/medi-list" element={<MediList />} />
         <Route path="/medi-details/:id" element={<MediDetails />} />
+
+        {/* Shop */}
         <Route path="/shop-select" element={<ShopSelect />} />
         <Route path="/shop-list" element={<ShopList />} />
         <Route path="/shop-details/:id" element={<ShopDetails />} />
+
+        {/* Skill */}
         <Route path="/skill-list" element={<SkillList />} />
         <Route path="/skill-details/:id" element={<SkillDetails />} />
       </Routes>
