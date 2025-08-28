@@ -71,9 +71,7 @@ export default function AddBoardings() {
       fd.append('bathRooms', bathRooms);
       fd.append('gender', gender);
 
-      // No images appended because photos are optional and we're not using picker modules.
-
-      const res = await fetch(`${backendUrl}/api/boarding/add`, {
+      const res = await fetch(`${backendUrl}/api/boarding/list`, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -155,14 +153,14 @@ export default function AddBoardings() {
               value={Rooms}
               onChangeText={setRooms}
               keyboardType="numeric"
-              style={[styles.input, styles.half]}
+              style={[styles.input, styles.half, { marginRight: 4 }]}
             />
             <TextInput
               placeholder="Bathrooms"
               value={bathRooms}
               onChangeText={setBathRooms}
               keyboardType="numeric"
-              style={[styles.input, styles.half]}
+              style={[styles.input, styles.half, { marginLeft: 4 }]}
             />
           </View>
 
@@ -201,7 +199,7 @@ export default function AddBoardings() {
           {/* Photos (optional) – no picker used */}
           <Text style={styles.sectionLabel}>Photos (optional)</Text>
           <View style={styles.photosInfoBox}>
-            <Ionicons name="information-circle-outline" size={18} color="#FF8F00" />
+            <Ionicons name="information-circle-outline" size={18} color="#FF8F00" style={styles.iconMr} />
             <Text style={styles.photosInfoText}>
               Photo upload is optional and not enabled on this screen. You can submit details now.
             </Text>
@@ -281,7 +279,7 @@ const styles = StyleSheet.create({
     minHeight: 90,
     textAlignVertical: 'top',
   },
-  row: { flexDirection: 'row', gap: 8 },
+  row: { flexDirection: 'row' },
   half: { flex: 1 },
 
   pickerContainer: {
@@ -297,7 +295,6 @@ const styles = StyleSheet.create({
   photosInfoBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
     backgroundColor: '#FFF8E1',
     borderColor: '#FFCC80',
     borderWidth: 1,
@@ -305,6 +302,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 8,
   },
+  iconMr: { marginRight: 8 },
   photosInfoText: { color: '#6b4f00', flex: 1 },
 
   submitButton: {
