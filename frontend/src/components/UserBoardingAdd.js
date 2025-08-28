@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
@@ -10,13 +11,13 @@ const UserBoardingAdd = () => {
   const userId = localStorage.getItem("userId"); // ✅ assume you store userId when login
 
   const [formData, setFormData] = useState({
-    Title: '',
-    address: '',
-    contact: '',
-    description: '',
-    Rooms: '1',
-    bathRooms: '1',
-    price: '',
+    Title: "",
+    address: "",
+    contact: "",
+    description: "",
+    Rooms: "1",
+    bathRooms: "1",
+    price: "",
     gender: [],
   });
 
@@ -38,20 +39,25 @@ const UserBoardingAdd = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!userId) {
+      toast.error("User not logged in!");
+      return;
+    }
+
     const fd = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       fd.append(key, Array.isArray(value) ? JSON.stringify(value) : value);
     });
     fd.append("userId", userId);
-    images.forEach((img, i) => fd.append(`image${i+1}`, img));
+    images.forEach((img, i) => fd.append(`image${i + 1}`, img));
 
     try {
       const res = await axios.post(`${backendUrl}/api/user-boarding/add`, fd);
       if (res.data.success) {
         toast.success("Boarding added successfully!");
-        navigate("/my-boardings");
+        setTimeout(() => navigate("/my-boardings"), 2000);
       } else {
-        toast.error(res.data.message);
+        toast.error(res.data.message || "Something went wrong");
       }
     } catch (err) {
       console.error(err);
@@ -63,16 +69,78 @@ const UserBoardingAdd = () => {
     <div className="p-6 max-w-2xl mx-auto bg-white rounded-lg shadow">
       <h2 className="text-2xl font-bold mb-4">Add Your Boarding</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <input name="Title" value={formData.Title} onChange={handleChange} placeholder="Title" className="w-full p-2 border rounded" required />
-        <input name="address" value={formData.address} onChange={handleChange} placeholder="Address" className="w-full p-2 border rounded" required />
-        <input name="contact" value={formData.contact} onChange={handleChange} placeholder="Contact" className="w-full p-2 border rounded" required />
-        <input name="price" type="number" value={formData.price} onChange={handleChange} placeholder="Price" className="w-full p-2 border rounded" required />
-        
-        {/* Images */}
-        <input type="file" multiple onChange={(e) => setImages([...e.target.files])} />
+        <input
+          name="Title"
+          value={formData.Title}
+          onChange={handleChange}
+          placeholder="Title"
+          className="w-full p-2 border rounded"
+          required
+        />
+        <input
+          name="address"
+          value={formData.address}
+          onChange={handleChange}
+          placeholder="Address"
+          className="w-full p-2 border rounded"
+          required
+        />
+        <input
+          name="contact"
+          value={formData.contact}
+          onChange={handleChange}
+          placeholder="Contact"
+          className="w-full p-2 border rounded"
+          required
+        />
+        <textarea
+          name="description"
+          value={formData.description}
+          onChange={handleChange}
+          placeholder="Description"
+          className="w-full p-2 border rounded"
+        />
+        <input
+          name="price"
+          type="number"
+          value={formData.price}
+          onChange={handleChange}
+          placeholder="Price"
+          className="w-full p-2 border rounded"
+          required
+        />
 
-        <button type="submit" className="bg-yellow-500 px-4 py-2 rounded text-white">Submit</button>
+        {/* Gender Selection Example */}
+        <div className="flex gap-4">
+          {["Male", "Female", "Any"].map((g) => (
+            <label key={g} className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={formData.gender.includes(g)}
+                onChange={() => handleGender(g)}
+              />
+              {g}
+            </label>
+          ))}
+        </div>
+
+        {/* Images */}
+        <input
+          type="file"
+          multiple
+          onChange={(e) => setImages([...e.target.files])}
+        />
+
+        <button
+          type="submit"
+          className="bg-yellow-500 px-4 py-2 rounded text-white"
+        >
+          Submit
+        </button>
       </form>
+
+      {/* Toast container (must be inside JSX) */}
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };
