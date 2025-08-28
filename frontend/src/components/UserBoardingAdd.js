@@ -8,15 +8,15 @@ const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 const UserBoardingAdd = () => {
   const navigate = useNavigate();
-  const userId = localStorage.getItem("userId"); // get logged-in user id
+  const userId = localStorage.getItem("userId"); // logged-in user id
 
   const [formData, setFormData] = useState({
     Title: "",
     address: "",
     contact: "",
     description: "",
-    Rooms: "1",
-    bathRooms: "1",
+    Rooms: 1,
+    bathRooms: 1,
     price: "",
     gender: [],
   });
@@ -24,7 +24,11 @@ const UserBoardingAdd = () => {
   const [images, setImages] = useState([]);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === "Rooms" || name === "bathRooms" || name === "price" ? Number(value) : value,
+    }));
   };
 
   const handleGender = (label) => {
@@ -38,18 +42,23 @@ const UserBoardingAdd = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!userId) {
       toast.error("User not logged in!");
       return;
     }
 
     const fd = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      fd.append(key, Array.isArray(value) ? JSON.stringify(value) : value);
-    });
-    fd.append("userId", userId);
-    images.forEach((img, i) => fd.append(`image${i + 1}`, img));
+    fd.append("owner", userId); // backend expects owner
+    fd.append("Title", formData.Title);
+    fd.append("address", formData.address);
+    fd.append("contact", formData.contact);
+    fd.append("description", formData.description);
+    fd.append("Rooms", formData.Rooms);
+    fd.append("bathRooms", formData.bathRooms);
+    fd.append("price", formData.price);
+    fd.append("gender", JSON.stringify(formData.gender));
+
+    images.forEach((img) => fd.append("images", img)); // append all images as 'images'
 
     try {
       const res = await axios.post(`${backendUrl}/api/user-boarding/add`, fd);
@@ -100,6 +109,35 @@ const UserBoardingAdd = () => {
           placeholder="Description"
           className="w-full p-2 border rounded"
         />
+
+        {/* Rooms and Bathrooms */}
+        <div className="flex gap-4">
+          <div className="flex flex-col">
+            <label>Rooms</label>
+            <input
+              name="Rooms"
+              type="number"
+              min="1"
+              value={formData.Rooms}
+              onChange={handleChange}
+              className="w-24 p-2 border rounded"
+              required
+            />
+          </div>
+          <div className="flex flex-col">
+            <label>Bathrooms</label>
+            <input
+              name="bathRooms"
+              type="number"
+              min="1"
+              value={formData.bathRooms}
+              onChange={handleChange}
+              className="w-24 p-2 border rounded"
+              required
+            />
+          </div>
+        </div>
+
         <input
           name="price"
           type="number"
@@ -140,7 +178,6 @@ const UserBoardingAdd = () => {
         </button>
       </form>
 
-      {/* Toast container */}
       <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
