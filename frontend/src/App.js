@@ -30,7 +30,8 @@ import SkillDetails from "./components/SkillDetails";
 import ProductList from "./components/ProductList";
 import RentItems from "./components/RentItems"; 
 import Testing from "./components/testing";
-
+import UserBoardingAdd from "./components/UserBoardingAdd";
+import UserBoardingList from "./components/UserBoardingList";
 function App() {
   return (
     <div>
@@ -60,6 +61,10 @@ function App() {
         <Route path="/shop-details/:id" element={<ShopDetails />} />
         <Route path="/skill-list" element={<SkillList />} />
         <Route path="/skill-details/:id" element={<SkillDetails />} />
+        <Route path="/boarding-list/add-boarding" element={<UserBoardingAdd />} />
+         <Route path="/my-boardings" element={<UserBoardingList />} />
+
+     
       </Routes>
     </div>
   );
