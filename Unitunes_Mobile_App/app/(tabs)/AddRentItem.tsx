@@ -70,7 +70,7 @@ export default function AddRentItem() {
       const data = await res.json();
       if (data?.success) {
         Alert.alert('Success', 'Rental item added successfully', [
-          { text: 'OK', onPress: () => router.replace('/(tabs)/RentalItemList') },
+          { text: 'OK', onPress: () => router.replace('/(tabs)/RentItemList') },
         ]);
         // Reset form
         setName('');
@@ -186,7 +186,7 @@ export default function AddRentItem() {
 
           <TouchableOpacity
             style={styles.secondaryButton}
-            onPress={() => router.replace('/(tabs)/RentalItemList')}
+            onPress={() => router.replace('/(tabs)/RentItemList')}
           >
             <Text style={styles.secondaryText}>View Rental Items</Text>
           </TouchableOpacity>
