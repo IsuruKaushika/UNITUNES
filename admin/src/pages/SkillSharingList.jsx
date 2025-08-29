@@ -27,12 +27,26 @@ const SkillSharingList = () => {
       setLoading(true);
       setError(null);
       
+      // Start with basic list endpoint
       const response = await axios.get(`${backendUrl}/api/skillshare/list`);
+      
+      console.log('API Response:', response.data); // Debug log
+      
       if (response.data.success) {
         let skillsData = response.data.data || response.data.skills || [];
-        if (filters.activeOnly) skillsData = skillsData.filter(skill => skill.isActive !== false);
-        if (filters.category) skillsData = skillsData.filter(skill => skill.skillType === filters.category);
-        if (filters.experience) skillsData = skillsData.filter(skill => skill.experience === filters.experience);
+        
+        console.log('Skills data:', skillsData); // Debug log
+        
+        // Apply filters
+        if (filters.activeOnly) {
+          skillsData = skillsData.filter(skill => skill.isActive !== false);
+        }
+        if (filters.category) {
+          skillsData = skillsData.filter(skill => skill.skillType === filters.category);
+        }
+        if (filters.experience) {
+          skillsData = skillsData.filter(skill => skill.experience === filters.experience);
+        }
 
         setSkills(skillsData);
         setFilteredSkills(skillsData);
@@ -41,6 +55,9 @@ const SkillSharingList = () => {
         toast.error(response.data.message || 'Failed to fetch skills');
       }
     } catch (error) {
+      console.error('Full error object:', error);
+      console.error('Error fetching skills:', error.message);
+      
       const errorMessage = error.response?.data?.message || error.message || 'Network error';
       setError(errorMessage);
       toast.error(`Failed to fetch skills: ${errorMessage}`);
@@ -103,6 +120,8 @@ const SkillSharingList = () => {
       <div className="bg-gray-50 p-4 rounded-lg mb-6">
         <h3 className="font-semibold mb-3">Filters</h3>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          
+          {/* Category Filter */}
           <div>
             <label className="block text-sm font-medium mb-1">Category</label>
             <select
@@ -117,6 +136,7 @@ const SkillSharingList = () => {
             </select>
           </div>
 
+          {/* Experience Filter */}
           <div>
             <label className="block text-sm font-medium mb-1">Experience</label>
             <select
@@ -131,6 +151,7 @@ const SkillSharingList = () => {
             </select>
           </div>
 
+          {/* Active Only Toggle */}
           <div>
             <label className="block text-sm font-medium mb-1">Status</label>
             <div className="flex items-center h-10">
@@ -145,6 +166,7 @@ const SkillSharingList = () => {
             </div>
           </div>
 
+          {/* Clear Filters */}
           <div className="flex items-end">
             <button
               onClick={clearFilters}
@@ -178,21 +200,42 @@ const SkillSharingList = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredSkills.map((skill, index) => (
             <div key={skill._id || index} className="border rounded-lg shadow-md bg-white overflow-hidden hover:shadow-lg transition-shadow">
+              
               {/* Image Display */}
               <div className="relative h-48 bg-gray-200">
                 {skill.images && skill.images.length > 0 ? (
+                  <div className="h-full">
+                    <img 
+                      src={`${backendUrl}/${skill.images[0]}`} 
+                      alt={skill.skillType}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.src = '/placeholder-image.jpg';
+                        e.target.onerror = null;
+                      }}
+                    />
+                    {skill.images.length > 1 && (
+                      <div className="absolute top-2 right-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-xs">
+                        +{skill.images.length - 1} more
+                      </div>
+                    )}
+                  </div>
+                ) : skill.image ? (
                   <img 
-                    src={skill.images[0].startsWith('http') ? skill.images[0] : `${backendUrl}/${skill.images[0]}`}
-                    alt={skill.skillType}
+                    src={`${backendUrl}/${skill.image}`} 
+                    alt={skill.skillType || skill.skill}
                     className="w-full h-full object-cover"
-                    onError={(e) => { e.target.src = '/placeholder-image.jpg'; e.target.onerror = null; }}
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
                   />
                 ) : (
                   <div className="flex items-center justify-center h-full">
                     <span className="text-gray-400">No Image</span>
                   </div>
                 )}
-
+                
+                {/* Status Badge */}
                 {!skill.isActive && (
                   <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded text-xs">
                     Inactive
@@ -212,17 +255,33 @@ const SkillSharingList = () => {
                 <div className="space-y-2 text-sm text-gray-600">
                   <p><strong>Instructor:</strong> {skill.studentName}</p>
                   <p><strong>Contact:</strong> {skill.contact}</p>
-                  {skill.location && <p><strong>Location:</strong> {skill.location}</p>}
+                  
+                  {skill.location && (
+                    <p><strong>Location:</strong> {skill.location}</p>
+                  )}
+                  
                   <div className="flex justify-between items-center">
-                    <p><strong>Price:</strong> <span className={`ml-1 font-semibold ${(skill.price || 0) === 0 ? 'text-green-600' : 'text-blue-600'}`}>{formatPrice(skill.price || 0)}</span></p>
-                    {skill.createdAt && <p className="text-xs text-gray-400">{new Date(skill.createdAt).toLocaleDateString()}</p>}
+                    <p><strong>Price:</strong> 
+                      <span className={`ml-1 font-semibold ${(skill.price || 0) === 0 ? 'text-green-600' : 'text-blue-600'}`}>
+                        {formatPrice(skill.price || 0)}
+                      </span>
+                    </p>
+                    {skill.createdAt && (
+                      <p className="text-xs text-gray-400">
+                        {new Date(skill.createdAt).toLocaleDateString()}
+                      </p>
+                    )}
                   </div>
                 </div>
 
+                {/* Description */}
                 <div className="mt-3 pt-3 border-t border-gray-100">
-                  <p className="text-sm text-gray-700"><strong>Details:</strong> {skill.moreDetails || skill.description}</p>
+                  <p className="text-sm text-gray-700">
+                    <strong>Details:</strong> {skill.moreDetails || skill.description}
+                  </p>
                 </div>
 
+                {/* Additional Images Thumbnails */}
                 {skill.images && skill.images.length > 1 && (
                   <div className="mt-3 pt-3 border-t border-gray-100">
                     <p className="text-xs text-gray-500 mb-2">Additional Images:</p>
@@ -230,20 +289,25 @@ const SkillSharingList = () => {
                       {skill.images.slice(1, 4).map((image, imgIndex) => (
                         <img
                           key={imgIndex}
-                          src={image.startsWith('http') ? image : `${backendUrl}/${image}`}
+                          src={`${backendUrl}/${image}`}
                           alt={`${skill.skillType} ${imgIndex + 2}`}
                           className="w-12 h-12 object-cover rounded border"
-                          onError={(e) => { e.target.src = '/placeholder-image.jpg'; }}
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                          }}
                         />
                       ))}
                     </div>
                   </div>
                 )}
 
+                {/* Action Button */}
                 <div className="mt-4">
                   <button 
                     className="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm"
-                    onClick={() => toast.info(`Contact ${skill.studentName} at ${skill.contact}`)}
+                    onClick={() => {
+                      toast.info(`Contact ${skill.studentName} at ${skill.contact}`);
+                    }}
                   >
                     Contact Instructor
                   </button>
