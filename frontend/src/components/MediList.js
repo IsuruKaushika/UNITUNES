@@ -94,7 +94,7 @@ const MediList = () => {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const response = await axios.get(`${backendUrl}/api/medical-services`);
+        const response = await axios.get(`${backendUrl}/api/pharmacy`);
         if (response.data?.success) setServices(response.data.services);
       } catch (err) {
         console.error("Error fetching services:", err);
