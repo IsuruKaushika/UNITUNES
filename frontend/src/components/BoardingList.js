@@ -248,7 +248,7 @@ const BoardingList = () => {
     setSearchQuery(query);
     setSearchLoading(true);
     
-    // Simulate search delay
+    // Simulate the new search delay
     setTimeout(() => {
       setSearchLoading(false);
     }, 500);
