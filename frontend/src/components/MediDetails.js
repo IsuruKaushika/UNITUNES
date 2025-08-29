@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 
-// Custom Logo Component
+// Custom Logo Component and functions
 const CustomLogo = ({ onClick, className = "" }) => (
   <div 
     onClick={onClick}
