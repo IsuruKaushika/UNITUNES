@@ -306,7 +306,7 @@ function RentItemsPage() {
       );
     }
 
-    // Apply category filter
+    // Apply the new category filter
     if (activeCategory !== 'all') {
       filtered = filtered.filter(item => 
         item.category?.toLowerCase() === activeCategory.toLowerCase()
