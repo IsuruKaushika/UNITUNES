@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-// Custom Logo Component with Updated Theme
+// Customize Logo Component with Updated Theme
 const CustomLogo = ({ onClick, className = "" }) => (
   <div 
     onClick={onClick}
