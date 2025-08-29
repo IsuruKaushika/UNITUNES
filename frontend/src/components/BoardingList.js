@@ -220,7 +220,7 @@ const BoardingList = () => {
       });
     }
 
-    // Apply sorting
+    // Apply sorting of the boarding feature
     filtered.sort((a, b) => {
       switch (filters.sort) {
         case 'price_asc':
