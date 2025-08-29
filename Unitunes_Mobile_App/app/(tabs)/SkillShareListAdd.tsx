@@ -1,5 +1,5 @@
-// app/(tabs)/AddTaxi.tsx
-// Note: Photos are optional and this screen submits without photos.
+// app/(tabs)/AddSkillShare.tsx
+// Note: No image picker modules are used. Photos are optional and this screen submits without photos.
 
 import React, { useState } from 'react';
 import {
@@ -13,32 +13,28 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
 const backendUrl = 'https://unitunes-backend.vercel.app';
-const defaultImage = require('../../assets/images/default-taxi.png');
+const defaultImage = require('../../assets/images/Skill Sharing.jpg');
 
-export default function AddTaxi() {
+export default function AddSkillShare() {
   const router = useRouter();
 
-  // Form fields (all required except photos and description)
-  const [driverName, setDriverName] = useState('');
-  const [vehicleType, setVehicleType] = useState('');
-  const [location, setLocation] = useState('');
-  const [price, setPrice] = useState(''); // Rs. per km
+  // Form fields (all required except photos)
+  const [skillName, setSkillName] = useState('');
+  const [providerName, setProviderName] = useState('');
   const [contact, setContact] = useState('');
   const [description, setDescription] = useState('');
 
   const [submitting, setSubmitting] = useState(false);
 
   const validate = () => {
-    if (!driverName.trim()) return 'Driver name is required.';
-    if (!vehicleType.trim()) return 'Vehicle type is required.';
-    if (!location.trim()) return 'Location is required.';
-    if (!price.trim() || isNaN(Number(price))) return 'Valid price (per km) is required.';
+    if (!skillName.trim()) return 'Skill name is required.';
+    if (!providerName.trim()) return 'Provider name is required.';
     if (!contact.trim()) return 'Contact number is required.';
+    if (!description.trim()) return 'Description is required.';
     return '';
   };
 
@@ -52,16 +48,14 @@ export default function AddTaxi() {
     try {
       setSubmitting(true);
 
-      // Send as multipart/form-data (even without photos) so backend (multer) reads fields from req.body
+      // Send as multipart/form-data (even without photos) so backend (multer) reads text fields from req.body
       const fd = new FormData();
-      fd.append('driverName', driverName);
-      fd.append('vehicleType', vehicleType);
-      fd.append('location', location);
-      fd.append('price', price);
+      fd.append('skillName', skillName);
+      fd.append('providerName', providerName);
       fd.append('contact', contact);
-      if (description.trim()) fd.append('description', description);
+      fd.append('description', description);
 
-      const res = await fetch(`${backendUrl}/api/taxi/add`, {
+      const res = await fetch(`${backendUrl}/api/skillshare/add`, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -72,18 +66,16 @@ export default function AddTaxi() {
 
       const data = await res.json();
       if (data?.success) {
-        Alert.alert('Success', 'Taxi added successfully', [
-          { text: 'OK', onPress: () => router.replace('/(tabs)/Three Wheel') },
+        Alert.alert('Success', 'Skill shared successfully', [
+          { text: 'OK', onPress: () => router.replace('/(tabs)/SkillSharing') },
         ]);
         // Reset form
-        setDriverName('');
-        setVehicleType('');
-        setLocation('');
-        setPrice('');
+        setSkillName('');
+        setProviderName('');
         setContact('');
         setDescription('');
       } else {
-        Alert.alert('Error', data?.message || 'Failed to add taxi.');
+        Alert.alert('Error', data?.message || 'Failed to add skill.');
       }
     } catch (e) {
       console.log('Submit error', e);
@@ -108,40 +100,21 @@ export default function AddTaxi() {
       </View>
 
       <ScrollView contentContainerStyle={{ paddingBottom: 24 }}>
+        {/* Form container */}
         <View style={styles.formContainer}>
-          <Text style={styles.formTitle}>Add Taxi</Text>
+          <Text style={styles.formTitle}>Share a Skill</Text>
 
           <TextInput
-            placeholder="Driver name"
-            value={driverName}
-            onChangeText={setDriverName}
-            style={styles.input}
-          />
-
-          <View style={styles.pickerContainer}>
-            <Picker selectedValue={vehicleType} onValueChange={(val) => setVehicleType(val)}>
-              <Picker.Item label="Select Vehicle Type" value="" />
-              <Picker.Item label="Car" value="car" />
-              <Picker.Item label="Van" value="van" />
-              <Picker.Item label="SUV" value="suv" />
-              <Picker.Item label="Tuk" value="tuk" />
-              <Picker.Item label="Bike" value="bike" />
-              <Picker.Item label="Bus" value="bus" />
-            </Picker>
-          </View>
-
-          <TextInput
-            placeholder="Location"
-            value={location}
-            onChangeText={setLocation}
+            placeholder="Skill name (e.g., Guitar lessons)"
+            value={skillName}
+            onChangeText={setSkillName}
             style={styles.input}
           />
 
           <TextInput
-            placeholder="Price per km (Rs.)"
-            value={price}
-            onChangeText={setPrice}
-            keyboardType="numeric"
+            placeholder="Provider name"
+            value={providerName}
+            onChangeText={setProviderName}
             style={styles.input}
           />
 
@@ -154,7 +127,7 @@ export default function AddTaxi() {
           />
 
           <TextInput
-            placeholder="Description (optional)"
+            placeholder="Description (what you offer, availability, etc.)"
             value={description}
             onChangeText={setDescription}
             style={[styles.input, styles.textArea]}
@@ -164,7 +137,12 @@ export default function AddTaxi() {
           {/* Photos (optional) – no picker used */}
           <Text style={styles.sectionLabel}>Photos (optional)</Text>
           <View style={styles.photosInfoBox}>
-            <Ionicons name="information-circle-outline" size={18} color="#FF8F00" style={styles.iconMr} />
+            <Ionicons
+              name="information-circle-outline"
+              size={18}
+              color="#FF8F00"
+              style={styles.iconMr}
+            />
             <Text style={styles.photosInfoText}>
               Photo upload is optional and not enabled on this screen. You can submit details now.
             </Text>
@@ -174,30 +152,28 @@ export default function AddTaxi() {
             {submitting ? (
               <ActivityIndicator color="#fff" />
             ) : (
-              <Text style={styles.submitText}>Submit Taxi</Text>
+              <Text style={styles.submitText}>Submit Skill</Text>
             )}
           </TouchableOpacity>
 
-          {/* Preview card (matches TaxiList look) */}
+          {/* Preview card (matches list look) */}
           <View style={styles.previewCard}>
             <Image source={defaultImage} style={styles.previewImage} resizeMode="cover" />
             <View style={styles.cardContent}>
-              <Text style={styles.cardTitle}>{driverName || 'Driver name preview'}</Text>
+              <Text style={styles.cardTitle}>{skillName || 'Skill name preview'}</Text>
+              <Text style={styles.cardText}>Provider: {providerName || 'N/A'}</Text>
+              <Text style={styles.cardText}>Contact: {contact || 'N/A'}</Text>
               <Text style={styles.cardText}>
-                Vehicle: {vehicleType ? vehicleType.toUpperCase() : 'N/A'}
-              </Text>
-              <Text style={styles.cardText}>Location: {location || 'N/A'}</Text>
-              <Text style={styles.cardText}>
-                {price ? `Rs ${price} / km` : 'Price preview'}
+                {description ? description : 'Description preview'}
               </Text>
             </View>
           </View>
 
           <TouchableOpacity
             style={styles.secondaryButton}
-            onPress={() => router.replace('/(tabs)/Three Wheel')}
+            onPress={() => router.replace('/(tabs)/SkillSharing')}
           >
-            <Text style={styles.secondaryText}>View Taxi List</Text>
+            <Text style={styles.secondaryText}>View Skill Sharing List</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -244,14 +220,6 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
 
-  pickerContainer: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 10,
-    marginBottom: 8,
-    backgroundColor: '#fff',
-  },
-
   sectionLabel: { fontWeight: 'bold', color: '#444', marginTop: 6, marginBottom: 8 },
 
   photosInfoBox: {
@@ -276,7 +244,7 @@ const styles = StyleSheet.create({
   },
   submitText: { color: '#fff', fontWeight: 'bold' },
 
-  // Preview card (similar to TaxiList card)
+  // Preview card (similar to list card)
   previewCard: {
     backgroundColor: '#FFF3E0',
     borderRadius: 12,
