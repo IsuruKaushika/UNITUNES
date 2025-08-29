@@ -73,7 +73,7 @@ export default function AddTaxi() {
       const data = await res.json();
       if (data?.success) {
         Alert.alert('Success', 'Taxi added successfully', [
-          { text: 'OK', onPress: () => router.replace('/(tabs)/TaxiList') },
+          { text: 'OK', onPress: () => router.replace('/(tabs)/Three Wheel') },
         ]);
         // Reset form
         setDriverName('');
@@ -195,7 +195,7 @@ export default function AddTaxi() {
 
           <TouchableOpacity
             style={styles.secondaryButton}
-            onPress={() => router.replace('/(tabs)/TaxiList')}
+            onPress={() => router.replace('/(tabs)/Three Wheel')}
           >
             <Text style={styles.secondaryText}>View Taxi List</Text>
           </TouchableOpacity>
