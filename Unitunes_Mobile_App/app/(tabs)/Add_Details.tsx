@@ -20,7 +20,7 @@ const CATEGORIES = [
   { id: '2', label: 'Add a Taxi',  screen: 'AddTaxi' },
   { id: '3', label: 'Add a Skill', screen: 'SkillShareListAdd' },
   { id: '4', label: 'Add somthing to Rent', screen: 'Car' },
-  { id: '5', label: 'Add a Medical Center', screen: 'AddRentItem' },
+  { id: '5', label: 'Add a Medical Center', screen: 'AddMedicalCenter' },
 ];
 
 const HomeScreen: React.FC = () => {
