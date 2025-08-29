@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import productList from "./ProductList";
+import axios from "axios";
+
+// Backend URL
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 // Custom Logo Component
 const CustomLogo = ({ onClick, className = "" }) => (
@@ -34,67 +37,32 @@ const CategoriesNav = ({ activeCategory, onCategoryChange }) => {
       color: 'from-gray-500 to-gray-600'
     },
     { 
-      id: 'electronics', 
+      id: 'Electronics', 
       name: 'Electronics', 
       icon: '💻',
       color: 'from-blue-500 to-blue-600',
       subCategories: ['Laptops', 'Phones', 'Tablets', 'Cameras', 'Gaming']
     },
     { 
-      id: 'sports', 
-      name: 'Sports', 
-      icon: '⚽',
-      color: 'from-green-500 to-green-600',
-      subCategories: ['Football', 'Cricket', 'Basketball', 'Tennis', 'Fitness']
-    },
-    { 
-      id: 'clothes', 
-      name: 'Clothing', 
-      icon: '👕',
-      color: 'from-purple-500 to-purple-600',
-      subCategories: ['Formal', 'Casual', 'Party Wear', 'Traditional', 'Accessories']
-    },
-    { 
-      id: 'watches', 
-      name: 'Watches', 
-      icon: '⌚',
-      color: 'from-yellow-500 to-yellow-600',
-      subCategories: ['Smart Watch', 'Analog', 'Digital', 'Luxury', 'Sports']
-    },
-    { 
-      id: 'books', 
-      name: 'Books', 
-      icon: '📚',
-      color: 'from-indigo-500 to-indigo-600',
-      subCategories: ['Textbooks', 'Novels', 'Reference', 'Study Guides', 'Magazines']
-    },
-    { 
-      id: 'vehicles', 
-      name: 'Vehicles', 
-      icon: '🏍️',
-      color: 'from-red-500 to-red-600',
-      subCategories: ['Bicycles', 'Motorcycles', 'Scooters', 'Cars', 'Parts']
-    },
-    { 
-      id: 'musical', 
-      name: 'Musical', 
-      icon: '🎸',
-      color: 'from-pink-500 to-pink-600',
-      subCategories: ['Guitars', 'Keyboards', 'Drums', 'Audio Equipment', 'Accessories']
-    },
-    { 
-      id: 'furniture', 
+      id: 'Furniture', 
       name: 'Furniture', 
       icon: '🪑',
       color: 'from-orange-500 to-orange-600',
       subCategories: ['Study Table', 'Chairs', 'Storage', 'Bed', 'Decoration']
     },
     { 
-      id: 'tools', 
+      id: 'Tools', 
       name: 'Tools', 
       icon: '🔧',
       color: 'from-cyan-500 to-cyan-600',
       subCategories: ['Study Tools', 'Lab Equipment', 'Art Supplies', 'Tech Tools', 'General']
+    },
+    { 
+      id: 'Books', 
+      name: 'Books', 
+      icon: '📚',
+      color: 'from-indigo-500 to-indigo-600',
+      subCategories: ['Textbooks', 'Novels', 'Reference', 'Study Guides', 'Magazines']
     }
   ];
 
@@ -103,7 +71,6 @@ const CategoriesNav = ({ activeCategory, onCategoryChange }) => {
   return (
     <div className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4">
-        {/* Main Categories */}
         <div className="flex items-center space-x-1 py-3 overflow-x-auto">
           {categories.map((category) => (
             <div
@@ -129,7 +96,6 @@ const CategoriesNav = ({ activeCategory, onCategoryChange }) => {
                 )}
               </button>
 
-              {/* Dropdown Menu */}
               {category.subCategories && showDropdown === category.id && (
                 <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-xl py-2 min-w-48 z-60">
                   {category.subCategories.map((subCategory) => (
@@ -147,7 +113,6 @@ const CategoriesNav = ({ activeCategory, onCategoryChange }) => {
           ))}
         </div>
 
-        {/* Category Description Banner */}
         {activeCategory !== 'all' && (
           <div className="py-2 border-t border-gray-100">
             <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg px-4 py-2">
@@ -183,7 +148,7 @@ const FloatingActionButton = ({ onClick }) => (
   </div>
 );
 
-// Filter Component - Daraz Style
+// Filter Component
 const FilterBar = ({ onFilterChange, activeFilters }) => {
   const priceRanges = [
     { label: "All Prices", value: "all" },
@@ -194,17 +159,16 @@ const FilterBar = ({ onFilterChange, activeFilters }) => {
   ];
 
   const sortOptions = [
-    { label: "Relevance", value: "relevance" },
+    { label: "Newest First", value: "newest" },
     { label: "Price: Low to High", value: "price_asc" },
     { label: "Price: High to Low", value: "price_desc" },
-    { label: "Newest First", value: "newest" },
+    { label: "Relevance", value: "relevance" },
     { label: "Most Popular", value: "popular" }
   ];
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-4 mb-6 shadow-sm">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        {/* Price Filter */}
         <div>
           <label className="block text-xs font-medium text-black mb-2 uppercase tracking-wide">
             Price Range
@@ -222,7 +186,6 @@ const FilterBar = ({ onFilterChange, activeFilters }) => {
           </select>
         </div>
 
-        {/* Sort Filter */}
         <div>
           <label className="block text-xs font-medium text-black mb-2 uppercase tracking-wide">
             Sort By
@@ -240,25 +203,24 @@ const FilterBar = ({ onFilterChange, activeFilters }) => {
           </select>
         </div>
 
-        {/* Location Filter */}
         <div>
           <label className="block text-xs font-medium text-black mb-2 uppercase tracking-wide">
-            Location
+            Availability
           </label>
           <select
+            value={activeFilters.availability}
+            onChange={(e) => onFilterChange({ ...activeFilters, availability: e.target.value })}
             className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white text-black"
           >
-            <option>All Locations</option>
-            <option>On Campus</option>
-            <option>Near Campus</option>
-            <option>City Center</option>
+            <option value="all">All Items</option>
+            <option value="available">Available Only</option>
+            <option value="unavailable">Unavailable</option>
           </select>
         </div>
 
-        {/* Clear Filters */}
         <div className="flex items-end">
           <button
-            onClick={() => onFilterChange({ price: 'all', sort: 'relevance', category: 'all' })}
+            onClick={() => onFilterChange({ price: 'all', sort: 'newest', category: 'all', availability: 'all' })}
             className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-md font-medium transition-colors duration-200 text-sm"
           >
             Clear All
@@ -286,13 +248,44 @@ const useFavorites = () => {
 
 function RentItemsPage() {
   const navigate = useNavigate();
-  const [itemList, setItemList] = useState(productList);
-  const [filteredItems, setFilteredItems] = useState(productList);
-  const [loading, setLoading] = useState(false);
+  const [itemList, setItemList] = useState([]);
+  const [filteredItems, setFilteredItems] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState('all');
-  const [filters, setFilters] = useState({ price: 'all', sort: 'relevance', category: 'all' });
+  const [filters, setFilters] = useState({ price: 'all', sort: 'newest', category: 'all', availability: 'all' });
   const { favorites, toggleFavorite } = useFavorites();
+
+  // Fetch rental items from backend
+  useEffect(() => {
+    const fetchRentalItems = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(`${backendUrl}/api/rent/list`);
+        
+        if (response.data?.success && Array.isArray(response.data.items)) {
+          setItemList(response.data.items);
+          setFilteredItems(response.data.items);
+        } else if (Array.isArray(response.data)) {
+          // Fallback if the response structure is different
+          setItemList(response.data);
+          setFilteredItems(response.data);
+        } else {
+          console.warn("Unexpected response format:", response.data);
+          setItemList([]);
+          setFilteredItems([]);
+        }
+      } catch (error) {
+        console.error("Error fetching rental items:", error.message);
+        setItemList([]);
+        setFilteredItems([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRentalItems();
+  }, []);
 
   // Apply filters and sorting
   useEffect(() => {
@@ -301,22 +294,35 @@ function RentItemsPage() {
     // Apply search filter
     if (searchQuery) {
       filtered = filtered.filter(item =>
-        item.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.description?.toLowerCase().includes(searchQuery.toLowerCase())
+        item.itemName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.ownerName?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
     // Apply category filter
     if (activeCategory !== 'all') {
       filtered = filtered.filter(item => 
-        item.category?.toLowerCase() === activeCategory.toLowerCase()
+        item.rentType === activeCategory
       );
+    }
+
+    // Apply availability filter
+    if (filters.availability !== 'all') {
+      filtered = filtered.filter(item => {
+        if (filters.availability === 'available') {
+          return item.isAvailable === true;
+        } else if (filters.availability === 'unavailable') {
+          return item.isAvailable === false;
+        }
+        return true;
+      });
     }
 
     // Apply price filter
     if (filters.price !== 'all') {
       filtered = filtered.filter(item => {
-        const price = parseInt(item.pricePerDay) || 0;
+        const price = parseInt(item.price) || 0;
         
         switch (filters.price) {
           case '0-500':
@@ -337,10 +343,13 @@ function RentItemsPage() {
     filtered.sort((a, b) => {
       switch (filters.sort) {
         case 'price_asc':
-          return (parseInt(a.pricePerDay) || 0) - (parseInt(b.pricePerDay) || 0);
+          return (parseInt(a.price) || 0) - (parseInt(b.price) || 0);
         case 'price_desc':
-          return (parseInt(b.pricePerDay) || 0) - (parseInt(a.pricePerDay) || 0);
+          return (parseInt(b.price) || 0) - (parseInt(a.price) || 0);
         case 'newest':
+          if (a.createdAt && b.createdAt) {
+            return new Date(b.createdAt) - new Date(a.createdAt);
+          }
           return itemList.indexOf(b) - itemList.indexOf(a);
         case 'popular':
           return (b.popularity || 0) - (a.popularity || 0);
@@ -372,7 +381,6 @@ function RentItemsPage() {
       <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
-            {/* Back Button */}
             <button
               onClick={() => navigate(-1)}
               className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"
@@ -383,10 +391,8 @@ function RentItemsPage() {
               <span className="text-sm font-medium">Back</span>
             </button>
 
-            {/* Logo */}
             <CustomLogo onClick={() => navigate("/")} />
 
-            {/* User Actions */}
             <div className="flex items-center gap-4">
               <button className="text-gray-600 hover:text-gray-800 transition-colors">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -408,7 +414,7 @@ function RentItemsPage() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search for items, brands and more..."
+                placeholder="Search for rental items, owners and more..."
                 className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-gray-700"
               />
               <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-orange-500 transition-colors">
@@ -479,34 +485,47 @@ function RentItemsPage() {
         {loading ? (
           <div className="flex justify-center items-center py-20">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+            <p className="ml-4 text-gray-600">Loading rental items...</p>
           </div>
         ) : filteredItems.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
             {filteredItems.map((item) => (
               <div
-                key={item.id}
-                onClick={() => handleItemClick(item.id)}
+                key={item._id}
+                onClick={() => handleItemClick(item._id)}
                 className="bg-white border border-gray-200 rounded-lg hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden group hover:border-orange-300"
               >
                 {/* Image Container */}
                 <div className="relative aspect-square overflow-hidden">
                   <img
-                    src={item.image}
-                    alt={item.name}
+                    src={item.itemImage || '/api/placeholder/300/300'}
+                    alt={item.itemName}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    onError={(e) => {
+                      e.target.src = '/api/placeholder/300/300';
+                    }}
                   />
+
+                  {/* Availability Badge */}
+                  <div className={`absolute top-2 left-2 px-2 py-1 rounded-full text-xs font-medium ${
+                    item.isAvailable 
+                      ? 'bg-green-100 text-green-800' 
+                      : 'bg-red-100 text-red-800'
+                  }`}>
+                    {item.isAvailable ? 'Available' : 'Unavailable'}
+                  </div>
 
                   {/* Favorite Button */}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      toggleFavorite(item.id);
+                      toggleFavorite(item._id);
                     }}
                     className={`absolute top-2 right-2 p-1.5 rounded-full bg-white shadow-md transition-colors ${
-                      favorites.includes(item.id) ? 'text-red-500' : 'text-gray-400 hover:text-red-500'
+                      favorites.includes(item._id) ? 'text-red-500' : 'text-gray-400 hover:text-red-500'
                     }`}
                   >
-                    <svg className="w-4 h-4" fill={favorites.includes(item.id) ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4" fill={favorites.includes(item._id) ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                     </svg>
                   </button>
@@ -515,40 +534,30 @@ function RentItemsPage() {
                 {/* Content */}
                 <div className="p-3">
                   <h3 className="text-sm font-medium text-gray-800 mb-1 group-hover:text-orange-600 transition-colors overflow-hidden">
-                    <span className="line-clamp-2">{item.name}</span>
+                    <span className="line-clamp-2">{item.itemName}</span>
                   </h3>
                   
-                  {/* Rating */}
-                  <div className="flex items-center gap-1 mb-2">
-                    <div className="flex items-center">
-                      {[1,2,3,4,5].map((star) => (
-                        <svg key={star} className="w-3 h-3 text-yellow-400 fill-current" viewBox="0 0 24 24">
-                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                      ))}
-                    </div>
-                    <span className="text-xs text-gray-500">(234)</span>
+                  {/* Category */}
+                  <div className="text-xs text-gray-500 mb-2">
+                    {item.rentType}
                   </div>
 
                   {/* Price */}
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <span className="text-orange-500 font-bold text-sm">
-                        Rs {parseInt(item.pricePerDay || 0).toLocaleString()}
-                      </span>
-                      <span className="text-xs text-gray-400 line-through">
-                        Rs {Math.round((parseInt(item.pricePerDay || 0)) * 1.2).toLocaleString()}
+                        Rs {parseInt(item.price || 0).toLocaleString()}
                       </span>
                     </div>
                     <div className="text-xs text-gray-500">per day</div>
                   </div>
 
-                  {/* Location */}
+                  {/* Owner */}
                   <div className="text-xs text-gray-500 mt-2 flex items-center gap-1">
                     <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
-                    <span>Near Campus</span>
+                    <span>{item.ownerName}</span>
                   </div>
                 </div>
               </div>
@@ -562,16 +571,19 @@ function RentItemsPage() {
               </svg>
             </div>
             <h3 className="text-xl font-semibold text-gray-800 mb-2">
-              No items found
+              No rental items found
             </h3>
             <p className="text-gray-600 mb-6">
-              Try adjusting your search or filter criteria
+              {searchQuery 
+                ? `We couldn't find any items matching "${searchQuery}". Try searching with different keywords.`
+                : "No rental items are available at the moment. Check back later or add your own items!"
+              }
             </p>
             <button
               onClick={() => {
                 setSearchQuery("");
                 setActiveCategory('all');
-                setFilters({ price: 'all', sort: 'relevance', category: 'all' });
+                setFilters({ price: 'all', sort: 'newest', category: 'all', availability: 'all' });
               }}
               className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition-colors"
             >
