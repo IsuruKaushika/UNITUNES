@@ -36,7 +36,7 @@ function CreateStudentAccount() {
         // Draw image
         ctx.drawImage(img, 0, 0);
         
-        // Get image data for preprocessing
+        // Get image data for the preprocessing
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const data = imageData.data;
         
