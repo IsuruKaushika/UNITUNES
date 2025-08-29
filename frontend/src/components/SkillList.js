@@ -11,11 +11,14 @@ const CustomLogo = ({ onClick, className = "" }) => (
     onClick={onClick}
     className={`cursor-pointer hover:scale-110 transition-transform duration-300 ${className}`}
   >
-    <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-600 rounded-2xl p-3 shadow-lg">
+    <div className="bg-gradient-to-br from-yellow-400 via-orange-400 to-red-400 rounded-2xl p-3 shadow-lg">
       <div className="flex items-center gap-2">
-        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-        </svg>
+        <div className="relative">
+          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+          <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
+        </div>
         <div className="text-white font-bold text-lg">UniTunes</div>
       </div>
     </div>
@@ -27,7 +30,7 @@ const FloatingActionButton = ({ onClick }) => (
   <div className="fixed bottom-6 right-6 z-50">
     <button
       onClick={onClick}
-      className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-110 transition-all duration-300 group animate-bounce hover:animate-none"
+      className="bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-800 p-4 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-110 transition-all duration-300 group animate-bounce hover:animate-none"
     >
       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -71,14 +74,14 @@ const FilterBar = ({ onFilterChange, activeFilters }) => {
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-3">
             Category
-            <span className="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+            <span className="ml-2 text-xs bg-yellow-100 text-gray-800 px-2 py-1 rounded-full">
               {activeFilters.category || 'All'}
             </span>
           </label>
           <select
             value={activeFilters.category}
             onChange={(e) => onFilterChange({ ...activeFilters, category: e.target.value })}
-            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-300 transition-all duration-300 cursor-pointer text-gray-800"
+            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-yellow-100 focus:border-yellow-300 transition-all duration-300 cursor-pointer text-gray-800"
           >
             <option value="">All Categories</option>
             {categories.map((cat) => (
@@ -91,14 +94,14 @@ const FilterBar = ({ onFilterChange, activeFilters }) => {
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-3">
             Experience Level
-            <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+            <span className="ml-2 text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded-full">
               {activeFilters.experience || 'All'}
             </span>
           </label>
           <select
             value={activeFilters.experience}
             onChange={(e) => onFilterChange({ ...activeFilters, experience: e.target.value })}
-            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-300 transition-all duration-300 cursor-pointer text-gray-800"
+            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-yellow-100 focus:border-yellow-300 transition-all duration-300 cursor-pointer text-gray-800"
           >
             <option value="">All Levels</option>
             {experienceLevels.map((level) => (
@@ -111,14 +114,14 @@ const FilterBar = ({ onFilterChange, activeFilters }) => {
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-3">
             Price Range
-            <span className="ml-2 text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full">
+            <span className="ml-2 text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">
               {activeFilters.price === 'all' ? 'All' : priceRanges.find(r => r.value === activeFilters.price)?.label}
             </span>
           </label>
           <select
             value={activeFilters.price}
             onChange={(e) => onFilterChange({ ...activeFilters, price: e.target.value })}
-            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-300 transition-all duration-300 cursor-pointer text-gray-800"
+            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-yellow-100 focus:border-yellow-300 transition-all duration-300 cursor-pointer text-gray-800"
           >
             {priceRanges.map((range) => (
               <option key={range.value} value={range.value}>
@@ -132,14 +135,14 @@ const FilterBar = ({ onFilterChange, activeFilters }) => {
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-3">
             Sort By
-            <span className="ml-2 text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded-full">
+            <span className="ml-2 text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded-full">
               {sortOptions.find(s => s.value === activeFilters.sort)?.label}
             </span>
           </label>
           <select
             value={activeFilters.sort}
             onChange={(e) => onFilterChange({ ...activeFilters, sort: e.target.value })}
-            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-300 transition-all duration-300 cursor-pointer text-gray-800"
+            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-yellow-100 focus:border-yellow-300 transition-all duration-300 cursor-pointer text-gray-800"
           >
             {sortOptions.map((option) => (
               <option key={option.value} value={option.value}>
@@ -157,7 +160,7 @@ const FilterBar = ({ onFilterChange, activeFilters }) => {
             type="checkbox"
             checked={activeFilters.activeOnly}
             onChange={(e) => onFilterChange({ ...activeFilters, activeOnly: e.target.checked })}
-            className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500"
+            className="w-5 h-5 text-yellow-600 rounded focus:ring-yellow-500"
           />
           <span className="text-sm font-medium text-gray-700">Show active skills only</span>
         </label>
@@ -254,7 +257,7 @@ const SkillCard = ({ skill, onRemove, token, viewMode, favorites, toggleFavorite
 
   if (viewMode === 'list') {
     return (
-      <div className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-blue-200 flex items-center p-6 space-x-6">
+      <div className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-yellow-200 flex items-center p-6 space-x-6">
         {/* Image Container */}
         <div className="relative w-48 h-32 flex-shrink-0 overflow-hidden rounded-xl">
           {skillImage ? (
@@ -305,7 +308,7 @@ const SkillCard = ({ skill, onRemove, token, viewMode, favorites, toggleFavorite
         <div className="flex-1">
           <div className="flex justify-between items-start mb-3">
             <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors cursor-pointer" onClick={handleCardClick}>
+              <h3 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-yellow-600 transition-colors cursor-pointer" onClick={handleCardClick}>
                 {skillTitle}
               </h3>
               <p className="text-gray-600">by {instructorName}</p>
@@ -335,14 +338,14 @@ const SkillCard = ({ skill, onRemove, token, viewMode, favorites, toggleFavorite
             </div>
             
             <div className="flex items-center gap-3">
-              <span className="text-2xl font-bold text-blue-600">
+              <span className="text-2xl font-bold text-yellow-600">
                 {skillPrice === 0 ? "Free" : `Rs ${skillPrice.toLocaleString()}`}
               </span>
               
               <div className="flex gap-2">
                 <button 
                   onClick={handleCardClick}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-xl font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300 text-sm"
+                  className="bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-800 px-4 py-2 rounded-xl font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300 text-sm"
                 >
                   View Details
                 </button>
@@ -368,7 +371,7 @@ const SkillCard = ({ skill, onRemove, token, viewMode, favorites, toggleFavorite
   return (
     <div 
       onClick={handleCardClick}
-      className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 cursor-pointer overflow-hidden border border-gray-100 hover:border-blue-200"
+      className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 cursor-pointer overflow-hidden border border-gray-100 hover:border-yellow-200"
     >
       <div className="relative h-48 overflow-hidden">
         {skillImage ? (
@@ -438,7 +441,7 @@ const SkillCard = ({ skill, onRemove, token, viewMode, favorites, toggleFavorite
       
       <div className="p-6">
         <div className="mb-4">
-          <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
+          <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-yellow-600 transition-colors">
             {skillTitle}
           </h3>
           <p className="text-sm text-gray-600 mb-1">by {instructorName}</p>
@@ -478,7 +481,7 @@ const SkillCard = ({ skill, onRemove, token, viewMode, favorites, toggleFavorite
         <div className="flex gap-2">
           <button 
             onClick={handleCardClick}
-            className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 transform group-hover:scale-105"
+            className="flex-1 bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-500 hover:to-orange-500 text-gray-800 font-semibold py-3 px-4 rounded-xl transition-all duration-300 transform group-hover:scale-105"
           >
             View Details
           </button>
@@ -645,14 +648,14 @@ const SkillList = ({ token }) => {
     return (
       <div className="relative min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center">
         {/* Animated Background Elements */}
-        <div className="absolute top-20 left-10 w-32 h-32 bg-blue-200 rounded-full opacity-20 animate-pulse"></div>
-        <div className="absolute bottom-32 right-16 w-40 h-40 bg-purple-200 rounded-full opacity-20 animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 right-1/4 w-24 h-24 bg-indigo-200 rounded-full opacity-20 animate-pulse delay-500"></div>
+        <div className="absolute top-20 left-10 w-32 h-32 bg-yellow-200 rounded-full opacity-20 animate-pulse"></div>
+        <div className="absolute bottom-32 right-16 w-40 h-40 bg-orange-200 rounded-full opacity-20 animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 right-1/4 w-24 h-24 bg-red-200 rounded-full opacity-20 animate-pulse delay-500"></div>
 
         <div className="flex flex-col items-center space-y-4">
           <div className="relative">
-            <div className="w-20 h-20 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
-            <div className="absolute inset-0 w-20 h-20 border-4 border-transparent border-t-purple-300 rounded-full animate-spin animate-reverse"></div>
+            <div className="w-20 h-20 border-4 border-yellow-200 border-t-yellow-500 rounded-full animate-spin"></div>
+            <div className="absolute inset-0 w-20 h-20 border-4 border-transparent border-t-orange-300 rounded-full animate-spin animate-reverse"></div>
           </div>
           <div className="text-center">
             <h3 className="text-xl font-semibold text-gray-800 mb-2">Loading Skills</h3>
@@ -666,9 +669,9 @@ const SkillList = ({ token }) => {
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
       {/* Animated Background Elements */}
-      <div className="absolute top-20 left-10 w-32 h-32 bg-blue-200 rounded-full opacity-20 animate-pulse"></div>
-      <div className="absolute bottom-32 right-16 w-40 h-40 bg-purple-200 rounded-full opacity-20 animate-pulse delay-1000"></div>
-      <div className="absolute top-1/2 right-1/4 w-24 h-24 bg-indigo-200 rounded-full opacity-20 animate-pulse delay-500"></div>
+      <div className="absolute top-20 left-10 w-32 h-32 bg-yellow-200 rounded-full opacity-20 animate-pulse"></div>
+      <div className="absolute bottom-32 right-16 w-40 h-40 bg-orange-200 rounded-full opacity-20 animate-pulse delay-1000"></div>
+      <div className="absolute top-1/2 right-1/4 w-24 h-24 bg-red-200 rounded-full opacity-20 animate-pulse delay-500"></div>
 
       {/* Header Section */}
       <div className="relative bg-white/80 backdrop-blur-sm shadow-lg border-b border-gray-100 sticky top-0 z-40">
@@ -677,7 +680,7 @@ const SkillList = ({ token }) => {
             {/* Back Button */}
             <button
               onClick={handleBack}
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-gray-800 to-gray-700 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform hover:-translate-y-0.5 font-medium"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-gray-800 to-gray-700 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl hover:from-yellow-500 hover:to-orange-400 hover:text-gray-900 transition-all duration-300 transform hover:-translate-y-0.5 font-medium"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -695,18 +698,18 @@ const SkillList = ({ token }) => {
       <div className="container mx-auto px-4 py-12">
         {/* Title Section */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full mb-6 shadow-lg animate-bounce">
-            <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full mb-6 shadow-lg animate-bounce">
+            <svg className="w-10 h-10 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
             </svg>
           </div>
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-4">
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-gray-600 bg-clip-text text-transparent mb-4">
             Skill Marketplace
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
             Discover and learn new skills from expert instructors worldwide
           </p>
-          <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mt-6 rounded-full"></div>
+          <div className="w-24 h-1 bg-gradient-to-r from-yellow-400 to-orange-400 mx-auto mt-6 rounded-full"></div>
         </div>
 
         {/* Search Bar with View Toggle */}
@@ -724,11 +727,11 @@ const SkillList = ({ token }) => {
                 value={searchQuery}
                 onChange={(e) => handleSearch(e.target.value)}
                 placeholder="Search for skills, instructors, or topics..."
-                className="w-full pl-12 pr-4 py-4 bg-white border border-gray-200 rounded-2xl shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-300 transition-all duration-300 text-gray-700 placeholder-gray-400"
+                className="w-full pl-12 pr-4 py-4 bg-white border border-gray-200 rounded-2xl shadow-lg focus:outline-none focus:ring-4 focus:ring-yellow-100 focus:border-yellow-300 transition-all duration-300 text-gray-700 placeholder-gray-400"
               />
               {searchLoading && (
                 <div className="absolute inset-y-0 right-0 pr-4 flex items-center">
-                  <div className="w-5 h-5 border-2 border-blue-200 border-t-blue-500 rounded-full animate-spin"></div>
+                  <div className="w-5 h-5 border-2 border-yellow-200 border-t-yellow-500 rounded-full animate-spin"></div>
                 </div>
               )}
             </div>
@@ -739,7 +742,7 @@ const SkillList = ({ token }) => {
                 onClick={() => setViewMode('grid')}
                 className={`px-6 py-4 transition-all duration-300 ${
                   viewMode === 'grid'
-                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
+                    ? 'bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-800'
                     : 'text-gray-600 hover:bg-gray-50'
                 }`}
               >
@@ -751,7 +754,7 @@ const SkillList = ({ token }) => {
                 onClick={() => setViewMode('list')}
                 className={`px-6 py-4 transition-all duration-300 ${
                   viewMode === 'list'
-                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
+                    ? 'bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-800'
                     : 'text-gray-600 hover:bg-gray-50'
                 }`}
               >
@@ -843,14 +846,14 @@ const SkillList = ({ token }) => {
                   setSearchQuery("");
                   setFilters(prev => ({...prev, showFavoritesOnly: false}));
                 }}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                className="bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-800 px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
               >
                 Clear Search
               </button>
             ) : (
               <button
                 onClick={() => window.location.reload()}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                className="bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-800 px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
               >
                 Refresh Page
               </button>
@@ -868,23 +871,23 @@ const SkillList = ({ token }) => {
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
               <div>
-                <div className="text-3xl font-bold text-blue-600 mb-2">{skills.length}</div>
+                <div className="text-3xl font-bold text-yellow-600 mb-2">{skills.length}</div>
                 <div className="text-sm text-gray-600">Total Skills</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-green-600 mb-2">
+                <div className="text-3xl font-bold text-orange-600 mb-2">
                   {skills.filter(s => s.isActive !== false).length}
                 </div>
                 <div className="text-sm text-gray-600">Active Courses</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-purple-600 mb-2">
+                <div className="text-3xl font-bold text-red-600 mb-2">
                   {skills.reduce((acc, s) => acc + (s.students || 0), 0).toLocaleString()}
                 </div>
                 <div className="text-sm text-gray-600">Total Students</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-orange-600 mb-2">
+                <div className="text-3xl font-bold text-amber-600 mb-2">
                   {favorites.length}
                 </div>
                 <div className="text-sm text-gray-600">Your Favorites</div>
@@ -899,7 +902,7 @@ const SkillList = ({ token }) => {
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-4xl mx-auto">
             <div className="flex justify-center mb-8">
-              <div className="bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl p-4 shadow-xl">
+              <div className="bg-gradient-to-br from-yellow-400 via-orange-400 to-red-400 rounded-2xl p-4 shadow-xl">
                 <div className="flex items-center gap-3">
                   <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -916,7 +919,7 @@ const SkillList = ({ token }) => {
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
               <div className="bg-white/10 rounded-xl p-6 backdrop-blur-sm">
-                <svg className="w-8 h-8 text-blue-400 mb-3 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-8 h-8 text-yellow-400 mb-3 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                 </svg>
                 <h4 className="font-semibold mb-2">Trending Skills</h4>
@@ -924,7 +927,7 @@ const SkillList = ({ token }) => {
               </div>
               
               <div className="bg-white/10 rounded-xl p-6 backdrop-blur-sm">
-                <svg className="w-8 h-8 text-purple-400 mb-3 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-8 h-8 text-orange-400 mb-3 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                 </svg>
                 <h4 className="font-semibold mb-2">Expert Instructors</h4>
@@ -932,7 +935,7 @@ const SkillList = ({ token }) => {
               </div>
               
               <div className="bg-white/10 rounded-xl p-6 backdrop-blur-sm">
-                <svg className="w-8 h-8 text-green-400 mb-3 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-8 h-8 text-red-400 mb-3 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
                 </svg>
                 <h4 className="font-semibold mb-2">Community Driven</h4>
@@ -955,4 +958,4 @@ const SkillList = ({ token }) => {
   );
 };
 
-export default SkillList;
+export default SkillList; 1
