@@ -313,7 +313,7 @@ function RentItemsPage() {
       );
     }
 
-    // Apply price filter
+    // Apply the new price filter
     if (filters.price !== 'all') {
       filtered = filtered.filter(item => {
         const price = parseInt(item.pricePerDay) || 0;
