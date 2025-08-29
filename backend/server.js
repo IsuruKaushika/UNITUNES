@@ -15,7 +15,7 @@ import adRouter from './routes/adRoute.js';
 import Pharmacyrouter from './routes/pharmacyRoute.js';
 import rentingRouter from './routes/rentingRouter.js';
 import rentRouter from './routes/rentingRouter.js'; // Same as rentingRouter
-import userBoardingRouter from './routes/userBoardingRoutes.js'; // ✅ New user boarding routes
+
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -29,8 +29,7 @@ app.use(cors());
 
 // API endpoints
 app.use('/api/user', userRouter);
-app.use('/api/boarding', boardingRouter); // Admin boarding
-app.use('/api/user-boarding', userBoardingRouter); // ✅ User boarding
+app.use('/api/boarding', boardingRouter); // Admin boarding// ✅ User boarding
 app.use('/api/taxi', taxiRouter);
 app.use('/api/shop', shopRouter);
 app.use('/api/rent', rentRouter); // New rent router
