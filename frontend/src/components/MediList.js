@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-// Custom Logo Component
+// Custom Logo Component and functions
 const CustomLogo = ({ onClick, className = "" }) => (
   <div 
     onClick={onClick}
@@ -23,7 +23,7 @@ const CustomLogo = ({ onClick, className = "" }) => (
   </div>
 );
 
-// Filter Component
+// Filter Component and functions
 const FilterBar = ({ onFilterChange, activeFilters, categories }) => {
   const handleCategoryChange = (value) => {
     onFilterChange({ ...activeFilters, category: value });
