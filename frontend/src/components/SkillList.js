@@ -15,7 +15,9 @@ const SkillList = () => {
     const fetchSkills = async () => {
       try {
         const response = await axios.get(`${backendUrl}/api/skill/list-active`);
-        if (response.data.success) {
+        console.log("Skill API response:", response.data); // ✅ Debug log
+
+        if (response.data.success && Array.isArray(response.data.skills)) {
           setSkills(response.data.skills);
         } else {
           setSkills([]);
@@ -51,7 +53,11 @@ const SkillList = () => {
               {/* Skill Image */}
               {skill.images && skill.images.length > 0 ? (
                 <img
-                  src={`${backendUrl}/${skill.images[0]}`} // Ensure backend serves images with correct path
+                  src={
+                    skill.images[0].startsWith("http")
+                      ? skill.images[0]
+                      : `${backendUrl}/${skill.images[0]}`
+                  }
                   alt={skill.skillType}
                   className="w-full h-44 object-cover"
                 />
