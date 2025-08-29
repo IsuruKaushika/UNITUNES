@@ -220,7 +220,7 @@ const BoardingList = () => {
       });
     }
 
-    // Apply sorting
+    // Apply sorting of the boarding feature
     filtered.sort((a, b) => {
       switch (filters.sort) {
         case 'price_asc':
@@ -248,7 +248,7 @@ const BoardingList = () => {
     setSearchQuery(query);
     setSearchLoading(true);
     
-    // Simulate search delay
+    // Simulate the new search delay
     setTimeout(() => {
       setSearchLoading(false);
     }, 500);

@@ -117,7 +117,7 @@ const BoardingDetails = () => {
     }
   };
 
-  // Image navigation
+  // navigation of the image
   const nextImage = () => {
     if (boarding?.image?.length > 1) {
       setCurrentImageIndex((prev) => (prev + 1) % boarding.image.length);

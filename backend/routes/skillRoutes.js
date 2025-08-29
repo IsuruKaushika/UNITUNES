@@ -26,7 +26,7 @@ skillRouter.post('/add', upload.fields([
 skillRouter.get('/list', listSkill);
 
 // Get only active skills
-skillRouter.get('/active', listActiveSkill);
+skillRouter.get('/list-active', listActiveSkill);
 
 // Get skills by category
 skillRouter.get('/category/:category', listSkillByCategory);
