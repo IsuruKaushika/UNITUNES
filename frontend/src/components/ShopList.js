@@ -12,19 +12,20 @@ const CustomLogo = ({ onClick, className = "" }) => (
   >
     <div className="bg-gradient-to-br from-yellow-400 via-orange-400 to-red-400 rounded-2xl p-3 shadow-lg">
       <div className="flex items-center gap-2">
-        <div className="relative">
-          <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-          </svg>
-          <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
-        </div>
+        <svg
+          className="w-8 h-8 text-white"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+        </svg>
         <div className="text-white font-bold text-lg">UniTunes</div>
       </div>
     </div>
   </div>
 );
 
-// Filter Bar Component (Category)
+// Filter Bar Component
 const FilterBar = ({ onFilterChange, activeFilter }) => {
   const categories = ["bakery", "grocery", "meals", "bookshop", "communication"];
   return (
@@ -59,13 +60,12 @@ const ShopList = ({ token }) => {
   const [shopListData, setShopListData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchLoading, setSearchLoading] = useState(false);
-  const [viewMode, setViewMode] = useState("grid");
   const [categoryFilter, setCategoryFilter] = useState("");
 
-  // Custom category order for sorting
+  // Custom category order
   const categoryOrder = ["bakery", "grocery", "meals", "bookshop", "communication"];
 
+  // Fetch shops
   useEffect(() => {
     const fetchShops = async () => {
       try {
@@ -76,7 +76,7 @@ const ShopList = ({ token }) => {
           console.error("Invalid response:", response.data);
         }
       } catch (error) {
-        console.error("Error fetching shop data:", error.message);
+        console.error("Error fetching shops:", error.message);
       } finally {
         setLoading(false);
       }
@@ -104,25 +104,29 @@ const ShopList = ({ token }) => {
     }
   };
 
-  // Filter and search
+  // Filter + Search
   let filteredShops = shopListData.filter((shop) => {
     const matchesSearch =
       searchQuery === "" ||
       (shop.name && shop.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
       (shop.address && shop.address.toLowerCase().includes(searchQuery.toLowerCase()));
 
-    const matchesCategory = categoryFilter === "" || shop.Category.toLowerCase() === categoryFilter;
+    const matchesCategory =
+      categoryFilter === "" || (shop.Category || "").toLowerCase() === categoryFilter;
 
     return matchesSearch && matchesCategory;
   });
 
-  // Custom sort by category order
+  // Sort by category order
   filteredShops.sort((a, b) => {
     const catA = (a.Category || "").toLowerCase();
     const catB = (b.Category || "").toLowerCase();
     const indexA = categoryOrder.indexOf(catA);
     const indexB = categoryOrder.indexOf(catB);
-    return (indexA === -1 ? categoryOrder.length : indexA) - (indexB === -1 ? categoryOrder.length : indexB);
+    return (
+      (indexA === -1 ? categoryOrder.length : indexA) -
+      (indexB === -1 ? categoryOrder.length : indexB)
+    );
   });
 
   if (loading) {
@@ -135,40 +139,47 @@ const ShopList = ({ token }) => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
+      {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <button onClick={() => navigate(-1)} className="px-4 py-2 bg-gray-200 rounded-lg">
+        <button
+          onClick={() => navigate(-1)}
+          className="px-4 py-2 bg-gray-200 rounded-lg"
+        >
           Back
         </button>
         <CustomLogo onClick={() => navigate("/")} />
       </div>
 
+      {/* Search bar */}
       <div className="max-w-4xl mx-auto mb-8">
         <input
           type="text"
           placeholder="Search shops..."
           value={searchQuery}
-          onChange={(e) => {
-            setSearchQuery(e.target.value);
-            setSearchLoading(true);
-            setTimeout(() => setSearchLoading(false), 300);
-          }}
+          onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none"
         />
       </div>
 
-      <FilterBar onFilterChange={setCategoryFilter} activeFilter={categoryFilter} />
+      {/* Filter bar */}
+      <FilterBar
+        onFilterChange={setCategoryFilter}
+        activeFilter={categoryFilter}
+      />
 
-      <div className={`max-w-7xl mx-auto ${viewMode === "grid" ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" : "space-y-4"}`}>
+      {/* Shop Cards */}
+      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredShops.length > 0 ? (
           filteredShops.map((shop) => (
             <div
               key={shop._id}
-              onClick={() => navigate(`/shop-details/${shop._id}`, { state: { item: shop } })}
-              className={`bg-white rounded-2xl shadow-lg p-4 cursor-pointer hover:shadow-xl transition-all ${
-                viewMode === "list" ? "flex items-center gap-4" : ""
-              }`}
+              onClick={() =>
+                navigate(`/shop-details/${shop._id}`, { state: { item: shop } })
+              }
+              className="bg-white rounded-2xl shadow-lg p-4 cursor-pointer hover:shadow-xl transition-all"
             >
-              <div className={`${viewMode === "list" ? "w-48 h-32 flex-shrink-0" : "h-56"} relative`}>
+              {/* Shop image */}
+              <div className="h-56 relative">
                 {shop.image?.[0] ? (
                   <img
                     src={shop.image[0]}
@@ -181,10 +192,16 @@ const ShopList = ({ token }) => {
                   </div>
                 )}
               </div>
-              <div className={`${viewMode === "list" ? "flex-1" : "mt-4"}`}>
+
+              {/* Shop info */}
+              <div className="mt-4">
                 <h3 className="text-xl font-bold mb-2">{shop.name}</h3>
                 <p className="text-gray-500 line-clamp-2">{shop.address}</p>
-                <p className="text-sm text-gray-400 mt-1">Category: {shop.Category}</p>
+                <p className="text-sm text-gray-400 mt-1">
+                  Category: {shop.Category}
+                </p>
+
+                {/* Remove button (only visible if logged in as admin/with token) */}
                 {token && (
                   <button
                     onClick={(e) => {
