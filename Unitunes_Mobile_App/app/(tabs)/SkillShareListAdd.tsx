@@ -67,7 +67,7 @@ export default function AddSkillShare() {
       const data = await res.json();
       if (data?.success) {
         Alert.alert('Success', 'Skill shared successfully', [
-          { text: 'OK', onPress: () => router.replace('/(tabs)/SkillShareList') },
+          { text: 'OK', onPress: () => router.replace('/(tabs)/SkillSharing') },
         ]);
         // Reset form
         setSkillName('');
@@ -171,7 +171,7 @@ export default function AddSkillShare() {
 
           <TouchableOpacity
             style={styles.secondaryButton}
-            onPress={() => router.replace('/(tabs)/SkillShareList')}
+            onPress={() => router.replace('/(tabs)/SkillSharing')}
           >
             <Text style={styles.secondaryText}>View Skill Sharing List</Text>
           </TouchableOpacity>
