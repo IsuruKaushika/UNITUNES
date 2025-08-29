@@ -1,4 +1,4 @@
-// app/(tabs)/AddRentItem.tsx
+// app/(tabs)/AddSkillShare.tsx
 // Note: No image picker modules are used. Photos are optional and this screen submits without photos.
 
 import React, { useState } from 'react';
@@ -17,25 +17,23 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
 const backendUrl = 'https://unitunes-backend.vercel.app';
-const defaultImage = require('../../assets/images/Rental.jpg');
+const defaultImage = require('../../assets/images/Skill Sharing.jpg');
 
-export default function AddRentItem() {
+export default function AddSkillShare() {
   const router = useRouter();
 
   // Form fields (all required except photos)
-  const [name, setName] = useState('');
-  const [location, setLocation] = useState('');
+  const [skillName, setSkillName] = useState('');
+  const [providerName, setProviderName] = useState('');
   const [contact, setContact] = useState('');
-  const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
 
   const [submitting, setSubmitting] = useState(false);
 
   const validate = () => {
-    if (!name.trim()) return 'Item name is required.';
-    if (!location.trim()) return 'Location is required.';
+    if (!skillName.trim()) return 'Skill name is required.';
+    if (!providerName.trim()) return 'Provider name is required.';
     if (!contact.trim()) return 'Contact number is required.';
-    if (!price.trim() || isNaN(Number(price))) return 'Valid price is required.';
     if (!description.trim()) return 'Description is required.';
     return '';
   };
@@ -52,34 +50,32 @@ export default function AddRentItem() {
 
       // Send as multipart/form-data (even without photos) so backend (multer) reads text fields from req.body
       const fd = new FormData();
-      fd.append('name', name);
-      fd.append('location', location);
+      fd.append('skillName', skillName);
+      fd.append('providerName', providerName);
       fd.append('contact', contact);
-      fd.append('price', price);
       fd.append('description', description);
 
-      const res = await fetch(`${backendUrl}/api/rent/add`, {
+      const res = await fetch(`${backendUrl}/api/skillshare/add`, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
-          // Do not set Content-Type manually for FormData
+          // Do not set Content-Type manually for FormData (boundary will be added automatically)
         },
         body: fd as any,
       });
 
       const data = await res.json();
       if (data?.success) {
-        Alert.alert('Success', 'Rental item added successfully', [
-          { text: 'OK', onPress: () => router.replace('/(tabs)/RentItemList') },
+        Alert.alert('Success', 'Skill shared successfully', [
+          { text: 'OK', onPress: () => router.replace('/(tabs)/SkillSharing') },
         ]);
         // Reset form
-        setName('');
-        setLocation('');
+        setSkillName('');
+        setProviderName('');
         setContact('');
-        setPrice('');
         setDescription('');
       } else {
-        Alert.alert('Error', data?.message || 'Failed to add rental item.');
+        Alert.alert('Error', data?.message || 'Failed to add skill.');
       }
     } catch (e) {
       console.log('Submit error', e);
@@ -106,27 +102,19 @@ export default function AddRentItem() {
       <ScrollView contentContainerStyle={{ paddingBottom: 24 }}>
         {/* Form container */}
         <View style={styles.formContainer}>
-          <Text style={styles.formTitle}>Add Rental Item</Text>
+          <Text style={styles.formTitle}>Share a Skill</Text>
 
           <TextInput
-            placeholder="Item name"
-            value={name}
-            onChangeText={setName}
+            placeholder="Skill name (e.g., Guitar lessons)"
+            value={skillName}
+            onChangeText={setSkillName}
             style={styles.input}
           />
 
           <TextInput
-            placeholder="Location"
-            value={location}
-            onChangeText={setLocation}
-            style={styles.input}
-          />
-
-          <TextInput
-            placeholder="Price (Rs.)"
-            value={price}
-            onChangeText={setPrice}
-            keyboardType="numeric"
+            placeholder="Provider name"
+            value={providerName}
+            onChangeText={setProviderName}
             style={styles.input}
           />
 
@@ -139,7 +127,7 @@ export default function AddRentItem() {
           />
 
           <TextInput
-            placeholder="Description"
+            placeholder="Description (what you offer, availability, etc.)"
             value={description}
             onChangeText={setDescription}
             style={[styles.input, styles.textArea]}
@@ -164,7 +152,7 @@ export default function AddRentItem() {
             {submitting ? (
               <ActivityIndicator color="#fff" />
             ) : (
-              <Text style={styles.submitText}>Submit Rental Item</Text>
+              <Text style={styles.submitText}>Submit Skill</Text>
             )}
           </TouchableOpacity>
 
@@ -172,12 +160,9 @@ export default function AddRentItem() {
           <View style={styles.previewCard}>
             <Image source={defaultImage} style={styles.previewImage} resizeMode="cover" />
             <View style={styles.cardContent}>
-              <Text style={styles.cardTitle}>{name || 'Item name preview'}</Text>
+              <Text style={styles.cardTitle}>{skillName || 'Skill name preview'}</Text>
+              <Text style={styles.cardText}>Provider: {providerName || 'N/A'}</Text>
               <Text style={styles.cardText}>Contact: {contact || 'N/A'}</Text>
-              <Text style={styles.cardText}>Location: {location || 'N/A'}</Text>
-              <Text style={styles.cardText}>
-                {price ? `Price: Rs ${price}` : 'Price preview'}
-              </Text>
               <Text style={styles.cardText}>
                 {description ? description : 'Description preview'}
               </Text>
@@ -186,9 +171,9 @@ export default function AddRentItem() {
 
           <TouchableOpacity
             style={styles.secondaryButton}
-            onPress={() => router.replace('/(tabs)/RentItemList')}
+            onPress={() => router.replace('/(tabs)/SkillSharing')}
           >
-            <Text style={styles.secondaryText}>View Rental Items</Text>
+            <Text style={styles.secondaryText}>View Skill Sharing List</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
