@@ -183,7 +183,7 @@ const FloatingActionButton = ({ onClick }) => (
   </div>
 );
 
-// Filter Component - Daraz Style
+// Filter Component
 const FilterBar = ({ onFilterChange, activeFilters }) => {
   const priceRanges = [
     { label: "All Prices", value: "all" },
