@@ -1,182 +1,190 @@
-// <<<<<<< HEAD
-// // // src/pages/SkillList.js
-// // import React, { useEffect, useState } from "react";
-// // import { useNavigate } from "react-router-dom";
-// // import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-// // const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
-// // const SkillList = () => {
-// //   const navigate = useNavigate();
-// //   const [skills, setSkills] = useState([]);
-// //   const [loading, setLoading] = useState(true);
+// Custom Logo Component
+const CustomLogo = ({ onClick, className = "" }) => (
+  <div
+    onClick={onClick}
+    className={`cursor-pointer hover:scale-110 transition-transform duration-300 ${className}`}
+  >
+    <div className="bg-gradient-to-br from-yellow-400 via-orange-400 to-red-400 rounded-2xl p-3 shadow-lg">
+      <div className="flex items-center gap-2">
+        <div className="relative">
+          <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2a10 10 0 100 20 10 10 0 000-20z" />
+          </svg>
+        </div>
+        <div className="text-white font-bold text-lg">UniTunes</div>
+      </div>
+    </div>
+  </div>
+);
 
-// //   // Fetch active skills from backend
-// //   useEffect(() => {
-// //     const fetchSkills = async () => {
-// //       try {
-// //         const response = await axios.get(`${backendUrl}/api/skill/list-active`);
-// //         if (response.data.success) {
-// //           setSkills(response.data.skills);
-// //         } else {
-// //           setSkills([]);
-// //         }
-// //       } catch (error) {
-// //         console.error("Error fetching skills:", error);
-// //         setSkills([]);
-// //       } finally {
-// //         setLoading(false);
-// //       }
-// //     };
-// //     fetchSkills();
-// //   }, []);
+const FilterBar = ({ onFilterChange, activeFilter }) => {
+  const categories = ["coding", "design", "writing", "marketing", "other"];
+  return (
+    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-8">
+      <div className="flex flex-wrap gap-3">
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            onClick={() => onFilterChange(cat)}
+            className={`px-4 py-2 rounded-xl font-medium transition-colors duration-300 ${
+              activeFilter === cat
+                ? "bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-800"
+                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+            }`}
+          >
+            {cat.charAt(0).toUpperCase() + cat.slice(1)}
+          </button>
+        ))}
+        <button
+          onClick={() => onFilterChange("")}
+          className="px-4 py-2 rounded-xl font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-all duration-300"
+        >
+          All
+        </button>
+      </div>
+    </div>
+  );
+};
 
-// //   return (
-// //     <div className="min-h-screen bg-gray-50 p-6">
-// //       <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">
-// //         Available Skills
-// //       </h2>
+const SkillList = ({ token }) => {
+  const navigate = useNavigate();
+  const [skills, setSkills] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
 
-// //       {loading ? (
-// //         <p className="text-center text-gray-600">Loading skills...</p>
-// //       ) : skills.length === 0 ? (
-// //         <p className="text-center text-gray-600">No skills available</p>
-// //       ) : (
-// //         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-// //           {skills.map((skill) => (
-// //             <div
-// //               key={skill._id}
-// //               onClick={() => navigate(`/skills/${skill._id}`)}
-// //               className="bg-white shadow-md hover:shadow-xl transition-shadow rounded-2xl overflow-hidden cursor-pointer border border-gray-100"
-// //             >
-// //               {/* Skill Image */}
-// //               {skill.images && skill.images.length > 0 ? (
-// //                 <img
-// //                   src={`${backendUrl}/${skill.images[0]}`} // Ensure backend serves images with correct path
-// //                   alt={skill.skillType}
-// //                   className="w-full h-44 object-cover"
-// //                 />
-// //               ) : (
-// //                 <div className="w-full h-44 bg-gray-200 flex items-center justify-center text-gray-500 text-sm">
-// //                   No Image Available
-// //                 </div>
-// //               )}
+  // Fetch skills
+  useEffect(() => {
+    const fetchSkills = async () => {
+      try {
+        const response = await axios.get(`${backendUrl}/api/skill/list-active`);
+        if (response.data.success && Array.isArray(response.data.skills)) {
+          setSkills(response.data.skills);
+        } else {
+          setSkills([]);
+        }
+      } catch (error) {
+        console.error("Error fetching skills:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSkills();
+  }, []);
 
-// //               {/* Skill Info */}
-// //               <div className="p-4">
-// //                 <h3 className="text-lg font-semibold text-gray-800">
-// //                   {skill.skillType}
-// //                 </h3>
-// //                 <p className="text-sm text-gray-600">{skill.studentName}</p>
-// //                 <p className="text-sm text-gray-500 mt-1 line-clamp-2">
-// //                   {skill.moreDetails}
-// //                 </p>
-// //                 <p className="text-sm mt-2">
-// //                   <span className="font-medium">Experience:</span>{" "}
-// //                   {skill.experience}
-// //                 </p>
-// //                 <p className="text-sm">
-// //                   <span className="font-medium">Location:</span>{" "}
-// //                   {skill.location}
-// //                 </p>
-// //                 <p className="text-sm font-bold text-blue-600 mt-2">
-// //                   Rs. {skill.price}
-// //                 </p>
-// //               </div>
-// //             </div>
-// //           ))}
-// //         </div>
-// //       )}
-// //     </div>
-// //   );
-// // };
+  // Remove skill
+  const removeSkill = async (id) => {
+    try {
+      const response = await axios.post(
+        `${backendUrl}/api/skill/remove`,
+        { id },
+        { headers: { token } }
+      );
+      if (response.data.success) {
+        alert(response.data.message);
+        setSkills((prev) => prev.filter((skill) => skill._id !== id));
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      alert(error.message);
+    }
+  };
 
-// // export default SkillList;
-// =======
-// // const SkillList = () => {
-// //   const navigate = useNavigate();
-// //   const [skills, setSkills] = useState([]);
-// //   const [loading, setLoading] = useState(true);
+  // Filter & search
+  const filteredSkills = skills.filter((skill) => {
+    const matchesSearch =
+      searchQuery === "" ||
+      (skill.skillType && skill.skillType.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (skill.studentName && skill.studentName.toLowerCase().includes(searchQuery.toLowerCase()));
 
-// //   // Fetch active skills from backend
-// //   useEffect(() => {
-// //     const fetchSkills = async () => {
-// //       try {
-// //         const response = await axios.get(`${backendUrl}/api/skill/list-active`);
-// //         if (response.data.success) {
-// //           setSkills(response.data.skills);
-// //         } else {
-// //           setSkills([]);
-// //         }
-// //       } catch (error) {
-// //         console.error("Error fetching skills:", error);
-// //         setSkills([]);
-// //       } finally {
-// //         setLoading(false);
-// //       }
-// //     };
-// //     fetchSkills();
-// //   }, []);
+    const matchesCategory =
+      categoryFilter === "" || (skill.category && skill.category.toLowerCase() === categoryFilter);
 
-// //   return (
-// //     <div className="min-h-screen bg-gray-50 p-6">
-// //       <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">
-// //         Available Skills
-// //       </h2>
+    return matchesSearch && matchesCategory;
+  });
 
-// //       {loading ? (
-// //         <p className="text-center text-gray-600">Loading skills...</p>
-// //       ) : skills.length === 0 ? (
-// //         <p className="text-center text-gray-600">No skills available</p>
-// //       ) : (
-// //         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-// //           {skills.map((skill) => (
-// //             <div
-// //               key={skill._id}
-// //               onClick={() => navigate(`/skills/${skill._id}`)}
-// //               className="bg-white shadow-md hover:shadow-xl transition-shadow rounded-2xl overflow-hidden cursor-pointer border border-gray-100"
-// //             >
-// //               {/* Skill Image */}
-// //               {skill.images && skill.images.length > 0 ? (
-// //                 <img
-// //                   src={`${backendUrl}/${skill.images[0]}`} // Ensure backend serves images with correct path
-// //                   alt={skill.skillType}
-// //                   className="w-full h-44 object-cover"
-// //                 />
-// //               ) : (
-// //                 <div className="w-full h-44 bg-gray-200 flex items-center justify-center text-gray-500 text-sm">
-// //                   No Image Available
-// //                 </div>
-// //               )}
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Loading skills...</p>
+      </div>
+    );
+  }
 
-// //               {/* Skill Info */}
-// //               <div className="p-4">
-// //                 <h3 className="text-lg font-semibold text-gray-800">
-// //                   {skill.skillType}
-// //                 </h3>
-// //                 <p className="text-sm text-gray-600">{skill.studentName}</p>
-// //                 <p className="text-sm text-gray-500 mt-1 line-clamp-2">
-// //                   {skill.moreDetails}
-// //                 </p>
-// //                 <p className="text-sm mt-2">
-// //                   <span className="font-medium">Experience:</span>{" "}
-// //                   {skill.experience}
-// //                 </p>
-// //                 <p className="text-sm">
-// //                   <span className="font-medium">Location:</span>{" "}
-// //                   {skill.location}
-// //                 </p>
-// //                 <p className="text-sm font-bold text-blue-600 mt-2">
-// //                   Rs. {skill.price}
-// //                 </p>
-// //               </div>
-// //             </div>
-// //           ))}
-// //         </div>
-// //       )}
-// //     </div>
-// //   );
-// // };
+  return (
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="flex items-center justify-between mb-6">
+        <button onClick={() => navigate(-1)} className="px-4 py-2 bg-gray-200 rounded-lg">
+          Back
+        </button>
+        <CustomLogo onClick={() => navigate("/")} />
+      </div>
 
-// // export default SkillList;
-// >>>>>>> 4cd8417119184f8e46fd2dbc8722c674515030f1
+      <div className="max-w-4xl mx-auto mb-8">
+        <input
+          type="text"
+          placeholder="Search skills..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none"
+        />
+      </div>
+
+      <FilterBar onFilterChange={setCategoryFilter} activeFilter={categoryFilter} />
+
+      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredSkills.length > 0 ? (
+          filteredSkills.map((skill) => (
+            <div
+              key={skill._id}
+              onClick={() => navigate(`/skills/${skill._id}`, { state: { item: skill } })}
+              className="bg-white rounded-2xl shadow-lg p-4 cursor-pointer hover:shadow-xl transition-all"
+            >
+              <div className="h-44 relative">
+                {skill.images?.[0] ? (
+                  <img
+                    src={`${backendUrl}/${skill.images[0]}`}
+                    alt={skill.skillType}
+                    className="w-full h-full object-cover rounded-xl"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gray-200 flex items-center justify-center rounded-xl">
+                    No Image
+                  </div>
+                )}
+              </div>
+              <div className="mt-4">
+                <h3 className="text-xl font-bold mb-2">{skill.skillType}</h3>
+                <p className="text-gray-500 line-clamp-2">{skill.moreDetails}</p>
+                <p className="text-sm text-gray-400 mt-1">By: {skill.studentName}</p>
+                {token && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeSkill(skill._id);
+                    }}
+                    className="mt-4 px-4 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors duration-300"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="text-center py-20">No skills found 😢</div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default SkillList;
