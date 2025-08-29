@@ -15,7 +15,7 @@ const SkillList = () => {
     const fetchSkills = async () => {
       try {
         const response = await axios.get(`${backendUrl}/api/skill/list-active`);
-        if (response.data.success) {
+        if (response.data?.success && Array.isArray(response.data.skills)) {
           setSkills(response.data.skills);
         } else {
           setSkills([]);
@@ -29,6 +29,12 @@ const SkillList = () => {
     };
     fetchSkills();
   }, []);
+
+  // Helper for safe image URL
+  const getImageUrl = (imgPath) => {
+    if (!imgPath) return null;
+    return imgPath.startsWith("http") ? imgPath : `${backendUrl}/${imgPath}`;
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -51,8 +57,8 @@ const SkillList = () => {
               {/* Skill Image */}
               {skill.images && skill.images.length > 0 ? (
                 <img
-                  src={`${backendUrl}/${skill.images[0]}`} // Ensure backend serves images with correct path
-                  alt={skill.skillType}
+                  src={getImageUrl(skill.images[0])}
+                  alt={skill.skillType || "Skill"}
                   className="w-full h-44 object-cover"
                 />
               ) : (
@@ -64,22 +70,24 @@ const SkillList = () => {
               {/* Skill Info */}
               <div className="p-4">
                 <h3 className="text-lg font-semibold text-gray-800">
-                  {skill.skillType}
+                  {skill.skillType || "Unnamed Skill"}
                 </h3>
-                <p className="text-sm text-gray-600">{skill.studentName}</p>
+                <p className="text-sm text-gray-600">
+                  {skill.studentName || "Unknown Student"}
+                </p>
                 <p className="text-sm text-gray-500 mt-1 line-clamp-2">
-                  {skill.moreDetails}
+                  {skill.moreDetails || "No details provided."}
                 </p>
                 <p className="text-sm mt-2">
                   <span className="font-medium">Experience:</span>{" "}
-                  {skill.experience}
+                  {skill.experience || "Not specified"}
                 </p>
                 <p className="text-sm">
                   <span className="font-medium">Location:</span>{" "}
-                  {skill.location}
+                  {skill.location || "Not specified"}
                 </p>
                 <p className="text-sm font-bold text-blue-600 mt-2">
-                  Rs. {skill.price}
+                  Rs. {(Number(skill.price) || 0).toLocaleString()}
                 </p>
               </div>
             </div>
