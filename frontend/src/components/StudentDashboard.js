@@ -65,51 +65,71 @@ function HomePage() {
       </header>
 
       {/* Services Section */}
-      <section id="services" className="py-24 bg-gradient-to-b from-white to-orange-50 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-        <div className="text-center mb-6 relative z-10">
-          <h2 className="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-600 via-gray-500 to-orange-700 mb-4">
-            Our Services
-          </h2>
-          <p className="text-gray-600 text-lg font-medium">Everything you need for campus life</p>
-        </div>
+  <section
+  id="services"
+  className="py-24 bg-gradient-to-b from-white to-orange-50 px-4 sm:px-6 lg:px-8 relative overflow-hidden"
+>
+  {/* Header */}
+  <div className="text-center mb-6 relative z-10">
+    <h2 className="text-5xl md:text-6xl font-black text-white mb-4">
+      Our Services
+    </h2>
+    <p className="text-white text-lg font-medium">
+      Everything you need for campus life
+    </p>
+  </div>
 
-        {/* Transparent Map Background */}
+  {/* Transparent Map Background */}
+  <div
+    className="absolute inset-0 z-0 bg-cover bg-center opacity-6 pointer-events-none filter blur-sm"
+    style={{ backgroundImage: "url('/images/map.jpg')" }}
+  ></div>
+
+  {/* Services Grid */}
+  <div className="relative z-10 max-w-7xl mx-auto">
+    <div className="hidden md:grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+      {services.map(({ title, desc, img, click, icon }, index) => (
         <div
-          className="absolute inset-0 z-0 bg-cover bg-center opacity-6 pointer-events-none filter blur-sm"
-          style={{ backgroundImage: "url('/images/map.jpg')" }}
-        ></div>
+          key={index}
+          onClick={click}
+          className="group cursor-pointer transform transition-all duration-500 hover:scale-105 hover:-translate-y-2"
+        >
+          <div className="relative bg-white/95 backdrop-blur-sm rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl border border-gray-100 transition-all duration-500 h-full">
+            <div className="relative">
+              <img
+                src={img}
+                alt={title}
+                className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-        <div className="relative z-10 max-w-7xl mx-auto">
-          <div className="hidden md:grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
-            {services.map(({ title, desc, img, click, icon, color }, index) => (
-              <div key={index} onClick={click} className="group cursor-pointer transform transition-all duration-500 hover:scale-105 hover:-translate-y-2">
-                <div className="relative bg-white/95 backdrop-blur-sm rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl border border-gray-100 transition-all duration-500 h-full">
-                  <div className="relative">
-                    <img src={img} alt={title} className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-700" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                    <div className="absolute top-4 right-4 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-2xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                      {icon}
-                    </div>
-
-                    <div className="absolute top-4 left-4 w-8 h-8 bg-orange-500/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg">
-                      {index + 1}
-                    </div>
-                  </div>
-
-                  <div className="p-6">
-                    <h3 className="text-2xl font-bold text-gray-800 group-hover:text-orange-600 transition-colors duration-300 mb-2">{title}</h3>
-                    <p className="text-gray-600 leading-relaxed group-hover:text-gray-700 transition-colors duration-300">{desc}</p>
-                    <div className="flex items-center text-orange-500 font-semibold group-hover:text-orange-600 transition-colors duration-300 mt-4">
-                      <span className="text-sm">Explore</span>
-                    </div>
-                  </div>
-                </div>
+              <div className="absolute top-4 right-4 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-2xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                {icon}
               </div>
-            ))}
+
+              <div className="absolute top-4 left-4 w-8 h-8 bg-orange-500/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg">
+                {index + 1}
+              </div>
+            </div>
+
+            <div className="p-6">
+              <h3 className="text-2xl font-bold text-gray-800 group-hover:text-orange-600 transition-colors duration-300 mb-2">
+                {title}
+              </h3>
+              <p className="text-gray-600 leading-relaxed group-hover:text-gray-700 transition-colors duration-300">
+                {desc}
+              </p>
+              <div className="flex items-center text-orange-500 font-semibold group-hover:text-orange-600 transition-colors duration-300 mt-4">
+                <span className="text-sm">Explore</span>
+              </div>
+            </div>
           </div>
         </div>
-      </section>
+      ))}
+    </div>
+  </div>
+</section>
+
       
       {/* Advertisement Section */}
       <AdSection />
