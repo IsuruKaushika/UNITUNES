@@ -65,17 +65,12 @@ const MediList = ({ token }) => {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-<<<<<<< HEAD
         const response = await axios.get(`${backendUrl}/api/medical-services`);
         if (response.data?.success && Array.isArray(response.data.services)) {
           setServices(response.data.services);
         } else {
           console.error("Invalid response:", response.data);
         }
-=======
-        const response = await axios.get(`${backendUrl}/api/pharmacy`);
-        if (response.data?.success) setServices(response.data.services);
->>>>>>> 14addcecd28d10baa1292a8e62b3fa7786be8776
       } catch (err) {
         console.error("Error fetching services:", err.message);
       } finally {
