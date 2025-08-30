@@ -124,7 +124,6 @@ function HomePage() {
         </div>
       </section>
 
-
       {/* About Section - Enhanced */}
       <section className="py-24 bg-gradient-to-br from-orange-50 via-white to-orange-100 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
         <div className="absolute -top-20 -right-20 w-80 h-80 bg-orange-200/10 rounded-full blur-3xl"></div>
