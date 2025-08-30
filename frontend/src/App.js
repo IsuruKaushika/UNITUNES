@@ -16,7 +16,7 @@ import RentItemsPage from "./components/RentItemsPage";
 import RentItemDetails from "./components/RentItemDetails";
 import TaxiList from "./components/TaxiList";
 import TaxiDetails from "./components/TaxiDetails";
-
+import SearchResults from "./components/SearchResults";
 import MediList from "./components/MediList";    
 import MediDetails from "./components/MediDetails"; 
 import MediSelect from "./components/MediSelect";
@@ -45,6 +45,9 @@ function App() {
         <Route path="/create-provider-account" element={<CreateProviderAccount />} />
         <Route path="/go-provider-dashboard" element={<ProviderDashboard />} />
         <Route path="/go-student-dashboard" element={<StudentDashboard />} />
+
+
+<Route path="/search" element={<SearchResults />} />
 
         {/* Boarding */}
         <Route path="/boarding-list" element={<BoardingList />} />
