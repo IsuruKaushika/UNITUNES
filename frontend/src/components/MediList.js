@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+// Use Vite env variable
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 // Custom Logo Component
@@ -24,80 +25,59 @@ const CustomLogo = ({ onClick, className = "" }) => (
   </div>
 );
 
-// Filter Component
-const FilterBar = ({ onFilterChange, activeFilters, categories }) => {
-  const handleCategoryChange = (value) => onFilterChange({ ...activeFilters, category: value });
-  const handleSortChange = (value) => onFilterChange({ ...activeFilters, sort: value });
-
+// Filter Bar Component (Category)
+const FilterBar = ({ onFilterChange, activeFilter, categories }) => {
   return (
     <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-3">
-            Category
-            <span className="ml-2 text-xs bg-yellow-100 text-black px-2 py-1 rounded-full">
-              {activeFilters.category === 'all' ? 'All' : activeFilters.category}
-            </span>
-          </label>
-          <select
-            value={activeFilters.category}
-            onChange={(e) => handleCategoryChange(e.target.value)}
-            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-yellow-100 focus:border-yellow-300 transition-all duration-300 cursor-pointer text-black"
-          >
-            <option value="all">All Categories</option>
-            {categories.map((category) => (
-              <option key={category} value={category}>{category}</option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-3">
-            Sort By
-            <span className="ml-2 text-xs bg-blue-100 text-black px-2 py-1 rounded-full">
-              {activeFilters.sort === 'name' ? 'Name' : 'Category'}
-            </span>
-          </label>
-          <select
-            value={activeFilters.sort}
-            onChange={(e) => handleSortChange(e.target.value)}
-            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-yellow-100 focus:border-yellow-300 transition-all duration-300 cursor-pointer text-black"
-          >
-            <option value="name">Sort by Name</option>
-            <option value="category">Sort by Category</option>
-          </select>
-        </div>
-
-        <div className="flex items-end">
+      <div className="flex flex-wrap gap-3">
+        {categories.map((cat) => (
           <button
-            onClick={() => onFilterChange({ category: 'all', sort: 'name' })}
-            className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-3 rounded-xl font-medium transition-all duration-300 flex items-center justify-center gap-2"
+            key={cat}
+            onClick={() => onFilterChange(cat)}
+            className={`px-4 py-2 rounded-xl font-medium transition-colors duration-300 ${
+              activeFilter === cat
+                ? "bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-800"
+                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+            }`}
           >
-            Clear Filters
+            {cat.charAt(0).toUpperCase() + cat.slice(1)}
           </button>
-        </div>
+        ))}
+        <button
+          onClick={() => onFilterChange("")}
+          className="px-4 py-2 rounded-xl font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-all duration-300"
+        >
+          All
+        </button>
       </div>
     </div>
   );
 };
 
-const MediList = () => {
+const MediList = ({ token }) => {
   const navigate = useNavigate();
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchLoading, setSearchLoading] = useState(false);
-  const [viewMode, setViewMode] = useState('grid');
-  const [filters, setFilters] = useState({ category: 'all', sort: 'name' });
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [viewMode, setViewMode] = useState("grid");
 
-  // Fetch services from backend
   useEffect(() => {
     const fetchServices = async () => {
       try {
+<<<<<<< HEAD
+        const response = await axios.get(`${backendUrl}/api/medical-services`);
+        if (response.data?.success && Array.isArray(response.data.services)) {
+          setServices(response.data.services);
+        } else {
+          console.error("Invalid response:", response.data);
+        }
+=======
         const response = await axios.get(`${backendUrl}/api/pharmacy`);
         if (response.data?.success) setServices(response.data.services);
+>>>>>>> 14addcecd28d10baa1292a8e62b3fa7786be8776
       } catch (err) {
-        console.error("Error fetching services:", err);
+        console.error("Error fetching services:", err.message);
       } finally {
         setLoading(false);
       }
@@ -105,27 +85,55 @@ const MediList = () => {
     fetchServices();
   }, []);
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center">Loading services...</div>;
+  // Remove service (optional if token exists)
+  const removeService = async (id) => {
+    if (!token) return;
+    if (!window.confirm("Are you sure you want to remove this service?")) return;
+    try {
+      const response = await axios.post(
+        `${backendUrl}/api/medical-services/remove`,
+        { id },
+        { headers: { token } }
+      );
+      if (response.data.success) {
+        alert(response.data.message);
+        setServices((prev) => prev.filter((s) => s._id !== id));
+      } else {
+        alert(response.data.message);
+      }
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
+  };
 
-  const categories = [...new Set(services.map(service => service.category))];
+  // Filter and search
+  const filteredServices = services
+    .filter((s) => {
+      const matchesSearch =
+        !searchQuery ||
+        s.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.description?.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory = !categoryFilter || s.category === categoryFilter;
+      return matchesSearch && matchesCategory;
+    })
+    .sort((a, b) => a.name.localeCompare(b.name)); // Sort by name
 
-  let filteredServices = services.filter(service => {
-    const matchesSearch = !searchQuery || 
-      service.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      service.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = filters.category === 'all' || service.category === filters.category;
-    return matchesSearch && matchesCategory;
-  });
+  const categories = [...new Set(services.map((s) => s.category))];
 
-  filteredServices.sort((a, b) => filters.sort === 'name'
-    ? a.name.localeCompare(b.name)
-    : a.category.localeCompare(b.category)
-  );
+  if (loading)
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Loading services...</p>
+      </div>
+    );
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="flex items-center justify-between mb-6">
-        <button onClick={() => navigate(-1)} className="px-4 py-2 bg-gray-200 rounded-lg">Back</button>
+        <button onClick={() => navigate(-1)} className="px-4 py-2 bg-gray-200 rounded-lg">
+          Back
+        </button>
         <CustomLogo onClick={() => navigate("/")} />
       </div>
 
@@ -134,34 +142,69 @@ const MediList = () => {
           type="text"
           placeholder="Search medical services..."
           value={searchQuery}
-          onChange={(e) => {
-            setSearchQuery(e.target.value);
-            setSearchLoading(true);
-            setTimeout(() => setSearchLoading(false), 300);
-          }}
+          onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none"
         />
       </div>
 
-      <FilterBar onFilterChange={setFilters} activeFilters={filters} categories={categories} />
+      <FilterBar
+        categories={categories}
+        activeFilter={categoryFilter}
+        onFilterChange={setCategoryFilter}
+      />
 
-      <div className={`max-w-7xl mx-auto ${viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-4'}`}>
-        {filteredServices.length > 0 ? filteredServices.map(service => (
-          <div
-            key={service._id}
-            onClick={() => navigate(`/medi-details/${service._id}`, { state: { service } })}
-            className={`bg-white rounded-2xl shadow-lg p-4 cursor-pointer hover:shadow-xl transition-all ${viewMode === 'list' ? 'flex items-center gap-4' : ''}`}
-          >
-            <div className={`${viewMode === 'list' ? 'w-48 h-32 flex-shrink-0' : 'h-56'} relative`}>
-              <img src={service.image} alt={service.name} className="w-full h-full object-cover rounded-xl" />
+      <div
+        className={`max-w-7xl mx-auto ${
+          viewMode === "grid"
+            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            : "space-y-4"
+        }`}
+      >
+        {filteredServices.length > 0 ? (
+          filteredServices.map((s) => (
+            <div
+              key={s._id}
+              onClick={() => navigate(`/medi-details/${s._id}`, { state: { service: s } })}
+              className={`bg-white rounded-2xl shadow-lg p-4 cursor-pointer hover:shadow-xl transition-all ${
+                viewMode === "list" ? "flex items-center gap-4" : ""
+              }`}
+            >
+              <div className={`${viewMode === "list" ? "w-48 h-32 flex-shrink-0" : "h-56"} relative`}>
+                {s.image ? (
+                  <img
+                    src={`${backendUrl}/${s.image}`}
+                    alt={s.name}
+                    className="w-full h-full object-cover rounded-xl"
+                    onError={(e) => {
+                      e.target.src = "/placeholder-image.jpg";
+                      e.target.onerror = null;
+                    }}
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gray-200 flex items-center justify-center rounded-xl">
+                    No Image
+                  </div>
+                )}
+              </div>
+              <div className={`${viewMode === "list" ? "flex-1" : "mt-4"}`}>
+                <h3 className="text-xl font-bold mb-2">{s.name}</h3>
+                <p className="text-gray-500 line-clamp-2">{s.description}</p>
+                <p className="text-sm text-gray-400 mt-1">Category: {s.category}</p>
+                {token && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeService(s._id);
+                    }}
+                    className="mt-4 px-4 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors duration-300"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
             </div>
-            <div className={`${viewMode === 'list' ? 'flex-1' : 'mt-4'}`}>
-              <h3 className="text-xl font-bold mb-2">{service.name}</h3>
-              <p className="text-gray-500 line-clamp-2">{service.description}</p>
-              <p className="text-sm text-gray-400 mt-1">Category: {service.category}</p>
-            </div>
-          </div>
-        )) : (
+          ))
+        ) : (
           <div className="text-center py-20">No services found 😢</div>
         )}
       </div>
