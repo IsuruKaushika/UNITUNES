@@ -1,0 +1,48 @@
+name: Build Android APK
+
+on:
+  push:
+    branches:
+      - main  # Build on pushes to main branch
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2️⃣ Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # 3️⃣ Install project dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # 4️⃣ Install Java (required for Android)
+      - name: Set up Java JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 17
+
+      # 5️⃣ Build the release APK
+      - name: Build Release APK
+        run: |
+          cd android
+          ./gradlew clean
+          ./gradlew assembleRelease
+
+      # 6️⃣ Upload the APK as artifact
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-release.apk
+          path: android/app/build/outputs/apk/release/app-release.apk
