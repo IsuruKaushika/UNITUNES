@@ -32,7 +32,7 @@ import RentItems from "./components/RentItems";
 import Testing from "./components/testing";
 import UserBoardingAdd from "./components/UserBoardingAdd";
 import UserBoardingList from "./components/UserBoardingList";
-
+import StudentBoarding from "./components/StudentBoardingManagement";
 function App() {
   return (
     <div>
@@ -51,6 +51,7 @@ function App() {
         <Route path="/boarding-details/:id" element={<BoardingDetails />} />
         <Route path="/add-boarding" element={<UserBoardingAdd />} />   {/* ✅ Fixed */}
         <Route path="/my-boardings" element={<UserBoardingList />} /> {/* ✅ */}
+        <Route path="/student-boarding" element={<StudentBoarding />} />
 
         {/* Renting */}
         <Route path="/rent-items" element={<RentItemsPage />} />
