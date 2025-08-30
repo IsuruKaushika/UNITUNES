@@ -958,4 +958,4 @@ const SkillList = ({ token }) => {
   );
 };
 
-export default SkillList; 1
+export default SkillList; 

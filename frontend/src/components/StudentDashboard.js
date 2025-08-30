@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/navbar/navbar";
 import Ad from "../components/ad/Ad";
+import AdSection from "./AdSection";
 
 function HomePage() {
   const navigate = useNavigate();
@@ -112,14 +113,17 @@ function HomePage() {
         </div>
       </section>
       
-     {/* Ad Section - Enhanced */}
+        {/* Ad Section - Enhanced */}
       <section className="py-16 bg-gradient-to-r from-gray-50 to-orange-50 relative overflow-hidden">
         <div className="absolute -top-10 -left-10 w-32 h-32 bg-orange-200/20 rounded-full blur-2xl"></div>
         <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-orange-300/15 rounded-full blur-3xl"></div>
         <div className="max-w-6xl mx-auto relative z-10">
-          <Ad />
+
+          {/* Fetch Ads from Backend */}
+          <AdSection />
         </div>
       </section>
+
 
       {/* About Section - Enhanced */}
       <section className="py-24 bg-gradient-to-br from-orange-50 via-white to-orange-100 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
