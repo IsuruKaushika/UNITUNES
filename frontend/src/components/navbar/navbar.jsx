@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const Navbar = ({ setShowLogin }) => {
+const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -16,6 +16,10 @@ const Navbar = ({ setShowLogin }) => {
     const element = document.getElementById(id);
     if (element) element.scrollIntoView({ behavior: "smooth" });
     setMenuOpen(false); // close mobile menu
+  };
+
+  const handleLogin = () => {
+    window.location.href = "http://localhost:3000";
   };
 
   return (
@@ -67,10 +71,10 @@ const Navbar = ({ setShowLogin }) => {
           </li>
         </ul>
 
-        {/* Login Button */}
+        {/* Desktop Login Button */}
         <div className="hidden md:block">
           <button
-            onClick={() => setShowLogin(true)}
+            onClick={handleLogin}
             className="px-4 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 transition-colors"
           >
             Login
@@ -149,9 +153,10 @@ const Navbar = ({ setShowLogin }) => {
           >
             Contact
           </li>
+          {/* Mobile Login Button */}
           <li>
             <button
-              onClick={() => setShowLogin(true)}
+              onClick={handleLogin}
               className="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 transition-colors"
             >
               Login
