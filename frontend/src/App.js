@@ -49,6 +49,7 @@ function App() {
 
 <Route path="/search" element={<SearchResults />} />
 
+
         {/* Boarding */}
         <Route path="/boarding-list" element={<BoardingList />} />
         <Route path="/boarding-details/:id" element={<BoardingDetails />} />

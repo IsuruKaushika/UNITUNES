@@ -1,8 +1,203 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../components/navbar/navbar";
-import Ad from "../components/ad/Ad";
-import AdSection from "./AdSection";
+
+// Your working Navbar component
+const Navbar = ({ setShowLogin }) => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const handleScrollTo = (id) => {
+    const element = document.getElementById(id);
+    if (element) element.scrollIntoView({ behavior: "smooth" });
+    setMenuOpen(false); // close mobile menu
+  };
+
+  return (
+    <nav
+      className={`fixed w-full z-50 transition-all duration-300 ${
+        scrolled ? "bg-white/90 shadow-lg" : "bg-transparent"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center h-20">
+        {/* Logo */}
+        <div
+          className="text-2xl font-bold cursor-pointer text-orange-600"
+          onClick={() => handleScrollTo("home")}
+        >
+          UniTunes
+        </div>
+
+        {/* Desktop Menu */}
+        <ul className="hidden md:flex space-x-8 text-gray-800 font-medium">
+          <li
+            className="cursor-pointer hover:text-orange-600 transition-colors"
+            onClick={() => handleScrollTo("home")}
+          >
+            Home
+          </li>
+          <li
+            className="cursor-pointer hover:text-orange-600 transition-colors"
+            onClick={() => handleScrollTo("services")}
+          >
+            Services
+          </li>
+          <li
+            className="cursor-pointer hover:text-orange-600 transition-colors"
+            onClick={() => handleScrollTo("mobile-app")}
+          >
+            Mobile App
+          </li>
+          <li
+            className="cursor-pointer hover:text-orange-600 transition-colors"
+            onClick={() => handleScrollTo("about")}
+          >
+            About
+          </li>
+          <li
+            className="cursor-pointer hover:text-orange-600 transition-colors"
+            onClick={() => handleScrollTo("contact")}
+          >
+            Contact
+          </li>
+        </ul>
+
+        {/* Login Button */}
+        <div className="hidden md:block">
+          <button
+            onClick={() => setShowLogin(true)}
+            className="px-4 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 transition-colors"
+          >
+            Login
+          </button>
+        </div>
+
+        {/* Mobile Menu Button */}
+        <div className="md:hidden flex items-center">
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="text-gray-800 focus:outline-none"
+          >
+            {menuOpen ? (
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            ) : (
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      {menuOpen && (
+        <ul className="md:hidden bg-white shadow-lg w-full flex flex-col items-center space-y-4 py-6 text-gray-800 font-medium">
+          <li
+            className="cursor-pointer hover:text-orange-600 transition-colors"
+            onClick={() => handleScrollTo("home")}
+          >
+            Home
+          </li>
+          <li
+            className="cursor-pointer hover:text-orange-600 transition-colors"
+            onClick={() => handleScrollTo("services")}
+          >
+            Services
+          </li>
+          <li
+            className="cursor-pointer hover:text-orange-600 transition-colors"
+            onClick={() => handleScrollTo("mobile-app")}
+          >
+            Mobile App
+          </li>
+          <li
+            className="cursor-pointer hover:text-orange-600 transition-colors"
+            onClick={() => handleScrollTo("about")}
+          >
+            About
+          </li>
+          <li
+            className="cursor-pointer hover:text-orange-600 transition-colors"
+            onClick={() => handleScrollTo("contact")}
+          >
+            Contact
+          </li>
+          <li>
+            <button
+              onClick={() => setShowLogin(true)}
+              className="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 transition-colors"
+            >
+              Login
+            </button>
+          </li>
+        </ul>
+      )}
+    </nav>
+  );
+};
+
+// AdSection component
+const AdSection = () => {
+  return (
+    <div className="text-center mb-12">
+      <h2 className="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-600 via-orange-500 to-orange-700 mb-8">
+        Latest Offers
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto px-4">
+        <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 border border-white/50">
+          <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-white text-2xl font-bold mb-4 mx-auto shadow-lg">
+            🎯
+          </div>
+          <h3 className="text-xl font-bold text-gray-800 mb-2">Student Discount</h3>
+          <p className="text-gray-600">Get 20% off on all services</p>
+        </div>
+        <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 border border-white/50">
+          <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-white text-2xl font-bold mb-4 mx-auto shadow-lg">
+            🏠
+          </div>
+          <h3 className="text-xl font-bold text-gray-800 mb-2">New Boarding</h3>
+          <p className="text-gray-600">Premium rooms available near campus</p>
+        </div>
+        <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 border border-white/50">
+          <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center text-white text-2xl font-bold mb-4 mx-auto shadow-lg">
+            🤝
+          </div>
+          <h3 className="text-xl font-bold text-gray-800 mb-2">Skill Exchange</h3>
+          <p className="text-gray-600">Learn programming from seniors</p>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 function HomePage() {
   const navigate = useNavigate();
@@ -28,6 +223,7 @@ function HomePage() {
 
       {/* Hero Section */}
       <header
+        id="home"
         className="relative flex flex-col items-center justify-center h-[85vh] text-white text-center px-6 bg-cover bg-center overflow-hidden"
         style={{ backgroundImage: "url('/images/back.jpg')" }}
       >
@@ -66,20 +262,17 @@ function HomePage() {
       {/* Services Section */}
       <section id="services" className="py-24 bg-gradient-to-b from-white to-orange-50 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
         <div className="text-center mb-6 relative z-10">
-          <h2 className="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white-600 via-white-500 to-orange-700 mb-4">
+          <h2 className="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-600 via-gray-500 to-orange-700 mb-4">
             Our Services
           </h2>
-          <p className="text-white text-lg font-medium">Everything you need for campus life</p>
+          <p className="text-gray-600 text-lg font-medium">Everything you need for campus life</p>
         </div>
 
         {/* Transparent Map Background */}
-        
-<div
-  className="absolute inset-0 z-0 bg-cover bg-center  opacity-6 pointer-events-none filter blur-sm"
-  style={{ backgroundImage: "url('/images/map.jpg')" }}
-></div>
-
-
+        <div
+          className="absolute inset-0 z-0 bg-cover bg-center opacity-6 pointer-events-none filter blur-sm"
+          style={{ backgroundImage: "url('/images/map.jpg')" }}
+        ></div>
 
         <div className="relative z-10 max-w-7xl mx-auto">
           <div className="hidden md:grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
@@ -113,19 +306,18 @@ function HomePage() {
         </div>
       </section>
       
-        {/* Ad Section - Enhanced */}
+      {/* Ad Section - Enhanced */}
       <section className="py-16 bg-gradient-to-r from-gray-50 to-orange-50 relative overflow-hidden">
         <div className="absolute -top-10 -left-10 w-32 h-32 bg-orange-200/20 rounded-full blur-2xl"></div>
         <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-orange-300/15 rounded-full blur-3xl"></div>
         <div className="max-w-6xl mx-auto relative z-10">
-
           {/* Fetch Ads from Backend */}
           <AdSection />
         </div>
       </section>
 
       {/* About Section - Enhanced */}
-      <section className="py-24 bg-gradient-to-br from-orange-50 via-white to-orange-100 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      <section id="about" className="py-24 bg-gradient-to-br from-orange-50 via-white to-orange-100 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
         <div className="absolute -top-20 -right-20 w-80 h-80 bg-orange-200/10 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-orange-300/15 rounded-full blur-2xl"></div>
         
@@ -172,9 +364,10 @@ function HomePage() {
           </div>
         </div>
       </section>
+      
 
-    {/* About Section - Enhanced */}
-      <section className="py-24 bg-gradient-to-br from-orange-50 to-red-50 px-4 sm:px-6 lg:px-8">
+      {/* About Section - Enhanced */}
+      <section id="mobile-app" className="py-24 bg-gradient-to-br from-orange-50 to-red-50 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             
@@ -233,7 +426,7 @@ function HomePage() {
       </section>
 
       {/* Footer - Enhanced */}
-      <footer className="bg-gradient-to-br from-gray-900 to-black text-gray-300 py-16 relative overflow-hidden">
+      <footer id="contact" className="bg-gradient-to-br from-gray-900 to-black text-gray-300 py-16 relative overflow-hidden">
         {/* Background decoration */}
         <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
         
