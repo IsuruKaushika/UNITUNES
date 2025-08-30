@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
@@ -126,7 +127,7 @@ const FilterBar = ({ filters, onFilterChange, skillCount }) => {
   );
 };
 
-const SkillCard = ({ skill, onRemove, token }) => {
+const SkillCard = ({ skill, onRemove, token, onViewDetails }) => {
   const [isRemoving, setIsRemoving] = useState(false);
 
   const handleRemove = async () => {
@@ -244,7 +245,10 @@ const SkillCard = ({ skill, onRemove, token }) => {
 
         {/* Action Buttons */}
         <div className="flex gap-2">
-          <button className="flex-1 py-2 px-4 bg-gradient-to-r from-yellow-400 to-orange-400 text-white rounded-xl font-medium hover:from-yellow-500 hover:to-orange-500 transition-all duration-200 transform hover:scale-105">
+          <button 
+            onClick={() => onViewDetails(skill)}
+            className="flex-1 py-2 px-4 bg-gradient-to-r from-yellow-400 to-orange-400 text-white rounded-xl font-medium hover:from-yellow-500 hover:to-orange-500 transition-all duration-200 transform hover:scale-105"
+          >
             View Details
           </button>
           
@@ -308,6 +312,7 @@ const StatsSection = ({ skills, filteredCount }) => {
 };
 
 const SkillList = ({ token }) => {
+  const navigate = useNavigate();
   const [skills, setSkills] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -426,6 +431,15 @@ const SkillList = ({ token }) => {
     setSkills(prev => prev.filter(skill => skill._id !== skillId));
   };
 
+  // Handle view details navigation
+  const handleViewDetails = (skill) => {
+    // Navigate to skill details page with skill ID
+    // Pass skill data in state as fallback in case API call fails
+    navigate(`/skill-details/${skill._id}`, { 
+      state: { skill } 
+    });
+  };
+
   // Filter skills based on search and filters
   const filteredSkills = skills.filter(skill => {
     const matchesSearch = !searchQuery || 
@@ -456,12 +470,12 @@ const SkillList = ({ token }) => {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <button 
-            onClick={() => window.history.back()}
+            onClick={() => navigate(-1)}
             className="px-6 py-3 bg-white shadow-md rounded-xl hover:bg-yellow-50 hover:shadow-lg transition-all duration-200 font-medium text-gray-700"
           >
             ← Back
           </button>
-          <CustomLogo onClick={() => window.location.href = "/"} />
+          <CustomLogo onClick={() => navigate("/")} />
           <div className="text-sm text-gray-500">
             Last updated: {lastUpdated.toLocaleTimeString()}
           </div>
@@ -506,6 +520,7 @@ const SkillList = ({ token }) => {
                   key={skill._id}
                   skill={skill}
                   onRemove={handleSkillRemove}
+                  onViewDetails={handleViewDetails}
                   token={token}
                 />
               ))}

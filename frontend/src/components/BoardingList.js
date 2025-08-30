@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+
 // backend URL
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
@@ -29,22 +30,34 @@ const CustomLogo = ({ onClick, className = "" }) => (
   </div>
 );
 
-// Floating Action Button Component
-const FloatingActionButton = ({ onClick }) => (
-  <div className="fixed bottom-6 right-6 z-50">
-    <button
-      onClick={onClick}
-      className="bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-800 p-4 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-110 transition-all duration-300 group animate-bounce hover:animate-none"
-    >
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-      </svg>
-    </button>
-    <div className="absolute -top-2 -left-16 bg-gray-800 text-white px-3 py-1 rounded-lg text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap">
-      Add Boarding
+
+
+const FloatingActionButton = () => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate("/student-boarding");
+  };
+
+  return (
+    <div className="fixed bottom-6 right-6 z-50">
+      <button
+        onClick={handleClick}
+        className="bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-800 p-4 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-110 transition-all duration-300 group animate-bounce hover:animate-none"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+        </svg>
+      </button>
+      <div className="absolute -top-2 -left-16 bg-gray-800 text-white px-3 py-1 rounded-lg text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap">
+        Add Boarding
+      </div>
     </div>
-  </div>
-);
+  );
+};
+
+
+
 
 // Filter Component
 const FilterBar = ({ onFilterChange, activeFilters }) => {

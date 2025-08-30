@@ -15,7 +15,7 @@ import adRouter from './routes/adRoute.js';
 import Pharmacyrouter from './routes/pharmacyRoute.js';
 import rentingRouter from './routes/rentingRouter.js';
 import rentRouter from './routes/rentingRouter.js'; // Same as rentingRouter
-
+import searchRoutes from "./routes/searchRoutes.js";
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -38,7 +38,7 @@ app.use('/api/skillshare', skillRouter);
 app.use('/api/medicare', Medicalrouter);
 app.use('/api/pharmacy', Pharmacyrouter);
 app.use('/api/ad', adRouter);
-
+app.use("/api", searchRoutes);
 // Root endpoint
 app.get('/', (req, res) => {
   res.send('API Working');

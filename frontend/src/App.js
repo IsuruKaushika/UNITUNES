@@ -16,7 +16,7 @@ import RentItemsPage from "./components/RentItemsPage";
 import RentItemDetails from "./components/RentItemDetails";
 import TaxiList from "./components/TaxiList";
 import TaxiDetails from "./components/TaxiDetails";
-
+import SearchResults from "./components/SearchResults";
 import MediList from "./components/MediList";    
 import MediDetails from "./components/MediDetails"; 
 import MediSelect from "./components/MediSelect";
@@ -32,7 +32,7 @@ import RentItems from "./components/RentItems";
 import Testing from "./components/testing";
 import UserBoardingAdd from "./components/UserBoardingAdd";
 import UserBoardingList from "./components/UserBoardingList";
-
+import StudentBoarding from "./components/StudentBoardingManagement";
 function App() {
   return (
     <div>
@@ -46,11 +46,15 @@ function App() {
         <Route path="/go-provider-dashboard" element={<ProviderDashboard />} />
         <Route path="/go-student-dashboard" element={<StudentDashboard />} />
 
+
+<Route path="/search" element={<SearchResults />} />
+
         {/* Boarding */}
         <Route path="/boarding-list" element={<BoardingList />} />
         <Route path="/boarding-details/:id" element={<BoardingDetails />} />
         <Route path="/add-boarding" element={<UserBoardingAdd />} />   {/* ✅ Fixed */}
         <Route path="/my-boardings" element={<UserBoardingList />} /> {/* ✅ */}
+        <Route path="/student-boarding" element={<StudentBoarding />} />
 
         {/* Renting */}
         <Route path="/rent-items" element={<RentItemsPage />} />
