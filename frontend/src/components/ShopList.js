@@ -4,9 +4,9 @@ import axios from "axios";
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
-// Custom Logo Component
+// Custom Logo Component - matching BoardingList style
 const CustomLogo = ({ onClick, className = "" }) => (
-  <div
+  <div 
     onClick={onClick}
     className={`cursor-pointer hover:scale-110 transition-transform duration-300 ${className}`}
   >
@@ -18,54 +18,179 @@ const CustomLogo = ({ onClick, className = "" }) => (
           </svg>
           <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
         </div>
-        <div className="text-white font-bold text-lg">UniTunes</div>
+        <div className="text-white font-bold text-lg">
+          UniTunes
+        </div>
       </div>
     </div>
   </div>
 );
 
-// Filter Bar Component (Category)
-const FilterBar = ({ onFilterChange, activeFilter }) => {
-  const categories = ["bakery", "grocery", "meals", "bookshop", "communication"];
+// Floating Action Button Component
+const FloatingActionButton = ({ onClick }) => (
+  <div className="fixed bottom-6 right-6 z-50">
+    <button
+      onClick={onClick}
+      className="bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-800 p-4 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-110 transition-all duration-300 group animate-bounce hover:animate-none"
+    >
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+      </svg>
+    </button>
+    <div className="absolute -top-2 -left-16 bg-gray-800 text-white px-3 py-1 rounded-lg text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap">
+      Add Shop
+    </div>
+  </div>
+);
+
+// Enhanced Filter Bar with matching style
+const FilterBar = ({ onFilterChange, activeFilter, activeSort, onSortChange }) => {
+  const categories = [
+    { id: "bakery", name: "Bakery", icon: "🥖" },
+    { id: "grocery", name: "Grocery", icon: "🛒" },
+    { id: "meals", name: "Meals", icon: "🍽️" },
+    { id: "bookshop", name: "Books", icon: "📚" },
+    { id: "communication", name: "Telecom", icon: "📱" }
+  ];
+
+  const sortOptions = [
+    { label: "Newest First", value: "newest" },
+    { label: "A-Z", value: "name_asc" },
+    { label: "Z-A", value: "name_desc" },
+    { label: "Category", value: "category" }
+  ];
+
   return (
     <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-8">
-      <div className="flex flex-wrap gap-3">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => onFilterChange(cat)}
-            className={`px-4 py-2 rounded-xl font-medium transition-colors duration-300 ${
-              activeFilter === cat
-                ? "bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-800"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-            }`}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Category Filter */}
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-3">
+            Filter by Category
+            <span className="ml-2 text-xs bg-yellow-100 text-black px-2 py-1 rounded-full">
+              {activeFilter ? categories.find(c => c.id === activeFilter)?.name || activeFilter : 'All'}
+            </span>
+          </label>
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={() => onFilterChange("")}
+              className={`px-4 py-2 rounded-xl font-medium transition-all duration-300 flex items-center gap-2 ${
+                activeFilter === ""
+                  ? "bg-gradient-to-r from-gray-700 to-gray-800 text-white shadow-lg scale-105"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-102"
+              }`}
+            >
+              <span>🏪</span>
+              All Shops
+            </button>
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => onFilterChange(cat.id)}
+                className={`px-4 py-2 rounded-xl font-medium transition-all duration-300 flex items-center gap-2 ${
+                  activeFilter === cat.id
+                    ? "bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-800 shadow-lg scale-105"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200 hover:scale-102"
+                }`}
+              >
+                <span>{cat.icon}</span>
+                {cat.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Sort Options */}
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-3">
+            Sort By
+            <span className="ml-2 text-xs bg-blue-100 text-black px-2 py-1 rounded-full">
+              {sortOptions.find(s => s.value === activeSort)?.label}
+            </span>
+          </label>
+          <select
+            value={activeSort}
+            onChange={(e) => onSortChange(e.target.value)}
+            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-yellow-100 focus:border-yellow-300 transition-all duration-300 cursor-pointer text-black"
           >
-            {cat.charAt(0).toUpperCase() + cat.slice(1)}
-          </button>
-        ))}
+            {sortOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Clear Filters Button */}
+      <div className="mt-6 flex justify-center">
         <button
-          onClick={() => onFilterChange("")}
-          className="px-4 py-2 rounded-xl font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-all duration-300"
+          onClick={() => {
+            onFilterChange("");
+            onSortChange("newest");
+          }}
+          className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2"
         >
-          All
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          Clear Filters
         </button>
       </div>
     </div>
   );
 };
 
+// Favorites functionality
+const useFavorites = () => {
+  const [favorites, setFavorites] = useState([]);
+
+  useEffect(() => {
+    const savedFavorites = JSON.parse(localStorage.getItem('shopFavorites') || '[]');
+    setFavorites(savedFavorites);
+  }, []);
+
+  const toggleFavorite = (id) => {
+    const updatedFavorites = favorites.includes(id)
+      ? favorites.filter(fav => fav !== id)
+      : [...favorites, id];
+    
+    setFavorites(updatedFavorites);
+    localStorage.setItem('shopFavorites', JSON.stringify(updatedFavorites));
+  };
+
+  return { favorites, toggleFavorite };
+};
+
 const ShopList = ({ token }) => {
   const navigate = useNavigate();
   const [shopListData, setShopListData] = useState([]);
+  const [filteredShops, setFilteredShops] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchLoading, setSearchLoading] = useState(false);
-  const [viewMode, setViewMode] = useState("grid");
   const [categoryFilter, setCategoryFilter] = useState("");
+  const [sortBy, setSortBy] = useState("newest");
+  const [viewMode, setViewMode] = useState('grid');
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const { favorites, toggleFavorite } = useFavorites();
 
-  // Custom category order for sorting
+  // Custom category order
   const categoryOrder = ["bakery", "grocery", "meals", "bookshop", "communication"];
 
+  // Get category icon
+  const getCategoryIcon = (category) => {
+    const icons = {
+      bakery: "🥖",
+      grocery: "🛒",
+      meals: "🍽️",
+      bookshop: "📚",
+      communication: "📱"
+    };
+    return icons[category?.toLowerCase()] || "🏪";
+  };
+
+  // Fetch shops
   useEffect(() => {
     const fetchShops = async () => {
       try {
@@ -76,13 +201,63 @@ const ShopList = ({ token }) => {
           console.error("Invalid response:", response.data);
         }
       } catch (error) {
-        console.error("Error fetching shop data:", error.message);
+        console.error("Error fetching shops:", error.message);
       } finally {
         setLoading(false);
       }
     };
     fetchShops();
   }, []);
+
+  // Apply filters and sorting
+  useEffect(() => {
+    let filtered = [...shopListData];
+
+    // Apply search filter
+    if (searchQuery) {
+      filtered = filtered.filter(shop =>
+        (shop.name && shop.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (shop.address && shop.address.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (shop.Category && shop.Category.toLowerCase().includes(searchQuery.toLowerCase()))
+      );
+    }
+
+    // Apply category filter
+    if (categoryFilter) {
+      filtered = filtered.filter(shop => 
+        (shop.Category || "").toLowerCase() === categoryFilter
+      );
+    }
+
+    // Apply favorites filter
+    if (showFavoritesOnly) {
+      filtered = filtered.filter(shop => favorites.includes(shop._id));
+    }
+
+    // Apply sorting
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'name_asc':
+          return (a.name || '').localeCompare(b.name || '');
+        case 'name_desc':
+          return (b.name || '').localeCompare(a.name || '');
+        case 'category':
+          const catA = (a.Category || "").toLowerCase();
+          const catB = (b.Category || "").toLowerCase();
+          const indexA = categoryOrder.indexOf(catA);
+          const indexB = categoryOrder.indexOf(catB);
+          return (
+            (indexA === -1 ? categoryOrder.length : indexA) -
+            (indexB === -1 ? categoryOrder.length : indexB)
+          );
+        case 'newest':
+        default:
+          return shopListData.indexOf(b) - shopListData.indexOf(a);
+      }
+    });
+
+    setFilteredShops(filtered);
+  }, [shopListData, searchQuery, categoryFilter, sortBy, showFavoritesOnly, favorites]);
 
   // Remove shop
   const removeShop = async (id) => {
@@ -93,7 +268,6 @@ const ShopList = ({ token }) => {
         { headers: { token } }
       );
       if (response.data.success) {
-        alert(response.data.message);
         setShopListData((prev) => prev.filter((shop) => shop._id !== id));
       } else {
         alert(response.data.message);
@@ -104,104 +278,328 @@ const ShopList = ({ token }) => {
     }
   };
 
-  // Filter and search
-  let filteredShops = shopListData.filter((shop) => {
-    const matchesSearch =
-      searchQuery === "" ||
-      (shop.name && shop.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (shop.address && shop.address.toLowerCase().includes(searchQuery.toLowerCase()));
+  // Search functionality
+  const handleSearch = async (query) => {
+    setSearchQuery(query);
+    setSearchLoading(true);
+    
+    setTimeout(() => {
+      setSearchLoading(false);
+    }, 500);
+  };
 
-    const matchesCategory = categoryFilter === "" || shop.Category.toLowerCase() === categoryFilter;
-
-    return matchesSearch && matchesCategory;
-  });
-
-  // Custom sort by category order
-  filteredShops.sort((a, b) => {
-    const catA = (a.Category || "").toLowerCase();
-    const catB = (b.Category || "").toLowerCase();
-    const indexA = categoryOrder.indexOf(catA);
-    const indexB = categoryOrder.indexOf(catB);
-    return (indexA === -1 ? categoryOrder.length : indexA) - (indexB === -1 ? categoryOrder.length : indexB);
-  });
+  const handleAddShop = () => {
+    navigate('/add-shop');
+  };
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Loading shops...</p>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+        <div className="relative">
+          <div className="w-16 h-16 border-4 border-yellow-200 border-t-yellow-500 rounded-full animate-spin"></div>
+          <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-orange-300 rounded-full animate-spin animate-reverse"></div>
+        </div>
+        <p className="text-xl text-gray-600 mt-6 font-medium animate-pulse">
+          Loading amazing shops...
+        </p>
+        <p className="text-sm text-gray-500 mt-2">
+          Please wait while we fetch the latest listings
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="flex items-center justify-between mb-6">
-        <button onClick={() => navigate(-1)} className="px-4 py-2 bg-gray-200 rounded-lg">
-          Back
-        </button>
-        <CustomLogo onClick={() => navigate("/")} />
-      </div>
+    <div className="relative min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+      {/* Animated Background Elements */}
+      <div className="absolute top-20 left-10 w-32 h-32 bg-yellow-200 rounded-full opacity-20 animate-pulse"></div>
+      <div className="absolute bottom-32 right-16 w-40 h-40 bg-orange-200 rounded-full opacity-20 animate-pulse delay-1000"></div>
+      <div className="absolute top-1/2 right-1/4 w-24 h-24 bg-blue-200 rounded-full opacity-20 animate-pulse delay-500"></div>
 
-      <div className="max-w-4xl mx-auto mb-8">
-        <input
-          type="text"
-          placeholder="Search shops..."
-          value={searchQuery}
-          onChange={(e) => {
-            setSearchQuery(e.target.value);
-            setSearchLoading(true);
-            setTimeout(() => setSearchLoading(false), 300);
-          }}
-          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none"
-        />
-      </div>
-
-      <FilterBar onFilterChange={setCategoryFilter} activeFilter={categoryFilter} />
-
-      <div className={`max-w-7xl mx-auto ${viewMode === "grid" ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" : "space-y-4"}`}>
-        {filteredShops.length > 0 ? (
-          filteredShops.map((shop) => (
-            <div
-              key={shop._id}
-              onClick={() => navigate(`/shop-details/${shop._id}`, { state: { item: shop } })}
-              className={`bg-white rounded-2xl shadow-lg p-4 cursor-pointer hover:shadow-xl transition-all ${
-                viewMode === "list" ? "flex items-center gap-4" : ""
-              }`}
+      {/* Header Section */}
+      <div className="relative bg-white/80 backdrop-blur-sm shadow-lg border-b border-gray-100 sticky top-0 z-40">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex items-center justify-between">
+            {/* Back Button */}
+            <button
+              onClick={() => navigate(-1)}
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-gray-800 to-gray-700 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl hover:from-yellow-500 hover:to-yellow-400 hover:text-gray-900 transition-all duration-300 transform hover:-translate-y-0.5 font-medium"
             >
-              <div className={`${viewMode === "list" ? "w-48 h-32 flex-shrink-0" : "h-56"} relative`}>
-                {shop.image?.[0] ? (
-                  <img
-                    src={shop.image[0]}
-                    alt={shop.name}
-                    className="w-full h-full object-cover rounded-xl"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gray-200 flex items-center justify-center rounded-xl">
-                    No Image
-                  </div>
-                )}
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Back
+            </button>
+
+            {/* Custom Logo */}
+            <CustomLogo onClick={() => navigate("/")} />
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="container mx-auto px-4 py-12">
+        {/* Title Section */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full mb-6 shadow-lg animate-bounce">
+            <span className="text-3xl">🏪</span>
+          </div>
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-gray-600 bg-clip-text text-transparent mb-4">
+            Amazing Local Shops
+          </h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+            Discover unique local businesses and find exactly what you're looking for
+          </p>
+          <div className="w-24 h-1 bg-gradient-to-r from-yellow-400 to-orange-400 mx-auto mt-6 rounded-full"></div>
+        </div>
+
+        {/* Search Bar with View Toggle */}
+        <div className="max-w-4xl mx-auto mb-8">
+          <div className="flex flex-col md:flex-row gap-4">
+            {/* Search Input */}
+            <div className="flex-1 relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
               </div>
-              <div className={`${viewMode === "list" ? "flex-1" : "mt-4"}`}>
-                <h3 className="text-xl font-bold mb-2">{shop.name}</h3>
-                <p className="text-gray-500 line-clamp-2">{shop.address}</p>
-                <p className="text-sm text-gray-400 mt-1">Category: {shop.Category}</p>
-                {token && (
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => handleSearch(e.target.value)}
+                placeholder="Search by shop name, address, or category..."
+                className="w-full pl-12 pr-4 py-4 bg-white border border-gray-200 rounded-2xl shadow-lg focus:outline-none focus:ring-4 focus:ring-yellow-100 focus:border-yellow-300 transition-all duration-300 text-gray-700 placeholder-gray-400"
+              />
+              {searchLoading && (
+                <div className="absolute inset-y-0 right-0 pr-4 flex items-center">
+                  <div className="w-5 h-5 border-2 border-yellow-200 border-t-yellow-500 rounded-full animate-spin"></div>
+                </div>
+              )}
+            </div>
+
+            {/* View Mode Toggle */}
+            <div className="flex bg-white border border-gray-200 rounded-2xl shadow-lg overflow-hidden">
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`px-6 py-4 transition-all duration-300 ${
+                  viewMode === 'grid'
+                    ? 'bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-800'
+                    : 'text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                </svg>
+              </button>
+              <button
+                onClick={() => setViewMode('list')}
+                className={`px-6 py-4 transition-all duration-300 ${
+                  viewMode === 'list'
+                    ? 'bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-800'
+                    : 'text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          
+          {/* Search Results Info */}
+          {searchQuery && (
+            <div className="mt-4 text-center">
+              <span className="inline-block bg-white px-4 py-2 rounded-full shadow-md border border-gray-200 text-gray-600 text-sm">
+                {searchLoading ? 'Searching...' : `${filteredShops.length} result${filteredShops.length !== 1 ? 's' : ''} for "${searchQuery}"`}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Filter Bar */}
+        <FilterBar 
+          onFilterChange={setCategoryFilter} 
+          activeFilter={categoryFilter}
+          activeSort={sortBy}
+          onSortChange={setSortBy}
+        />
+
+        {/* Results Count and Favorites */}
+        <div className="mb-8 flex justify-between items-center">
+          <span className="inline-block bg-white px-6 py-3 rounded-full shadow-md border border-gray-200 text-gray-700 font-medium">
+            {filteredShops.length} shop{filteredShops.length !== 1 ? 's' : ''} available
+          </span>
+          
+          <button
+            onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+            className={`px-4 py-2 rounded-full font-medium transition-all duration-300 ${
+              showFavoritesOnly
+                ? 'bg-red-100 text-red-600 shadow-md'
+                : 'bg-white text-gray-600 shadow-md hover:shadow-lg'
+            }`}
+          >
+            ❤️ Favorites ({favorites.length})
+          </button>
+        </div>
+
+        {/* Shop Cards */}
+        {filteredShops.length > 0 ? (
+          <div className={`max-w-7xl mx-auto ${
+            viewMode === 'grid'
+              ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8'
+              : 'space-y-6'
+          }`}>
+            {filteredShops.map((shop, index) => (
+              <div
+                key={shop._id}
+                className={`group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 cursor-pointer overflow-hidden border border-gray-100 hover:border-yellow-200 ${
+                  viewMode === 'list' ? 'flex items-center p-6 space-x-6' : ''
+                }`}
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                {/* Image Container */}
+                <div className={`relative overflow-hidden ${
+                  viewMode === 'list' ? 'w-48 h-32 flex-shrink-0' : 'h-56'
+                }`}>
+                  {shop.image?.[0] ? (
+                    <img
+                      src={shop.image[0]}
+                      alt={shop.name}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="text-4xl mb-2">{getCategoryIcon(shop.Category)}</div>
+                        <p className="text-gray-500 font-medium text-sm">No Image</p>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  
+                  {/* Category Badge */}
+                  {shop.Category && (
+                    <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-semibold text-gray-800 shadow-lg flex items-center gap-1">
+                      <span>{getCategoryIcon(shop.Category)}</span>
+                      {shop.Category}
+                    </div>
+                  )}
+
+                  {/* Favorite Button */}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      removeShop(shop._id);
+                      toggleFavorite(shop._id);
                     }}
-                    className="mt-4 px-4 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors duration-300"
+                    className={`absolute top-4 left-4 p-2 rounded-full shadow-lg transition-all duration-300 ${
+                      favorites.includes(shop._id)
+                        ? 'bg-red-100 text-red-500'
+                        : 'bg-white/90 text-gray-400 hover:text-red-500'
+                    }`}
                   >
-                    Remove
+                    <svg className="w-5 h-5" fill={favorites.includes(shop._id) ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
                   </button>
-                )}
+                </div>
+
+                {/* Content */}
+                <div className={`${viewMode === 'list' ? 'flex-1' : 'p-6'}`}>
+                  <h3 className="text-xl font-bold text-gray-800 mb-3 line-clamp-1 group-hover:text-yellow-600 transition-colors duration-300">
+                    {shop.name}
+                  </h3>
+                  
+                  <div className="flex items-start gap-2 mb-4">
+                    <svg className="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <p className="text-gray-600 text-sm line-clamp-2 leading-relaxed">
+                      {shop.address || "Address not provided"}
+                    </p>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className={`flex items-center justify-between pt-4 border-t border-gray-100 ${
+                    viewMode === 'list' ? 'mt-0' : ''
+                  }`}>
+                    <button
+                      onClick={() => navigate(`/shop-details/${shop._id}`, { state: { item: shop } })}
+                      className="bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-800 px-4 py-2 rounded-xl font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300 text-sm"
+                    >
+                      View Details
+                    </button>
+                    
+                    {token && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (window.confirm(`Are you sure you want to remove "${shop.name}"?`)) {
+                            removeShop(shop._id);
+                          }
+                        }}
+                        className="bg-red-100 hover:bg-red-200 text-red-600 p-2 rounded-lg transition-colors duration-300"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
-          ))
+            ))}
+          </div>
         ) : (
-          <div className="text-center py-20">No shops found 😢</div>
+          <div className="text-center py-20">
+            <div className="inline-flex items-center justify-center w-24 h-24 bg-gray-100 rounded-full mb-6 animate-pulse">
+              <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <h3 className="text-2xl font-bold text-gray-800 mb-3">
+              {searchQuery ? 'No Results Found' : 'No Shops Available'}
+            </h3>
+            <p className="text-gray-600 mb-6 max-w-md mx-auto">
+              {searchQuery 
+                ? `We couldn't find any shops matching "${searchQuery}". Try searching with different keywords.`
+                : "We couldn't find any shops at the moment. Please check back later or try refreshing the page."
+              }
+            </p>
+            {searchQuery ? (
+              <button
+                onClick={() => {
+                  setSearchQuery("");
+                  setCategoryFilter("");
+                  setShowFavoritesOnly(false);
+                }}
+                className="bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-800 px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+              >
+                Clear Search
+              </button>
+            ) : (
+              <button
+                onClick={() => window.location.reload()}
+                className="bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-800 px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+              >
+                Refresh Page
+              </button>
+            )}
+          </div>
         )}
+      </div>
+
+      {/* Floating Action Button */}
+      <FloatingActionButton onClick={handleAddShop} />
+
+      {/* Footer */}
+      <div className="mt-20 py-8 bg-white/80 backdrop-blur-sm border-t border-gray-100">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-gray-500 text-sm">
+            © 2025 UniTunes. Discover amazing local shops with confidence.
+          </p>
+        </div>
       </div>
     </div>
   );
